@@ -1,15 +1,14 @@
-package com.kanyideveloper.muviz.ui.theme
+package com.kanyideveloper.muviz.presentation.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 
 private val DarkColorPalette = darkColors(
-    primary = Purple200,
-    primaryVariant = Purple700,
-    secondary = Teal200
+    primary = primaryDark,
+    primaryVariant = primaryDarkVariant,
+    secondary = primaryDark
 )
 
 private val LightColorPalette = lightColors(
@@ -28,7 +27,7 @@ private val LightColorPalette = lightColors(
 )
 
 @Composable
-fun MuvizTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+fun MuvizTheme(darkTheme: Boolean = true/*isSystemInDarkTheme()*/, content: @Composable () -> Unit) {
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {
