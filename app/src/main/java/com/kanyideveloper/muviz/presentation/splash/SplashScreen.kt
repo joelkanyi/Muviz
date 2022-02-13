@@ -16,7 +16,7 @@ import com.kanyideveloper.muviz.presentation.destinations.HomeScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination(start = true)
+@Destination
 @Composable
 fun SplashScreen(
     navigator: DestinationsNavigator,
@@ -28,14 +28,7 @@ fun SplashScreen(
     ) {
         Icon(painter = painterResource(id = R.drawable.muviz), contentDescription = "splash_logo")
         Button(onClick = {
-            navigator.navigate(
-                HomeScreenDestination(
-                Film(
-                    name = "Home alone",
-                    releaseDate = "Today"
-                )
-            )
-            )
+            navigator.navigate(HomeScreenDestination)
         }) {
             Text(text = "Go to home screen")
         }
