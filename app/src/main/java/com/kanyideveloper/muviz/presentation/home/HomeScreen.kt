@@ -119,8 +119,12 @@ fun HomeScreen(
                 )
             }
 
-            item { Text(text = "Latest", color = Color.White) }
             item {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Latest", color = Color.White, fontSize = 18.sp)
+            }
+            item {
+                Spacer(modifier = Modifier.height(5.dp))
                 LazyRow(content = {
                     items(10) {
                         MovieItem(
@@ -133,8 +137,12 @@ fun HomeScreen(
                 })
             }
 
-            item { Text(text = "Top Rated", color = Color.White) }
             item {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Top Rated", color = Color.White, fontSize = 18.sp)
+            }
+            item {
+                Spacer(modifier = Modifier.height(5.dp))
                 LazyRow(content = {
                     items(10) {
                         MovieItem(
@@ -147,8 +155,12 @@ fun HomeScreen(
                 })
             }
 
-            item { Text(text = "Upcoming", color = Color.White) }
             item {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Upcoming", color = Color.White, fontSize = 18.sp)
+            }
+            item {
+                Spacer(modifier = Modifier.height(5.dp))
                 LazyRow(content = {
                     items(10) {
                         MovieItem(
@@ -162,9 +174,11 @@ fun HomeScreen(
             }
 
             item {
-                Text(text = "Now Playing", color = Color.White)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Now Playing", color = Color.White, fontSize = 18.sp)
             }
             item {
+                Spacer(modifier = Modifier.height(5.dp))
                 LazyRow(content = {
                     items(10) {
                         MovieItem(
@@ -175,6 +189,8 @@ fun HomeScreen(
                         )
                     }
                 })
+
+                Spacer(modifier = Modifier.height(10.dp))
             }
         }
     }
