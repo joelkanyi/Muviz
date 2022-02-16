@@ -10,11 +10,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.kanyideveloper.muviz.presentation.NavGraphs
 import com.kanyideveloper.muviz.presentation.components.BottomNavigationBar
+import com.kanyideveloper.muviz.presentation.components.StandardScaffold
+import com.kanyideveloper.muviz.presentation.destinations.AccountScreenDestination
+import com.kanyideveloper.muviz.presentation.destinations.FavoritesScreenDestination
+import com.kanyideveloper.muviz.presentation.destinations.HomeScreenDestination
 import com.kanyideveloper.muviz.presentation.ui.theme.MuvizTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.rememberNavHostEngine
@@ -32,8 +39,31 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     val navHostEngine = rememberNavHostEngine()
+                    val newBackStackEntry by navController.currentBackStackEntryAsState()
+                    val route = newBackStackEntry?.destination?.route
 
-                    Scaffold(
+                    StandardScaffold(
+                        navController = navController,
+                        showBottomBar = route in listOf(
+                            HomeScreenDestination.route,
+                            FavoritesScreenDestination.route,
+                            AccountScreenDestination.route
+                        )
+                    ) {
+                        Box(modifier = Modifier.padding(0.dp)) {
+                            DestinationsNavHost(
+                                navGraph = NavGraphs.root,
+                                navController = navController,
+                                engine = navHostEngine
+                            )
+                        }
+                    }
+
+
+
+
+
+/*                    Scaffold(
                         bottomBar = {
                             BottomNavigationBar(navController = navController)
                         }
@@ -45,7 +75,7 @@ class MainActivity : ComponentActivity() {
                                 engine = navHostEngine
                             )
                         }
-                    }
+                    }*/
                 }
             }
         }

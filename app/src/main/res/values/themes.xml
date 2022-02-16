@@ -4,4 +4,5 @@
     <style name="Theme.Muviz" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@color/black</item>
     </style>
+
 </resources>

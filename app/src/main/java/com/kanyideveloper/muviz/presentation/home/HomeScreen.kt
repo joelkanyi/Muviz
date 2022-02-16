@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.presentation.components.StandardToolbar
+import com.kanyideveloper.muviz.presentation.destinations.DetailsScreenDestination
 import com.kanyideveloper.muviz.presentation.ui.theme.lightGray
 import com.kanyideveloper.muviz.presentation.ui.theme.primaryDark
 import com.kanyideveloper.muviz.presentation.ui.theme.primaryGray
@@ -130,7 +131,10 @@ fun HomeScreen(
                         MovieItem(
                             cardModifier = Modifier
                                 .height(150.dp)
-                                .width(220.dp),
+                                .width(220.dp)
+                                .clickable {
+                                   navigator.navigate(DetailsScreenDestination)
+                                },
                             painter = painterResource(id = R.drawable.labrea)
                         )
                     }
