@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Muviz</string>
+    <string name="unlike">Unlike</string>
+    <string name="like">Like</string>
 </resources>
