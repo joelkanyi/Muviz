@@ -18,3 +18,6 @@ val Gray = Color(0xFFCBCBCB)
 val lightGray = Color(0xFFF7F7F7)
 val DarkGray = Color(0xFFACACAC)
 val Transparent = Color(0x00FFFFFF)
+
+val GradientOne = Color(0xFFff422b)
+val GradientTwo = Color(0xFFff9400)
