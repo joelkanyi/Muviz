@@ -41,7 +41,7 @@ private val LightColorPalette = lightColors(
 )
 
 @Composable
-fun MuvizTheme(darkTheme: Boolean = /*true*/isSystemInDarkTheme(), content: @Composable () -> Unit) {
+fun MuvizTheme(darkTheme: Boolean = true/*isSystemInDarkTheme()*/, content: @Composable () -> Unit) {
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {
