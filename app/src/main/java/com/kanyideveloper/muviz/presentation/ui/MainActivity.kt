@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
                             AccountScreenDestination.route
                         )
                     ) {
-                        Box(modifier = Modifier.padding(0.dp)) {
+                        Box(modifier = Modifier.padding(PaddingValues())) {
                             DestinationsNavHost(
                                 navGraph = NavGraphs.root,
                                 navController = navController,
