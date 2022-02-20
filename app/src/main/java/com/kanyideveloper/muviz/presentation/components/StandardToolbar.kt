@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.kanyideveloper.muviz.presentation.ui.theme.primaryGray
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
@@ -30,7 +31,8 @@ fun StandardToolbar(
                 }) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
-                        contentDescription = null
+                        contentDescription = null,
+                        tint = primaryGray
                     )
                 }
             }

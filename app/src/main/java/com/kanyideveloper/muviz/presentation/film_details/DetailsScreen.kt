@@ -45,16 +45,18 @@ import com.google.accompanist.insets.statusBarsPadding
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.domain.model.Cast
 import com.kanyideveloper.muviz.domain.model.Film
+import com.kanyideveloper.muviz.presentation.destinations.CastsScreenDestination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlin.math.max
 
 @OptIn(ExperimentalAnimationApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
 @Destination
 @Composable
-fun DetailsScreen() {
+fun DetailsScreen(navigator: DestinationsNavigator) {
     val scrollState = rememberLazyListState()
 
     Box {
-        FilmInfo(scrollState, Film(""))
+        FilmInfo(scrollState, Film(""), navigator = navigator)
         ProfileToolBar(scrollState, Film(""))
     }
 }
@@ -131,7 +133,8 @@ fun ProfileToolBar(
 @Composable
 fun FilmInfo(
     scrollState: LazyListState,
-    film: Film
+    film: Film,
+    navigator: DestinationsNavigator
 ) {
     LazyColumn(contentPadding = PaddingValues(top = AppBarExpendedHeight), state = scrollState) {
         item {
@@ -166,7 +169,7 @@ fun FilmInfo(
             }
         }
         item {
-            CastDetails()
+            CastDetails(navigator)
         }
     }
 }
@@ -306,7 +309,7 @@ fun CircularProgressIndicator(
 }
 
 @Composable
-fun CastDetails(modifier: Modifier = Modifier.fillMaxWidth()) {
+fun CastDetails(navigator: DestinationsNavigator, modifier: Modifier = Modifier.fillMaxWidth()) {
     Column {
         Row(
             modifier = modifier,
@@ -335,7 +338,9 @@ fun CastDetails(modifier: Modifier = Modifier.fillMaxWidth()) {
                     color = White
                 )
 
-                IconButton(onClick = {}) {
+                IconButton(onClick = {
+                    navigator.navigate(CastsScreenDestination)
+                }) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_chevron_right),
                         tint = primaryPink,

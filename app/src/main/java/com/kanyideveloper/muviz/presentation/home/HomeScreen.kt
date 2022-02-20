@@ -32,8 +32,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kanyideveloper.muviz.R
+import com.kanyideveloper.muviz.presentation.components.MovieItem
 import com.kanyideveloper.muviz.presentation.components.StandardToolbar
 import com.kanyideveloper.muviz.presentation.destinations.DetailsScreenDestination
+import com.kanyideveloper.muviz.presentation.destinations.SearchScreenDestination
+import com.kanyideveloper.muviz.presentation.search.SearchScreen
 import com.kanyideveloper.muviz.presentation.ui.theme.lightGray
 import com.kanyideveloper.muviz.presentation.ui.theme.primaryDark
 import com.kanyideveloper.muviz.presentation.ui.theme.primaryGray
@@ -70,7 +73,7 @@ fun HomeScreen(
             showBackArrow = false,
             navActions = {
                 IconButton(onClick = {
-                    //navController.navigate(Screen.SearchScreen.route)
+                    navigator.navigate(SearchScreenDestination)
                 }) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_search),
@@ -133,7 +136,7 @@ fun HomeScreen(
                                 .height(150.dp)
                                 .width(220.dp)
                                 .clickable {
-                                   navigator.navigate(DetailsScreenDestination)
+                                    navigator.navigate(DetailsScreenDestination)
                                 },
                             painter = painterResource(id = R.drawable.labrea)
                         )
@@ -267,10 +270,7 @@ fun Genres(
 ) {
     LazyRow(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                horizontal = 16.dp,
-            ),
+            .fillMaxWidth(),
     ) {
         items(items = genres) { genre ->
             Text(
@@ -300,94 +300,6 @@ fun Genres(
                         bottom = 10.dp
                     )
             )
-        }
-    }
-}
-
-@Composable
-fun MovieItem(cardModifier: Modifier, painter: Painter) {
-    Card(modifier = cardModifier.padding(4.dp)) {
-        Image(
-            painter = painter,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop,
-            contentDescription = "Movie Banner"
-        )
-    }
-}
-
-
-@Composable
-fun NestedScroll() {
-    LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(2.dp)) {
-        item { Text(text = "Top 10") }
-        item {
-            LazyRow(content = {
-                items(10) {
-                    MovieItem(
-                        cardModifier = Modifier
-                            .height(250.dp)
-                            .width(150.dp),
-                        painter = painterResource(id = R.drawable.chosen)
-                    )
-                }
-            })
-        }
-
-        item { Text(text = "Continue watching") }
-        item {
-            LazyRow(content = {
-                items(10) {
-                    MovieItem(
-                        cardModifier = Modifier
-                            .height(150.dp)
-                            .width(250.dp),
-                        painter = painterResource(id = R.drawable.chosen)
-                    )
-                }
-            })
-        }
-
-        item { Text(text = "Recommended") }
-        item {
-            LazyRow(content = {
-                items(10) {
-                    MovieItem(
-                        cardModifier = Modifier
-                            .height(150.dp)
-                            .width(250.dp),
-                        painter = painterResource(id = R.drawable.chosen)
-                    )
-                }
-            })
-        }
-
-        item { Text(text = "New") }
-        item {
-            LazyRow(content = {
-                items(10) {
-                    MovieItem(
-                        cardModifier = Modifier
-                            .height(150.dp)
-                            .width(250.dp),
-                        painter = painterResource(id = R.drawable.chosen)
-                    )
-                }
-            })
-        }
-
-        item { Text(text = "Coming soon") }
-        item {
-            LazyRow(content = {
-                items(10) {
-                    MovieItem(
-                        cardModifier = Modifier
-                            .height(150.dp)
-                            .width(250.dp),
-                        painter = painterResource(id = R.drawable.chosen)
-                    )
-                }
-            })
         }
     }
 }
