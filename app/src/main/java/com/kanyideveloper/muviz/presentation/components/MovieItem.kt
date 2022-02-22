@@ -17,7 +17,7 @@ fun MovieItem(cardModifier: Modifier, painter: Painter) {
             painter = painter,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
-            contentDescription = "Movie Banner"
+            contentDescription = "MovieDto Banner"
         )
     }
 }

@@ -4,25 +4,29 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorFilter.Companion.tint
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.domain.model.Film
 import com.kanyideveloper.muviz.presentation.components.StandardToolbar
@@ -31,8 +35,22 @@ import com.kanyideveloper.muviz.presentation.film_details.FilmNameAndRating
 import com.kanyideveloper.muviz.presentation.ui.theme.Transparent
 import com.kanyideveloper.muviz.presentation.ui.theme.primaryDark
 import com.kanyideveloper.muviz.presentation.ui.theme.primaryGray
+import com.kanyideveloper.muviz.presentation.ui.theme.primaryPink
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+
+
+import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Card
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 
 @Destination
 @Composable
@@ -42,6 +60,15 @@ fun FavoritesScreen(
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
+
+        val openDialogCustom = remember{ mutableStateOf(false) }
+
+        //SimpleAlertDialog()
+
+        Dialog(onDismissRequest = { openDialogCustom.value = false}) {
+            CustomDialogUI(openDialogCustom = openDialogCustom)
+        }
+
 
         StandardToolbar(
             navigator = navigator,
@@ -56,7 +83,6 @@ fun FavoritesScreen(
             showBackArrow = false,
             navActions = {
                 IconButton(onClick = {
-                    //navController.navigate(Screen.SearchScreen.route)
                 }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
@@ -88,7 +114,7 @@ fun FilmItem(modifier: Modifier, painter: Painter) {
                 painter = painter,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
-                contentDescription = "Movie Banner"
+                contentDescription = "MovieDto Banner"
             )
             Box(
                 modifier = Modifier
@@ -132,7 +158,7 @@ fun FilmDetails(
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = "2021. Tv Series",
+                    text = "2021. Tv SeriesDto",
                     color = Color.White,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Light
@@ -141,6 +167,108 @@ fun FilmDetails(
             CircularProgressIndicator(
                 percentage = 0.75f
             )
+        }
+    }
+}
+
+@Composable
+fun SimpleAlertDialog() {
+    AlertDialog(
+        onDismissRequest = { },
+        confirmButton = {
+            TextButton(onClick = {})
+            { Text(text = "OK") }
+        },
+        dismissButton = {
+            TextButton(onClick = {})
+            { Text(text = "Cancel") }
+        },
+        title = { Text(text = "Please confirm") },
+        text = { Text(text = "Should I continue with the requested action?") }
+    )
+}
+
+//Layout
+@Composable
+fun CustomDialogUI(modifier: Modifier = Modifier, openDialogCustom: MutableState<Boolean>) {
+    Card(
+        //shape = MaterialTheme.shapes.medium,
+        shape = RoundedCornerShape(10.dp),
+        // modifier = modifier.size(280.dp, 240.dp)
+        modifier = Modifier.padding(10.dp, 5.dp, 10.dp, 10.dp),
+        elevation = 8.dp
+    ) {
+        Column(
+            modifier
+                .background(Color.White)
+        ) {
+
+            //.......................................................................
+            Image(
+                imageVector = Icons.Default.Delete,
+                contentDescription = null, // decorative
+                contentScale = ContentScale.Fit,
+                colorFilter = ColorFilter.tint(
+                    color = primaryPink
+                ),
+                modifier = Modifier
+                    .padding(top = 35.dp)
+                    .height(70.dp)
+                    .fillMaxWidth(),
+
+                )
+
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = "Get Updates",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(top = 5.dp)
+                        .fillMaxWidth(),
+                    style = MaterialTheme.typography.h3,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = "Allow Permission to send you notifications when new art styles added.",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(top = 10.dp, start = 25.dp, end = 25.dp)
+                        .fillMaxWidth(),
+                    style = MaterialTheme.typography.body1
+                )
+            }
+            //.......................................................................
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp)
+                    .background(primaryGray),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+
+                TextButton(onClick = {
+                    openDialogCustom.value = false
+                }) {
+
+                    Text(
+                        "Not Now",
+                        fontWeight = FontWeight.Bold,
+                        color = primaryPink,
+                        modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
+                    )
+                }
+                TextButton(onClick = {
+                    openDialogCustom.value = false
+                }) {
+                    Text(
+                        "Allow",
+                        fontWeight = FontWeight.ExtraBold,
+                        color = Color.Black,
+                        modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
+                    )
+                }
+            }
         }
     }
 }

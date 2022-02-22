@@ -317,7 +317,7 @@ fun CastDetails(navigator: DestinationsNavigator, modifier: Modifier = Modifier.
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Cast",
+                text = "CastDto",
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
                 color = White,
