@@ -16,11 +16,11 @@ interface TMDBApi {
         @Query("language") language: String = "en"
     ): MoviesResponse
 
-    @GET("movie/popular")
+    @GET("movie/popular?api_key=d31c90f6e90f1993a5cbce70c8c53ce8")
     suspend fun getPopularMovies(
-        @Query("api_key") apiKey: String = API_KEY,
-        @Query("page") page: Int = STARTING_PAGE_INDEX,
-        @Query("language") language: String = "en"
+        /*@Query("api_key") apiKey: String = API_KEY,*/
+/*        @Query("page") page: Int = STARTING_PAGE_INDEX,
+        @Query("language") language: String = "en"*/
     ): MoviesResponse
 
     @GET("movie/upcoming")
@@ -65,11 +65,11 @@ interface TMDBApi {
         @Query("language") language: String = "en"
     ): TvSeriesResponse
 
-    @GET("tv/popular")
+    @GET("tv/popular?api_key=d31c90f6e90f1993a5cbce70c8c53ce8")
     suspend fun getPopularTvSeries(
-        @Query("api_key") apiKey: String = API_KEY,
+/*        @Query("api_key") apiKey: String = API_KEY,
         @Query("page") page: Int = STARTING_PAGE_INDEX,
-        @Query("language") language: String = "en"
+        @Query("language") language: String = "en"*/
     ): TvSeriesResponse
 
     @GET("tv/airing_today")
@@ -108,14 +108,14 @@ interface TMDBApi {
     ): Credits
 
     @GET("genre/movie/list")
-    fun getMovieGenres(
+    suspend fun getMovieGenres(
         @Query("api_key") apiKey: String = API_KEY,
         @Query("language") language: String = "en"
-    ): List<Genre>
+    ): GenresResponse
 
     @GET("genre/tv/list")
     suspend fun getTvSeriesGenres(
         @Query("api_key") apiKey: String = API_KEY,
         @Query("language") language: String = "en"
-    ): List<Genre>
+    ): GenresResponse
 }

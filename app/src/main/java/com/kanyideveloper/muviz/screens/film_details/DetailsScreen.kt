@@ -44,7 +44,7 @@ import com.google.accompanist.insets.statusBarsPadding
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.model.Cast
 import com.kanyideveloper.muviz.model.Film
-import com.kanyideveloper.muviz.presentation.destinations.CastsScreenDestination
+import com.kanyideveloper.muviz.screens.destinations.CastsScreenDestination
 import com.kanyideveloper.muviz.ui.theme.*
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlin.math.max

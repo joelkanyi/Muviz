@@ -53,9 +53,9 @@ fun FavoritesScreen(
 
         //SimpleAlertDialog()
 
-        Dialog(onDismissRequest = { openDialogCustom.value = false}) {
+        /*Dialog(onDismissRequest = { openDialogCustom.value = false}) {
             CustomDialogUI(openDialogCustom = openDialogCustom)
-        }
+        }*/
 
 
         StandardToolbar(

@@ -1,10 +1,11 @@
 package com.kanyideveloper.muviz.model
 
 import com.kanyideveloper.muviz.R
-import com.kanyideveloper.muviz.presentation.destinations.AccountScreenDestination
-import com.kanyideveloper.muviz.presentation.destinations.Destination
-import com.kanyideveloper.muviz.presentation.destinations.FavoritesScreenDestination
-import com.kanyideveloper.muviz.presentation.destinations.HomeScreenDestination
+import com.kanyideveloper.muviz.screens.destinations.AccountScreenDestination
+import com.kanyideveloper.muviz.screens.destinations.Destination
+import com.kanyideveloper.muviz.screens.destinations.FavoritesScreenDestination
+import com.kanyideveloper.muviz.screens.destinations.HomeScreenDestination
+
 
 /*data class BottomNavItem(
     val name: String,

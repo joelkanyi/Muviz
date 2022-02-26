@@ -16,12 +16,11 @@ import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.kanyideveloper.muviz.presentation.NavGraphs
-import com.kanyideveloper.muviz.presentation.components.BottomNavigationBar
 import com.kanyideveloper.muviz.presentation.components.StandardScaffold
-import com.kanyideveloper.muviz.presentation.destinations.AccountScreenDestination
-import com.kanyideveloper.muviz.presentation.destinations.FavoritesScreenDestination
-import com.kanyideveloper.muviz.presentation.destinations.HomeScreenDestination
+import com.kanyideveloper.muviz.screens.NavGraphs
+import com.kanyideveloper.muviz.screens.destinations.AccountScreenDestination
+import com.kanyideveloper.muviz.screens.destinations.FavoritesScreenDestination
+import com.kanyideveloper.muviz.screens.destinations.HomeScreenDestination
 import com.kanyideveloper.muviz.ui.theme.MuvizTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.rememberNavHostEngine

@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme.typography
@@ -24,23 +23,22 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kanyideveloper.muviz.R
-import com.kanyideveloper.muviz.presentation.components.MovieItem
+import com.kanyideveloper.muviz.screens.commons.MovieItem
 import com.kanyideveloper.muviz.presentation.components.StandardToolbar
-import com.kanyideveloper.muviz.presentation.destinations.DetailsScreenDestination
-import com.kanyideveloper.muviz.presentation.destinations.SearchScreenDestination
-import com.kanyideveloper.muviz.screens.search.SearchScreen
+import com.kanyideveloper.muviz.screens.destinations.DetailsScreenDestination
+import com.kanyideveloper.muviz.screens.destinations.SearchScreenDestination
 import com.kanyideveloper.muviz.ui.theme.lightGray
 import com.kanyideveloper.muviz.ui.theme.primaryDark
 import com.kanyideveloper.muviz.ui.theme.primaryGray
 import com.kanyideveloper.muviz.ui.theme.primaryPink
+import com.kanyideveloper.muviz.util.Constants.IMAGE_BASE_UR
+import com.kanyideveloper.muviz.util.Constants.IMAGE_BASE_URL
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -50,6 +48,10 @@ fun HomeScreen(
     navigator: DestinationsNavigator,
     viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
+
+    val popularMovies = viewModel.popularMovies
+    val popularTvSeries = viewModel.popularTvSeries
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -91,34 +93,23 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth(),
                     viewModel = viewModel
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(5.dp))
 
             }
             item {
                 Text(
-                    text = "Categories",
+                    text = "Genres",
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
                     modifier = Modifier.padding(start = 8.dp)
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(5.dp))
 
             }
             item {
                 Genres(
-                    genres = listOf(
-                        "Drama",
-                        "Comedy",
-                        "Action",
-                        "Love",
-                        "Sci-fi",
-                        "Adventure",
-                        "Documentary",
-                        "Horror",
-                        "Football"
-                    ),
                     viewModel = viewModel
                 )
             }
@@ -130,16 +121,33 @@ fun HomeScreen(
             item {
                 Spacer(modifier = Modifier.height(5.dp))
                 LazyRow(content = {
-                    items(10) {
-                        MovieItem(
-                            cardModifier = Modifier
-                                .height(150.dp)
-                                .width(220.dp)
-                                .clickable {
-                                    navigator.navigate(DetailsScreenDestination)
-                                },
-                            painter = painterResource(id = R.drawable.labrea)
-                        )
+
+                    if (viewModel.selectedOption.value == "Tv Shows") {
+                        items(popularTvSeries.value) { film ->
+
+                            MovieItem(
+                                cardModifier = Modifier
+                                    .height(210.dp)
+                                    .width(240.dp)
+                                    .clickable {
+                                        navigator.navigate(DetailsScreenDestination)
+                                    },
+                                imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
+                            )
+                        }
+                    } else {
+                        items(popularMovies.value) { film ->
+
+                            MovieItem(
+                                cardModifier = Modifier
+                                    .height(200.dp)
+                                    .width(230.dp)
+                                    .clickable {
+                                        navigator.navigate(DetailsScreenDestination)
+                                    },
+                                imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                            )
+                        }
                     }
                 })
             }
@@ -156,7 +164,7 @@ fun HomeScreen(
                             cardModifier = Modifier
                                 .height(200.dp)
                                 .width(130.dp),
-                            painter = painterResource(id = R.drawable.motherland)
+                            imageUrl = IMAGE_BASE_URL
                         )
                     }
                 })
@@ -174,7 +182,7 @@ fun HomeScreen(
                             cardModifier = Modifier
                                 .height(200.dp)
                                 .width(130.dp),
-                            painter = painterResource(id = R.drawable.chosen)
+                            imageUrl = IMAGE_BASE_URL
                         )
                     }
                 })
@@ -192,7 +200,7 @@ fun HomeScreen(
                             cardModifier = Modifier
                                 .height(200.dp)
                                 .width(130.dp),
-                            painter = painterResource(id = R.drawable.chosen)
+                            imageUrl = IMAGE_BASE_URL
                         )
                     }
                 })
@@ -265,16 +273,21 @@ fun FilmType(
 
 @Composable
 fun Genres(
-    genres: List<String>,
     viewModel: HomeScreenViewModel
 ) {
+    val genres = if (viewModel.selectedOption.value == "Tv Shows") {
+        viewModel.tvSeriesGenres.value
+    } else {
+        viewModel.moviesGenres.value
+    }
+
     LazyRow(
         modifier = Modifier
             .fillMaxWidth(),
     ) {
         items(items = genres) { genre ->
             Text(
-                text = genre,
+                text = genre.name,
                 style = typography.body1.merge(),
                 color = Color.White,
                 modifier = Modifier
@@ -284,10 +297,11 @@ fun Genres(
                         ),
                     )
                     .clickable {
-                        viewModel.setGenre(genre)
+                        viewModel.setGenre(genre.name)
+                        viewModel.getPopularMovies(genre.id)
                     }
                     .background(
-                        if (genre == viewModel.selectedGenre.value) {
+                        if (genre.name == viewModel.selectedGenre.value) {
                             primaryPink
                         } else {
                             primaryDark
