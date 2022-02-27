@@ -44,7 +44,9 @@ import com.google.accompanist.insets.statusBarsPadding
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.model.Cast
 import com.kanyideveloper.muviz.model.Film
+import com.kanyideveloper.muviz.model.FilmType
 import com.kanyideveloper.muviz.screens.destinations.CastsScreenDestination
+import com.kanyideveloper.muviz.screens.home.HomeScreenViewModel
 import com.kanyideveloper.muviz.ui.theme.*
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlin.math.max
@@ -52,8 +54,22 @@ import kotlin.math.max
 @OptIn(ExperimentalAnimationApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
 @Destination
 @Composable
-fun DetailsScreen(navigator: DestinationsNavigator) {
+fun DetailsScreen(
+    filmType: FilmType,
+    navigator: DestinationsNavigator,
+    viewModel: HomeScreenViewModel
+) {
     val scrollState = rememberLazyListState()
+
+    if (filmType.type == "Movies"){
+        viewModel.getMovieDetails(filmType.filmId)
+    }else if (filmType.type == "Tv Shows"){
+
+    }
+
+    val details = viewModel.moviesDetails.value
+
+    // Include Film Genres
 
     Box {
         FilmInfo(scrollState, Film(""), navigator = navigator)

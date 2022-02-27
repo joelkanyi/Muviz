@@ -11,12 +11,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
@@ -29,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kanyideveloper.muviz.R
+import com.kanyideveloper.muviz.model.FilmType
 import com.kanyideveloper.muviz.screens.commons.MovieItem
 import com.kanyideveloper.muviz.presentation.components.StandardToolbar
 import com.kanyideveloper.muviz.screens.destinations.DetailsScreenDestination
@@ -88,7 +91,7 @@ fun HomeScreen(
 
         LazyColumn {
             item {
-                FilmType(
+                FilmCategory(
                     items = listOf("Movies", "Tv Shows"),
                     modifier = Modifier.fillMaxWidth(),
                     viewModel = viewModel
@@ -115,41 +118,67 @@ fun HomeScreen(
             }
 
             item {
+                Text(text = "Trending this week", color = Color.White, fontSize = 18.sp)
+
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Latest", color = Color.White, fontSize = 18.sp)
             }
             item {
                 Spacer(modifier = Modifier.height(5.dp))
-                LazyRow(content = {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(210.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    LazyRow(content = {
 
-                    if (viewModel.selectedOption.value == "Tv Shows") {
-                        items(popularTvSeries.value) { film ->
+                        if (viewModel.selectedOption.value == "Tv Shows") {
+                            items(popularTvSeries.value) { film ->
 
-                            MovieItem(
-                                cardModifier = Modifier
-                                    .height(210.dp)
-                                    .width(240.dp)
-                                    .clickable {
-                                        navigator.navigate(DetailsScreenDestination)
-                                    },
-                                imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
-                            )
-                        }
-                    } else {
-                        items(popularMovies.value) { film ->
+                                MovieItem(
+                                    cardModifier = Modifier
+                                        .height(210.dp)
+                                        .width(240.dp)
+                                        .clickable {
+                                            val filmType = FilmType(viewModel.selectedOption.value, film.id)
+                                            navigator.navigate(DetailsScreenDestination(filmType))
+                                        },
+                                    imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
+                                )
+                            }
+                        } else {
+                            items(popularMovies.value) { film ->
 
-                            MovieItem(
-                                cardModifier = Modifier
-                                    .height(200.dp)
-                                    .width(230.dp)
-                                    .clickable {
-                                        navigator.navigate(DetailsScreenDestination)
-                                    },
-                                imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
-                            )
+                                MovieItem(
+                                    cardModifier = Modifier
+                                        .height(200.dp)
+                                        .width(230.dp)
+                                        .clickable {
+                                            val filmType = FilmType(viewModel.selectedOption.value, film.id)
+                                            navigator.navigate(DetailsScreenDestination(filmType))
+                                        },
+                                    imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                )
+                            }
                         }
                     }
-                })
+                    )
+
+                    if (viewModel.isLoading.value){
+                        CircularProgressIndicator(
+                            modifier = Modifier,
+                            color = primaryPink,
+                            strokeWidth = 2.dp
+                        )
+                    }
+
+                    if (viewModel.loadingError.value != null){
+                        Text(
+                            text = viewModel.loadingError.value,
+                            color = primaryPink
+                        )
+                    }
+                }
             }
 
             item {
@@ -212,7 +241,7 @@ fun HomeScreen(
 }
 
 @Composable
-fun FilmType(
+fun FilmCategory(
     items: List<String>,
     modifier: Modifier = Modifier,
     viewModel: HomeScreenViewModel
