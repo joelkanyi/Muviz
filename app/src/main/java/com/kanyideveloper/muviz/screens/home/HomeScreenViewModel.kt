@@ -1,6 +1,5 @@
 package com.kanyideveloper.muviz.screens.home
 
-import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -43,7 +42,7 @@ class HomeScreenViewModel @Inject constructor(
     private val _moviesGenres = mutableStateOf<List<Genre>>(emptyList())
     val moviesGenres: State<List<Genre>> = _moviesGenres
 
-    private val _moviesDetails = mutableStateOf(MovieDetails())
+    private val _moviesDetails :MutableState<MovieDetails> = mutableStateOf(MovieDetails(), neverEqualPolicy())
     val moviesDetails: State<MovieDetails> = _moviesDetails
 
     private val _tvSeriesGenres = mutableStateOf<List<Genre>>(emptyList())
@@ -117,19 +116,6 @@ class HomeScreenViewModel @Inject constructor(
             when (val result = filmsRepository.getSeriesGenres("en")) {
                 is Resource.Success -> {
                     _tvSeriesGenres.value = result.data?.genres!!
-                }
-                is Resource.Error -> {
-                    //loadingError.value = result.message.toString()
-                }
-            }
-        }
-    }
-
-    fun getMovieDetails(movieId: Int) {
-        viewModelScope.launch {
-            when (val result = filmsRepository.getMoviesDetails(movieId)) {
-                is Resource.Success -> {
-                    _moviesDetails.value = result.data!!
                 }
                 is Resource.Error -> {
                     //loadingError.value = result.message.toString()

@@ -39,15 +39,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.statusBarsPadding
 import com.kanyideveloper.muviz.R
+import com.kanyideveloper.muviz.data.remote.responses.MovieDetails
 import com.kanyideveloper.muviz.model.Cast
 import com.kanyideveloper.muviz.model.Film
 import com.kanyideveloper.muviz.model.FilmType
 import com.kanyideveloper.muviz.screens.destinations.CastsScreenDestination
 import com.kanyideveloper.muviz.screens.home.HomeScreenViewModel
 import com.kanyideveloper.muviz.ui.theme.*
+import com.kanyideveloper.muviz.util.Constants
+import com.kanyideveloper.muviz.util.Resource
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlin.math.max
 
@@ -57,30 +62,46 @@ import kotlin.math.max
 fun DetailsScreen(
     filmType: FilmType,
     navigator: DestinationsNavigator,
-    viewModel: HomeScreenViewModel
+    viewModel: FilmDetailsViewModel = hiltViewModel()
 ) {
     val scrollState = rememberLazyListState()
 
-    if (filmType.type == "Movies"){
-        viewModel.getMovieDetails(filmType.filmId)
-    }else if (filmType.type == "Tv Shows"){
-
+    val details = produceState<Resource<MovieDetails>>(initialValue = Resource.Loading()){
+        value = viewModel.getMovieDetails(filmType.filmId)
     }
 
-    val details = viewModel.moviesDetails.value
+/*    if (filmType.type == "Movies"){
+
+    }else if (filmType.type == "Tv Shows"){
+
+    }*/
+
+    //val details = viewModel.moviesDetails.value
 
     // Include Film Genres
 
     Box {
-        FilmInfo(scrollState, Film(""), navigator = navigator)
-        ProfileToolBar(scrollState, Film(""))
+        FilmInfo(
+            scrollState = scrollState,
+            overview = details.value..overview.toString(),
+            releaseDate = details.releaseDate.toString(),
+            navigator = navigator
+        )
+        ProfileToolBar(
+            scrollState = scrollState,
+            posterUrl = "${Constants.IMAGE_BASE_UR}/${details.posterPath}",
+            filmName = details.title.toString(),
+            rating = 0.1f
+        )
     }
 }
 
 @Composable
 fun ProfileToolBar(
     scrollState: LazyListState,
-    film: Film
+    posterUrl: String,
+    filmName: String,
+    rating: Float
 ) {
     val imageHeight = AppBarExpendedHeight - AppBarCollapsedHeight
 
@@ -105,6 +126,25 @@ fun ProfileToolBar(
         Column {
             Box {
                 Image(
+                    painter = rememberImagePainter(
+                        data = posterUrl,
+                        builder = {
+                            placeholder(R.drawable.ic_placeholder)
+                            crossfade(true)
+                        }
+                    ),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .height(imageHeight)
+                        .graphicsLayer {
+                            alpha = 1f - offsetProgress
+                        },
+                    contentScale = ContentScale.Crop,
+                    contentDescription = "Movie Banner"
+                )
+
+
+/*                Image(
                     painter = painterResource(id = R.drawable.kings),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
@@ -114,7 +154,7 @@ fun ProfileToolBar(
                         .graphicsLayer {
                             alpha = 1f - offsetProgress
                         }
-                )
+                )*/
 
                 Box(
                     modifier = Modifier
@@ -128,7 +168,10 @@ fun ProfileToolBar(
                             )
                         )
                 )
-                FilmNameAndRating(Film(""))
+                FilmNameAndRating(
+                    filmName = filmName,
+                    rating = rating
+                )
             }
         }
     }
@@ -149,7 +192,8 @@ fun ProfileToolBar(
 @Composable
 fun FilmInfo(
     scrollState: LazyListState,
-    film: Film,
+    releaseDate: String,
+    overview: String,
     navigator: DestinationsNavigator
 ) {
     LazyColumn(contentPadding = PaddingValues(top = AppBarExpendedHeight), state = scrollState) {
@@ -169,7 +213,7 @@ fun FilmInfo(
                 Spacer(modifier = Modifier.height(5.dp))
 
                 Text(
-                    text = "September 25th, 2021",
+                    text = releaseDate,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.ExtraLight,
                     color = Color.LightGray
@@ -178,7 +222,7 @@ fun FilmInfo(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "As a collection of history's worst tyrants and criminal masterminds gather to plot a war to wipe out millions, one man must race against time to stop them.",
+                    text = overview,
                     fontSize = 13.sp,
                     color = Color.LightGray
                 )
@@ -192,7 +236,8 @@ fun FilmInfo(
 
 @Composable
 fun FilmNameAndRating(
-    film: Film
+    filmName: String,
+    rating: Float
 ) {
     Row(
         modifier = Modifier
@@ -207,13 +252,13 @@ fun FilmNameAndRating(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "The King's Man",
+                text = filmName,
                 color = White,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
             CircularProgressIndicator(
-                percentage = 0.75f
+                percentage = rating
             )
         }
     }

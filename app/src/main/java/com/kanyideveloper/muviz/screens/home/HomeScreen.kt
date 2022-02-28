@@ -155,6 +155,7 @@ fun HomeScreen(
                                         .width(230.dp)
                                         .clickable {
                                             val filmType = FilmType(viewModel.selectedOption.value, film.id)
+                                            viewModel.getMovieDetails(filmType.filmId)
                                             navigator.navigate(DetailsScreenDestination(filmType))
                                         },
                                     imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"

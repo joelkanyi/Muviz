@@ -1,26 +1,49 @@
 package com.kanyideveloper.muviz.data.remote.responses
 
+
+import com.google.gson.annotations.SerializedName
+
 data class MovieDetails(
+    @SerializedName("adult")
     val adult: Boolean? = null,
-    val backdrop_path: String? = null,
-    val belongs_to_collection: Any? = null,
+    @SerializedName("backdrop_path")
+    val backdropPath: String? = null,
+    @SerializedName("budget")
     val budget: Int? = null,
-    val genreDtos: List<Genre>? = null,
+    @SerializedName("genres")
+    val genres: List<Genre>? = null,
+    @SerializedName("homepage")
     val homepage: String? = null,
+    @SerializedName("id")
     val id: Int? = null,
-    val imdb_id: String? = null,
-    val original_language: String? = null,
-    val original_title: String? = null,
+    @SerializedName("imdb_id")
+    val imdbId: String? = null,
+    @SerializedName("original_language")
+    val originalLanguage: String? = null,
+    @SerializedName("original_title")
+    val originalTitle: String? = null,
+    @SerializedName("overview")
     val overview: String? = null,
+    @SerializedName("popularity")
     val popularity: Double? = null,
-    val poster_path: String? = null,
-    val release_date: String? = null,
+    @SerializedName("poster_path")
+    val posterPath: String? = null,
+    @SerializedName("release_date")
+    val releaseDate: String? = null,
+    @SerializedName("revenue")
     val revenue: Int? = null,
+    @SerializedName("runtime")
     val runtime: Int? = null,
+    @SerializedName("status")
     val status: String? = null,
+    @SerializedName("tagline")
     val tagline: String? = null,
+    @SerializedName("title")
     val title: String? = null,
+    @SerializedName("video")
     val video: Boolean? = null,
-    val vote_average: Double? = null,
-    val vote_count: Int? = null
+    @SerializedName("vote_average")
+    val voteAverage: Double? = null,
+    @SerializedName("vote_count")
+    val voteCount: Int? = null
 )
