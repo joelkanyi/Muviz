@@ -34,8 +34,10 @@ import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.model.FilmType
 import com.kanyideveloper.muviz.screens.commons.MovieItem
 import com.kanyideveloper.muviz.presentation.components.StandardToolbar
-import com.kanyideveloper.muviz.screens.destinations.DetailsScreenDestination
+import com.kanyideveloper.muviz.screens.destinations.MovieDetailsScreenDestination
 import com.kanyideveloper.muviz.screens.destinations.SearchScreenDestination
+import com.kanyideveloper.muviz.screens.destinations.TvSeriesDetailsScreenDestination
+import com.kanyideveloper.muviz.screens.film_details.series.TvSeriesDetailsScreen
 import com.kanyideveloper.muviz.ui.theme.lightGray
 import com.kanyideveloper.muviz.ui.theme.primaryDark
 import com.kanyideveloper.muviz.ui.theme.primaryGray
@@ -141,7 +143,7 @@ fun HomeScreen(
                                         .width(240.dp)
                                         .clickable {
                                             val filmType = FilmType(viewModel.selectedOption.value, film.id)
-                                            navigator.navigate(DetailsScreenDestination(filmType))
+                                            navigator.navigate(TvSeriesDetailsScreenDestination(film.id))
                                         },
                                     imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
                                 )
@@ -155,7 +157,7 @@ fun HomeScreen(
                                         .width(230.dp)
                                         .clickable {
                                             val filmType = FilmType(viewModel.selectedOption.value, film.id)
-                                            navigator.navigate(DetailsScreenDestination(filmType))
+                                            navigator.navigate(MovieDetailsScreenDestination(film.id))
                                         },
                                     imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
                                 )
