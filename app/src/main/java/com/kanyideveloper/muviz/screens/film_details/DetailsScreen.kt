@@ -46,10 +46,8 @@ import com.google.accompanist.insets.statusBarsPadding
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.data.remote.responses.MovieDetails
 import com.kanyideveloper.muviz.model.Cast
-import com.kanyideveloper.muviz.model.Film
 import com.kanyideveloper.muviz.model.FilmType
 import com.kanyideveloper.muviz.screens.destinations.CastsScreenDestination
-import com.kanyideveloper.muviz.screens.home.HomeScreenViewModel
 import com.kanyideveloper.muviz.ui.theme.*
 import com.kanyideveloper.muviz.util.Constants
 import com.kanyideveloper.muviz.util.Resource
@@ -68,7 +66,7 @@ fun DetailsScreen(
 
     val details = produceState<Resource<MovieDetails>>(initialValue = Resource.Loading()){
         value = viewModel.getMovieDetails(filmType.filmId)
-    }
+    }.value
 
 /*    if (filmType.type == "Movies"){
 
@@ -81,18 +79,23 @@ fun DetailsScreen(
     // Include Film Genres
 
     Box {
-        FilmInfo(
-            scrollState = scrollState,
-            overview = details.value..overview.toString(),
-            releaseDate = details.releaseDate.toString(),
-            navigator = navigator
-        )
-        ProfileToolBar(
-            scrollState = scrollState,
-            posterUrl = "${Constants.IMAGE_BASE_UR}/${details.posterPath}",
-            filmName = details.title.toString(),
-            rating = 0.1f
-        )
+        if (details is Resource.Success){
+            FilmInfo(
+                scrollState = scrollState,
+                overview = details.data?.overview.toString(),
+                releaseDate = details.data?.releaseDate.toString(),
+                navigator = navigator
+            )
+            ProfileToolBar(
+                scrollState = scrollState,
+                posterUrl = "${Constants.IMAGE_BASE_UR}/${details.data?.posterPath}",
+                filmName = details.data?.title.toString(),
+                rating = details.data?.voteAverage?.toFloat()!!,
+                navigator = navigator
+            )
+        }else{
+            CircularProgressIndicator()
+        }
     }
 }
 
@@ -101,7 +104,8 @@ fun ProfileToolBar(
     scrollState: LazyListState,
     posterUrl: String,
     filmName: String,
-    rating: Float
+    rating: Float,
+    navigator: DestinationsNavigator
 ) {
     val imageHeight = AppBarExpendedHeight - AppBarCollapsedHeight
 
@@ -143,19 +147,6 @@ fun ProfileToolBar(
                     contentDescription = "Movie Banner"
                 )
 
-
-/*                Image(
-                    painter = painterResource(id = R.drawable.kings),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .height(imageHeight)
-                        .graphicsLayer {
-                            alpha = 1f - offsetProgress
-                        }
-                )*/
-
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -184,7 +175,11 @@ fun ProfileToolBar(
             .statusBarsPadding()
             .padding(horizontal = 10.dp)
     ) {
-        CircularBackButtons()
+        CircularBackButtons(
+            onClick = {
+                navigator.popBackStack()
+            }
+        )
         CircularFavoriteButtons()
     }
 }
@@ -196,6 +191,9 @@ fun FilmInfo(
     overview: String,
     navigator: DestinationsNavigator
 ) {
+
+    Spacer(modifier = Modifier.height(10.dp))
+
     LazyColumn(contentPadding = PaddingValues(top = AppBarExpendedHeight), state = scrollState) {
         item {
             Column(
@@ -252,12 +250,16 @@ fun FilmNameAndRating(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
+                modifier = Modifier
+                    .fillMaxWidth(0.83f),
                 text = filmName,
                 color = White,
-                fontSize = 18.sp,
+                fontSize = 17.sp,
                 fontWeight = FontWeight.Bold
             )
-            CircularProgressIndicator(
+            VoteAverageRatingIndicator(
+                modifier = Modifier
+                    .fillMaxWidth(0.17f),
                 percentage = rating
             )
         }
@@ -283,10 +285,15 @@ fun CircularBackButtons(
             contentColor = color
         )
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_chevron_left),
-            contentDescription = null
-        )
+        IconButton(onClick = {
+            onClick()
+        }) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_chevron_left),
+                tint = primaryPink,
+                contentDescription = null
+            )
+        }
     }
 }
 
@@ -318,9 +325,10 @@ fun CircularFavoriteButtons(
 }
 
 @Composable
-fun CircularProgressIndicator(
+fun VoteAverageRatingIndicator(
+    modifier: Modifier = Modifier,
     percentage: Float,
-    number: Int = 100,
+    number: Int = 10,
     fontSize: TextUnit = 16.sp,
     radius: Dp = 20.dp,
     color: Color = primaryPink,
@@ -355,7 +363,7 @@ fun CircularProgressIndicator(
             drawArc(
                 color = color,
                 startAngle = -90f,
-                sweepAngle = 360 * currentPercentage.value,
+                sweepAngle = (360 * (currentPercentage.value * 0.1)).toFloat(),
                 useCenter = false,
                 style = Stroke(strokeWidth.toPx(), cap = StrokeCap.Round)
             )
