@@ -1,11 +1,11 @@
 package com.kanyideveloper.muviz.screens.home
 
-import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kanyideveloper.muviz.data.remote.responses.Genre
 import com.kanyideveloper.muviz.data.remote.responses.Movie
+import com.kanyideveloper.muviz.data.remote.responses.MovieDetails
 import com.kanyideveloper.muviz.data.remote.responses.Series
 import com.kanyideveloper.muviz.data.repository.FilmsRepository
 import com.kanyideveloper.muviz.util.Resource
@@ -42,6 +42,9 @@ class HomeScreenViewModel @Inject constructor(
     private val _moviesGenres = mutableStateOf<List<Genre>>(emptyList())
     val moviesGenres: State<List<Genre>> = _moviesGenres
 
+    private val _moviesDetails :MutableState<MovieDetails> = mutableStateOf(MovieDetails(), neverEqualPolicy())
+    val moviesDetails: State<MovieDetails> = _moviesDetails
+
     private val _tvSeriesGenres = mutableStateOf<List<Genre>>(emptyList())
     val tvSeriesGenres: State<List<Genre>> = _tvSeriesGenres
 
@@ -76,7 +79,7 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     fun getPopularTvSeries(genreId: Int? = null, page: Int = 1, language: String = "en") {
-        isLoading.value = true
+        //isLoading.value = true
         viewModelScope.launch {
             when (val result = filmsRepository.getPopularTvSeries(page, language)) {
                 is Resource.Success -> {
@@ -85,11 +88,11 @@ class HomeScreenViewModel @Inject constructor(
                     } else {
                         result.data?.series!!
                     }
-                    isLoading.value = false
+                    //isLoading.value = false
                 }
                 is Resource.Error -> {
                     loadingError.value = result.message.toString()
-                    isLoading.value = false
+                    //isLoading.value = false
                 }
             }
         }

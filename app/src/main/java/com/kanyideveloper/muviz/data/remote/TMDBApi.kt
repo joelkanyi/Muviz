@@ -1,9 +1,8 @@
 package com.kanyideveloper.muviz.data.remote
 
+import com.kanyideveloper.muviz.BuildConfig.API_KEY
 import com.kanyideveloper.muviz.data.remote.responses.*
-import com.kanyideveloper.muviz.util.Constants.API_KEY
 import com.kanyideveloper.muviz.util.Constants.STARTING_PAGE_INDEX
-import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -16,9 +15,9 @@ interface TMDBApi {
         @Query("language") language: String = "en"
     ): MoviesResponse
 
-    @GET("movie/popular?api_key=d31c90f6e90f1993a5cbce70c8c53ce8")
+    @GET("movie/popular")
     suspend fun getPopularMovies(
-        /*@Query("api_key") apiKey: String = API_KEY,*/
+        @Query("api_key") apiKey: String = API_KEY,
 /*        @Query("page") page: Int = STARTING_PAGE_INDEX,
         @Query("language") language: String = "en"*/
     ): MoviesResponse
@@ -65,11 +64,11 @@ interface TMDBApi {
         @Query("language") language: String = "en"
     ): TvSeriesResponse
 
-    @GET("tv/popular?api_key=d31c90f6e90f1993a5cbce70c8c53ce8")
+    @GET("tv/popular")
     suspend fun getPopularTvSeries(
-/*        @Query("api_key") apiKey: String = API_KEY,
-        @Query("page") page: Int = STARTING_PAGE_INDEX,
-        @Query("language") language: String = "en"*/
+       @Query("api_key") apiKey: String = API_KEY,
+        /*  @Query("page") page: Int = STARTING_PAGE_INDEX,
+         @Query("language") language: String = "en"*/
     ): TvSeriesResponse
 
     @GET("tv/airing_today")
@@ -100,7 +99,7 @@ interface TMDBApi {
         @Query("language") language: String = "en"
     ): Credits
 
-    @GET("movie/{movie_id}/credits")
+    @GET("tv/{tv_id}/credits")
     suspend fun getTvSeriesCredits(
         @Path("tv_id") tvSeriesId: Int,
         @Query("api_key") apiKey: String = API_KEY,

@@ -23,11 +23,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.model.Film
 import com.kanyideveloper.muviz.presentation.components.StandardToolbar
-import com.kanyideveloper.muviz.screens.film_details.CircularProgressIndicator
 import com.kanyideveloper.muviz.ui.theme.Transparent
 import com.kanyideveloper.muviz.ui.theme.primaryDark
 import com.kanyideveloper.muviz.ui.theme.primaryGray
@@ -39,6 +37,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import androidx.compose.material.Card
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import com.kanyideveloper.muviz.screens.film_details.common.VoteAverageRatingIndicator
 
 @Destination
 @Composable
@@ -152,7 +151,7 @@ fun FilmDetails(
                     fontWeight = FontWeight.Light
                 )
             }
-            CircularProgressIndicator(
+            VoteAverageRatingIndicator(
                 percentage = 0.75f
             )
         }

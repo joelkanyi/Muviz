@@ -49,6 +49,49 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         return Resource.Success(response)
     }
 
+    suspend fun getMoviesDetails(movieId: Int, language: String = "en"): Resource<MovieDetails>{
+        val response = try {
+            api.getMovieDetails(movieId)
+        }catch (e: Exception){
+            return Resource.Error("Unknown error occurred")
+        }
+        Timber.d("Movie details: $response")
+        return Resource.Success(response)
+    }
+
+    suspend fun getTvSeriesDetails(tvId: Int, language: String = "en"): Resource<TvSeriesDetails>{
+        val response = try {
+            api.getTvSeriesDetails(tvId)
+        }catch (e: Exception){
+            return Resource.Error("Unknown error occurred")
+        }
+        Timber.d("Movie details: $response")
+        return Resource.Success(response)
+    }
+
+    suspend fun getMovieCasts(movieId: Int): Resource<Credits>{
+        val response = try {
+            api.getMovieCredits(movieId)
+        }catch (e: Exception){
+            return Resource.Error("Unknown error occurred")
+        }
+
+        Timber.d("Casts ${response.toString()}")
+        return Resource.Success(response)
+    }
+
+    suspend fun getTvSeriesCasts(tvId: Int): Resource<Credits>{
+        val response = try {
+            api.getTvSeriesCredits(tvId)
+        }catch (e: Exception){
+            return Resource.Error("Unknown error occurred")
+        }
+
+        Timber.d("Casts ${response.toString()}")
+        return Resource.Success(response)
+    }
+
+
 
 
 
