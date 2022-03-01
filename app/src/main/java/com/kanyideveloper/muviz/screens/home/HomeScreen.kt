@@ -53,9 +53,17 @@ fun HomeScreen(
     navigator: DestinationsNavigator,
     viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
-
+    val trendingMovies = viewModel.popularMovies
+    val upcomingMovies = viewModel.popularMovies
+    val topRatedMovies = viewModel.popularMovies
+    val nowPlayingMovies = viewModel.popularMovies
     val popularMovies = viewModel.popularMovies
-    val popularTvSeries = viewModel.popularTvSeries
+
+    val trendingTvSeries = viewModel.popularMovies
+    val onAirTvSeries = viewModel.popularMovies
+    val topRatedTvSeries = viewModel.popularMovies
+    val airingTodayTvSeries = viewModel.popularMovies
+    val popularTvSeries = viewModel.popularMovies
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -166,7 +174,7 @@ fun HomeScreen(
                     }
                     )
 
-                    if (viewModel.isLoading.value){
+                    if (viewModel.isLoadingPopularMovies.value){
                         CircularProgressIndicator(
                             modifier = Modifier,
                             color = primaryPink,
@@ -187,54 +195,158 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = "Top Rated", color = Color.White, fontSize = 18.sp)
             }
+
             item {
                 Spacer(modifier = Modifier.height(5.dp))
-                LazyRow(content = {
-                    items(10) {
+
+                if (viewModel.selectedOption.value == "Tv Shows") {
+                    items(popularTvSeries.value) { film ->
+
                         MovieItem(
                             cardModifier = Modifier
                                 .height(200.dp)
-                                .width(130.dp),
-                            imageUrl = IMAGE_BASE_URL
+                                .width(130.dp)
+                                .clickable {
+                                    val filmType = FilmType(viewModel.selectedOption.value, film.id)
+                                    navigator.navigate(TvSeriesDetailsScreenDestination(film.id))
+                                },
+                            imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
                         )
                     }
-                })
+                } else {
+                    items(popularMovies.value) { film ->
+
+                        MovieItem(
+                            cardModifier = Modifier
+                                .height(200.dp)
+                                .width(130.dp)
+                                .clickable {
+                                    val filmType = FilmType(viewModel.selectedOption.value, film.id)
+                                    navigator.navigate(MovieDetailsScreenDestination(film.id))
+                                },
+                            imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                        )
+                    }
+                }
             }
 
             item {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = "Upcoming", color = Color.White, fontSize = 18.sp)
             }
+
             item {
                 Spacer(modifier = Modifier.height(5.dp))
-                LazyRow(content = {
-                    items(10) {
+
+                if (viewModel.selectedOption.value == "Tv Shows") {
+                    items(popularTvSeries.value) { film ->
+
                         MovieItem(
                             cardModifier = Modifier
                                 .height(200.dp)
-                                .width(130.dp),
-                            imageUrl = IMAGE_BASE_URL
+                                .width(130.dp)
+                                .clickable {
+                                    val filmType = FilmType(viewModel.selectedOption.value, film.id)
+                                    navigator.navigate(TvSeriesDetailsScreenDestination(film.id))
+                                },
+                            imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
                         )
                     }
-                })
+                } else {
+                    items(popularMovies.value) { film ->
+
+                        MovieItem(
+                            cardModifier = Modifier
+                                .height(200.dp)
+                                .width(130.dp)
+                                .clickable {
+                                    val filmType = FilmType(viewModel.selectedOption.value, film.id)
+                                    navigator.navigate(MovieDetailsScreenDestination(film.id))
+                                },
+                            imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                        )
+                    }
+                }
             }
 
             item {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = "Now Playing", color = Color.White, fontSize = 18.sp)
             }
+
             item {
                 Spacer(modifier = Modifier.height(5.dp))
-                LazyRow(content = {
-                    items(10) {
+
+                if (viewModel.selectedOption.value == "Tv Shows") {
+                    items(popularTvSeries.value) { film ->
+
                         MovieItem(
                             cardModifier = Modifier
                                 .height(200.dp)
-                                .width(130.dp),
-                            imageUrl = IMAGE_BASE_URL
+                                .width(130.dp)
+                                .clickable {
+                                    val filmType = FilmType(viewModel.selectedOption.value, film.id)
+                                    navigator.navigate(TvSeriesDetailsScreenDestination(film.id))
+                                },
+                            imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
                         )
                     }
-                })
+                } else {
+                    items(popularMovies.value) { film ->
+
+                        MovieItem(
+                            cardModifier = Modifier
+                                .height(200.dp)
+                                .width(130.dp)
+                                .clickable {
+                                    val filmType = FilmType(viewModel.selectedOption.value, film.id)
+                                    navigator.navigate(MovieDetailsScreenDestination(film.id))
+                                },
+                            imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Popular", color = Color.White, fontSize = 18.sp)
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(5.dp))
+
+                if (viewModel.selectedOption.value == "Tv Shows") {
+                    items(popularTvSeries.value) { film ->
+
+                        MovieItem(
+                            cardModifier = Modifier
+                                .height(200.dp)
+                                .width(130.dp)
+                                .clickable {
+                                    val filmType = FilmType(viewModel.selectedOption.value, film.id)
+                                    navigator.navigate(TvSeriesDetailsScreenDestination(film.id))
+                                },
+                            imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
+                        )
+                    }
+                } else {
+                    items(popularMovies.value) { film ->
+
+                        MovieItem(
+                            cardModifier = Modifier
+                                .height(200.dp)
+                                .width(130.dp)
+                                .clickable {
+                                    val filmType = FilmType(viewModel.selectedOption.value, film.id)
+                                    navigator.navigate(MovieDetailsScreenDestination(film.id))
+                                },
+                            imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(10.dp))
             }
