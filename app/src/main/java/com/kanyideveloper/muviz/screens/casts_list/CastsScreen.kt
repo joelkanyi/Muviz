@@ -58,18 +58,25 @@ fun CastsScreen(
 
         Timber.d(credits.cast[0].profilePath)
 
-/*        LazyVerticalGrid(
+        LazyVerticalGrid(
             cells = GridCells.Fixed(2),
-            contentPadding = PaddingValues(8.dp)
+            contentPadding = PaddingValues(16.dp)
         ) {
             items(credits.cast) { cast ->
                 Timber.d(cast.toString())
+
+                val imageLink = if (cast.profilePath.equals("") || cast.profilePath == null){
+                    "https://pixy.org/src/9/94083.png"
+                }else{
+                    cast.profilePath
+                }
+
                 CastItem(
-                    size = 150.dp,
-                    castImageUrl = IMAGE_BASE_URL,*//*"${Constants.IMAGE_BASE_UR}/${cast.profilePath}"*//*
-                    castName = "cast.name"
+                    size = 170.dp,
+                    castImageUrl = "${Constants.IMAGE_BASE_UR}/$imageLink",
+                    castName = cast.name!!
                 )
             }
-        }*/
+        }
     }
 }

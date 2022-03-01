@@ -21,10 +21,11 @@ import com.kanyideveloper.muviz.screens.destinations.CastsScreenDestination
 import com.kanyideveloper.muviz.ui.theme.primaryPink
 import com.kanyideveloper.muviz.util.Constants
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import timber.log.Timber
 
 @Composable
 fun CastDetails(
-    credits: Credits,
+    credits: Credits?,
     navigator: DestinationsNavigator,
     modifier: Modifier = Modifier.fillMaxWidth()
 ) {
@@ -57,7 +58,9 @@ fun CastDetails(
                 )
 
                 IconButton(onClick = {
-                    if (credits.equals(null)){
+                    Timber.d("${credits == null}")
+
+                    if (credits == null){
                         return@IconButton
                     }
                     navigator.navigate(CastsScreenDestination(credits))
@@ -73,11 +76,11 @@ fun CastDetails(
 
 
         LazyRow(content = {
-            items(credits.cast) { cast ->
+            items(credits?.cast!!) { cast ->
                 CastItem(
                     size = 90.dp,
                     castImageUrl = "${Constants.IMAGE_BASE_UR}/${cast.profilePath}",
-                    castName = cast.name
+                    castName = cast.name!!
                 )
             }
         })
