@@ -7,7 +7,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.filled.Favorite
@@ -17,16 +17,12 @@ import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.*
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlin.math.min
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -44,8 +40,8 @@ import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.statusBarsPadding
 import com.kanyideveloper.muviz.R
+import com.kanyideveloper.muviz.data.remote.responses.Credits
 import com.kanyideveloper.muviz.data.remote.responses.MovieDetails
-import com.kanyideveloper.muviz.model.Cast
 import com.kanyideveloper.muviz.model.FilmType
 import com.kanyideveloper.muviz.screens.destinations.CastsScreenDestination
 import com.kanyideveloper.muviz.ui.theme.*
@@ -68,6 +64,10 @@ fun DetailsScreen(
         value = viewModel.getMovieDetails(filmType.filmId)
     }.value
 
+    val casts = produceState<Resource<Credits>>(initialValue = Resource.Loading()){
+        value = viewModel.getMovieCasts(filmType.filmId)
+    }.value
+
 /*    if (filmType.type == "Movies"){
 
     }else if (filmType.type == "Tv Shows"){
@@ -84,7 +84,8 @@ fun DetailsScreen(
                 scrollState = scrollState,
                 overview = details.data?.overview.toString(),
                 releaseDate = details.data?.releaseDate.toString(),
-                navigator = navigator
+                navigator = navigator,
+                casts = casts
             )
             ProfileToolBar(
                 scrollState = scrollState,
@@ -189,6 +190,7 @@ fun FilmInfo(
     scrollState: LazyListState,
     releaseDate: String,
     overview: String,
+    casts: Resource<Credits>,
     navigator: DestinationsNavigator
 ) {
 
@@ -227,7 +229,10 @@ fun FilmInfo(
             }
         }
         item {
-            CastDetails(navigator)
+            CastDetails(
+                casts,
+                navigator = navigator
+            )
         }
     }
 }
@@ -378,7 +383,11 @@ fun VoteAverageRatingIndicator(
 }
 
 @Composable
-fun CastDetails(navigator: DestinationsNavigator, modifier: Modifier = Modifier.fillMaxWidth()) {
+fun CastDetails(
+    casts: Resource<Credits>,
+    navigator: DestinationsNavigator,
+    modifier: Modifier = Modifier.fillMaxWidth()
+) {
     Column {
         Row(
             modifier = modifier,
@@ -419,28 +428,37 @@ fun CastDetails(navigator: DestinationsNavigator, modifier: Modifier = Modifier.
             }
         }
 
-        LazyRow(content = {
-            items(10) {
-                CastItem(
-                    painter = painterResource(id = R.drawable.charac),
-                    Cast("")
-                )
-            }
-        })
+        if (casts is Resource.Success){
+            LazyRow(content = {
+                items(casts.data?.cast!!) { cast ->
+                    CastItem(
+                        castImageUrl = "${Constants.IMAGE_BASE_UR}/${cast.profilePath}",
+                        castName = cast.name
+                    )
+                }
+            })
+        }
     }
 }
 
 @Composable
 fun CastItem(
-    painter: Painter,
-    cast: Cast
+    castName: String,
+    castImageUrl: String
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         Image(
-            painter = painter,
+            painter = rememberImagePainter(
+                data = castImageUrl,
+                builder = {
+                    placeholder(R.drawable.ic_placeholder)
+                    crossfade(true)
+                }
+            ),
             modifier = Modifier
                 .fillMaxSize()
                 .height(90.dp)
@@ -452,7 +470,7 @@ fun CastItem(
         )
 
         Text(
-            text = "Ralph Fiennes",
+            text = castName,
             color = lightGray,
             fontWeight = FontWeight.ExtraLight,
             fontSize = 12.sp

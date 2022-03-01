@@ -1,12 +1,11 @@
 package com.kanyideveloper.muviz.screens.film_details
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.kanyideveloper.muviz.data.remote.responses.Credits
 import com.kanyideveloper.muviz.data.remote.responses.MovieDetails
 import com.kanyideveloper.muviz.data.repository.FilmsRepository
 import com.kanyideveloper.muviz.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,5 +25,9 @@ private val filmsRepository: FilmsRepository
             return filmsRepository.getMoviesDetails(movieId)
            // }
         }
+
+    suspend fun getMovieCasts(movieId: Int): Resource<Credits>{
+        return filmsRepository.getMovieCasts(movieId)
+    }
 
 }

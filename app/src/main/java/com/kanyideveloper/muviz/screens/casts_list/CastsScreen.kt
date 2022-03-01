@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kanyideveloper.muviz.R
-import com.kanyideveloper.muviz.model.Cast
+import com.kanyideveloper.muviz.data.remote.responses.Cast
 import com.kanyideveloper.muviz.presentation.components.StandardToolbar
 import com.kanyideveloper.muviz.ui.theme.lightGray
 import com.ramcosta.composedestinations.annotation.Destination
@@ -53,10 +53,10 @@ fun CastsScreen(
             contentPadding = PaddingValues(8.dp)
         ) {
             items(10) {
-                CastItem(
+               /* CastItem(
                     painter = painterResource(id = R.drawable.charac),
-                    Cast("")
-                )
+                    ("")
+                )*/
             }
         }
     }

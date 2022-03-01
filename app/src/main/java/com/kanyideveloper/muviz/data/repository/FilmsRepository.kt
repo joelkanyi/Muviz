@@ -59,6 +59,17 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         return Resource.Success(response)
     }
 
+    suspend fun getMovieCasts(movieId: Int): Resource<Credits>{
+        val response = try {
+            api.getMovieCredits(movieId)
+        }catch (e: Exception){
+            return Resource.Error("Unknown error occurred")
+        }
+
+        Timber.d("Casts ${response.toString()}")
+        return Resource.Success(response)
+    }
+
 
 
 

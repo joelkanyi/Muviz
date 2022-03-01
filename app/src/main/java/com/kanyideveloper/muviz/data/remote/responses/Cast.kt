@@ -1,16 +1,30 @@
 package com.kanyideveloper.muviz.data.remote.responses
 
+import com.google.gson.annotations.SerializedName
+
 data class Cast(
+    @SerializedName("adult")
     val adult: Boolean,
-    val cast_id: Int,
+    @SerializedName("cast_id")
+    val castId: Int,
+    @SerializedName("character")
     val character: String,
-    val credit_id: String,
+    @SerializedName("credit_id")
+    val creditId: String,
+    @SerializedName("gender")
     val gender: Int,
+    @SerializedName("id")
     val id: Int,
-    val known_for_department: String,
+    @SerializedName("known_for_department")
+    val knownForDepartment: String,
+    @SerializedName("name")
     val name: String,
+    @SerializedName("order")
     val order: Int,
-    val original_name: String,
+    @SerializedName("original_name")
+    val originalName: String,
+    @SerializedName("popularity")
     val popularity: Double,
-    val profile_path: String
+    @SerializedName("profile_path")
+    val profilePath: String
 )
