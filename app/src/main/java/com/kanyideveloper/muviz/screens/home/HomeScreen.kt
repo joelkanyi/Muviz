@@ -53,17 +53,17 @@ fun HomeScreen(
     navigator: DestinationsNavigator,
     viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
-    val trendingMovies = viewModel.popularMovies
-    val upcomingMovies = viewModel.popularMovies
-    val topRatedMovies = viewModel.popularMovies
-    val nowPlayingMovies = viewModel.popularMovies
+    val trendingMovies = viewModel.trendingMovies
+    val upcomingMovies = viewModel.upcomingMovies
+    val topRatedMovies = viewModel.topRatedMovies
+    val nowPlayingMovies = viewModel.nowPlayingMovies
     val popularMovies = viewModel.popularMovies
 
-    val trendingTvSeries = viewModel.popularMovies
-    val onAirTvSeries = viewModel.popularMovies
-    val topRatedTvSeries = viewModel.popularMovies
-    val airingTodayTvSeries = viewModel.popularMovies
-    val popularTvSeries = viewModel.popularMovies
+    val trendingTvSeries = viewModel.trendingTvSeries
+    val onAirTvSeries = viewModel.onAirTvSeries
+    val topRatedTvSeries = viewModel.topRatedTvSeries
+    val airingTodayTvSeries = viewModel.airingTodayTvSeries
+    val popularTvSeries = viewModel.popularTvSeries
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -143,28 +143,26 @@ fun HomeScreen(
                     LazyRow(content = {
 
                         if (viewModel.selectedOption.value == "Tv Shows") {
-                            items(popularTvSeries.value) { film ->
+                            items(trendingTvSeries.value) { film ->
 
                                 MovieItem(
                                     cardModifier = Modifier
                                         .height(210.dp)
                                         .width(240.dp)
                                         .clickable {
-                                            val filmType = FilmType(viewModel.selectedOption.value, film.id)
                                             navigator.navigate(TvSeriesDetailsScreenDestination(film.id))
                                         },
                                     imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
                                 )
                             }
                         } else {
-                            items(popularMovies.value) { film ->
+                            items(trendingMovies.value) { film ->
 
                                 MovieItem(
                                     cardModifier = Modifier
                                         .height(200.dp)
                                         .width(230.dp)
                                         .clickable {
-                                            val filmType = FilmType(viewModel.selectedOption.value, film.id)
                                             navigator.navigate(MovieDetailsScreenDestination(film.id))
                                         },
                                     imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
@@ -174,7 +172,7 @@ fun HomeScreen(
                     }
                     )
 
-                    if (viewModel.isLoadingPopularMovies.value){
+                    if (viewModel.isLoadingTrendingMovies.value){
                         CircularProgressIndicator(
                             modifier = Modifier,
                             color = primaryPink,
@@ -199,35 +197,61 @@ fun HomeScreen(
             item {
                 Spacer(modifier = Modifier.height(5.dp))
 
-                if (viewModel.selectedOption.value == "Tv Shows") {
-                    items(popularTvSeries.value) { film ->
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(210.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    LazyRow(content = {
+                        if (viewModel.selectedOption.value == "Tv Shows") {
+                            items(topRatedTvSeries.value) { film ->
 
-                        MovieItem(
-                            cardModifier = Modifier
-                                .height(200.dp)
-                                .width(130.dp)
-                                .clickable {
-                                    val filmType = FilmType(viewModel.selectedOption.value, film.id)
-                                    navigator.navigate(TvSeriesDetailsScreenDestination(film.id))
-                                },
-                            imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
+                                MovieItem(
+                                    cardModifier = Modifier
+                                        .height(200.dp)
+                                        .width(130.dp)
+                                        .clickable {
+                                            navigator.navigate(TvSeriesDetailsScreenDestination(film.id))
+                                        },
+                                    imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
+                                )
+                            }
+                        } else {
+                            items(topRatedMovies.value) { film ->
+
+                                MovieItem(
+                                    cardModifier = Modifier
+                                        .height(200.dp)
+                                        .width(130.dp)
+                                        .clickable {
+                                            val filmType =
+                                                FilmType(viewModel.selectedOption.value, film.id)
+                                            navigator.navigate(MovieDetailsScreenDestination(film.id))
+                                        },
+                                    imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                )
+                            }
+                        }
+                    })
+
+                    if (viewModel.isLoadingTopRatedMovies.value){
+                        CircularProgressIndicator(
+                            modifier = Modifier,
+                            color = primaryPink,
+                            strokeWidth = 2.dp
                         )
                     }
-                } else {
-                    items(popularMovies.value) { film ->
 
-                        MovieItem(
-                            cardModifier = Modifier
-                                .height(200.dp)
-                                .width(130.dp)
-                                .clickable {
-                                    val filmType = FilmType(viewModel.selectedOption.value, film.id)
-                                    navigator.navigate(MovieDetailsScreenDestination(film.id))
-                                },
-                            imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                    if (viewModel.loadingError.value != null){
+                        Text(
+                            text = viewModel.loadingError.value,
+                            color = primaryPink
                         )
                     }
                 }
+
+                Spacer(modifier = Modifier.height(10.dp))
             }
 
             item {
@@ -238,35 +262,61 @@ fun HomeScreen(
             item {
                 Spacer(modifier = Modifier.height(5.dp))
 
-                if (viewModel.selectedOption.value == "Tv Shows") {
-                    items(popularTvSeries.value) { film ->
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(210.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    LazyRow(content = {
+                        if (viewModel.selectedOption.value == "Tv Shows") {
+                            items(onAirTvSeries.value) { film ->
 
-                        MovieItem(
-                            cardModifier = Modifier
-                                .height(200.dp)
-                                .width(130.dp)
-                                .clickable {
-                                    val filmType = FilmType(viewModel.selectedOption.value, film.id)
-                                    navigator.navigate(TvSeriesDetailsScreenDestination(film.id))
-                                },
-                            imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
+                                MovieItem(
+                                    cardModifier = Modifier
+                                        .height(200.dp)
+                                        .width(130.dp)
+                                        .clickable {
+                                            navigator.navigate(TvSeriesDetailsScreenDestination(film.id))
+                                        },
+                                    imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
+                                )
+                            }
+                        } else {
+                            items(upcomingMovies.value) { film ->
+
+                                MovieItem(
+                                    cardModifier = Modifier
+                                        .height(200.dp)
+                                        .width(130.dp)
+                                        .clickable {
+                                            val filmType =
+                                                FilmType(viewModel.selectedOption.value, film.id)
+                                            navigator.navigate(MovieDetailsScreenDestination(film.id))
+                                        },
+                                    imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                )
+                            }
+                        }
+                    })
+
+                    if (viewModel.isLoadingUpcomingMovies.value){
+                        CircularProgressIndicator(
+                            modifier = Modifier,
+                            color = primaryPink,
+                            strokeWidth = 2.dp
                         )
                     }
-                } else {
-                    items(popularMovies.value) { film ->
 
-                        MovieItem(
-                            cardModifier = Modifier
-                                .height(200.dp)
-                                .width(130.dp)
-                                .clickable {
-                                    val filmType = FilmType(viewModel.selectedOption.value, film.id)
-                                    navigator.navigate(MovieDetailsScreenDestination(film.id))
-                                },
-                            imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                    if (viewModel.loadingError.value != null){
+                        Text(
+                            text = viewModel.loadingError.value,
+                            color = primaryPink
                         )
                     }
                 }
+
+                Spacer(modifier = Modifier.height(10.dp))
             }
 
             item {
@@ -277,32 +327,56 @@ fun HomeScreen(
             item {
                 Spacer(modifier = Modifier.height(5.dp))
 
-                if (viewModel.selectedOption.value == "Tv Shows") {
-                    items(popularTvSeries.value) { film ->
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(210.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    LazyRow(content = {
+                        if (viewModel.selectedOption.value == "Tv Shows") {
+                            items(airingTodayTvSeries.value) { film ->
 
-                        MovieItem(
-                            cardModifier = Modifier
-                                .height(200.dp)
-                                .width(130.dp)
-                                .clickable {
-                                    val filmType = FilmType(viewModel.selectedOption.value, film.id)
-                                    navigator.navigate(TvSeriesDetailsScreenDestination(film.id))
-                                },
-                            imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
+                                MovieItem(
+                                    cardModifier = Modifier
+                                        .height(200.dp)
+                                        .width(130.dp)
+                                        .clickable {
+                                            navigator.navigate(TvSeriesDetailsScreenDestination(film.id))
+                                        },
+                                    imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
+                                )
+                            }
+                        } else {
+                            items(nowPlayingMovies.value) { film ->
+
+                                MovieItem(
+                                    cardModifier = Modifier
+                                        .height(200.dp)
+                                        .width(130.dp)
+                                        .clickable {
+                                            val filmType =
+                                                FilmType(viewModel.selectedOption.value, film.id)
+                                            navigator.navigate(MovieDetailsScreenDestination(film.id))
+                                        },
+                                    imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                )
+                            }
+                        }
+                    })
+
+                    if (viewModel.isLoadingNowPlayingMovies.value){
+                        CircularProgressIndicator(
+                            modifier = Modifier,
+                            color = primaryPink,
+                            strokeWidth = 2.dp
                         )
                     }
-                } else {
-                    items(popularMovies.value) { film ->
 
-                        MovieItem(
-                            cardModifier = Modifier
-                                .height(200.dp)
-                                .width(130.dp)
-                                .clickable {
-                                    val filmType = FilmType(viewModel.selectedOption.value, film.id)
-                                    navigator.navigate(MovieDetailsScreenDestination(film.id))
-                                },
-                            imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                    if (viewModel.loadingError.value != null){
+                        Text(
+                            text = viewModel.loadingError.value,
+                            color = primaryPink
                         )
                     }
                 }
@@ -318,32 +392,54 @@ fun HomeScreen(
             item {
                 Spacer(modifier = Modifier.height(5.dp))
 
-                if (viewModel.selectedOption.value == "Tv Shows") {
-                    items(popularTvSeries.value) { film ->
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(210.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    LazyRow(content = {
+                        if (viewModel.selectedOption.value == "Tv Shows") {
+                            items(popularTvSeries.value) { film ->
 
-                        MovieItem(
-                            cardModifier = Modifier
-                                .height(200.dp)
-                                .width(130.dp)
-                                .clickable {
-                                    val filmType = FilmType(viewModel.selectedOption.value, film.id)
-                                    navigator.navigate(TvSeriesDetailsScreenDestination(film.id))
-                                },
-                            imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
+                                MovieItem(
+                                    cardModifier = Modifier
+                                        .height(200.dp)
+                                        .width(130.dp)
+                                        .clickable {
+                                            navigator.navigate(TvSeriesDetailsScreenDestination(film.id))
+                                        },
+                                    imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
+                                )
+                            }
+                        } else {
+                            items(popularMovies.value) { film ->
+
+                                MovieItem(
+                                    cardModifier = Modifier
+                                        .height(200.dp)
+                                        .width(130.dp)
+                                        .clickable {
+                                            navigator.navigate(MovieDetailsScreenDestination(film.id))
+                                        },
+                                    imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                )
+                            }
+                        }
+                    })
+
+                    if (viewModel.isLoadingPopularMovies.value){
+                        CircularProgressIndicator(
+                            modifier = Modifier,
+                            color = primaryPink,
+                            strokeWidth = 2.dp
                         )
                     }
-                } else {
-                    items(popularMovies.value) { film ->
 
-                        MovieItem(
-                            cardModifier = Modifier
-                                .height(200.dp)
-                                .width(130.dp)
-                                .clickable {
-                                    val filmType = FilmType(viewModel.selectedOption.value, film.id)
-                                    navigator.navigate(MovieDetailsScreenDestination(film.id))
-                                },
-                            imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                    if (viewModel.loadingError.value != null){
+                        Text(
+                            text = viewModel.loadingError.value,
+                            color = primaryPink
                         )
                     }
                 }

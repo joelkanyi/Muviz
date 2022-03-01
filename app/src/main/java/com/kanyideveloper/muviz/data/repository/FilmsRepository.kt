@@ -15,7 +15,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         } catch (e: Exception) {
             return Resource.Error("Unknown error occurred")
         }
-        Timber.d("Response: ${response.results}")
+        Timber.d("Trending movies: ${response.results}")
         return Resource.Success(response)
     }
 
@@ -25,7 +25,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         } catch (e: Exception) {
             return Resource.Error("Unknown error occurred")
         }
-        Timber.d("Response: ${response.results}")
+        Timber.d("Upcoming movies: ${response.results}")
         return Resource.Success(response)
     }
 
@@ -35,7 +35,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         } catch (e: Exception) {
             return Resource.Error("Unknown error occurred")
         }
-        Timber.d("Response: ${response.results}")
+        Timber.d("Top rated movies: ${response.results}")
         return Resource.Success(response)
     }
 
@@ -45,7 +45,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         } catch (e: Exception) {
             return Resource.Error("Unknown error occurred")
         }
-        Timber.d("Response: ${response.results}")
+        Timber.d("Now playing movies: ${response.results}")
         return Resource.Success(response)
     }
 
@@ -55,7 +55,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         } catch (e: Exception) {
             return Resource.Error("Unknown error occurred")
         }
-        Timber.d("Response: ${response.results}")
+        Timber.d("Popular movies: ${response.results}")
         return Resource.Success(response)
     }
 
@@ -75,7 +75,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         } catch (e: Exception) {
             return Resource.Error("Unknown error occurred")
         }
-        Timber.d("Response: $response")
+        Timber.d("Movies genres: $response")
         return Resource.Success(response)
     }
 
@@ -86,7 +86,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
             return Resource.Error("Unknown error occurred")
         }
 
-        Timber.d("Casts ${response.toString()}")
+        Timber.d("Movie Casts ${response.toString()}")
         return Resource.Success(response)
     }
 
@@ -102,7 +102,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         } catch (e: Exception) {
             return Resource.Error("Unknown error occurred")
         }
-        Timber.d("Response: ${response.series}")
+        Timber.d("Trending series: ${response.series}")
         return Resource.Success(response)
     }
 
@@ -112,7 +112,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         } catch (e: Exception) {
             return Resource.Error("Unknown error occurred")
         }
-        Timber.d("Response: ${response.series}")
+        Timber.d("On air series: ${response.series}")
         return Resource.Success(response)
     }
 
@@ -122,7 +122,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         } catch (e: Exception) {
             return Resource.Error("Unknown error occurred")
         }
-        Timber.d("Response: ${response.series}")
+        Timber.d("Top rated series: ${response.series}")
         return Resource.Success(response)
     }
 
@@ -132,7 +132,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         } catch (e: Exception) {
             return Resource.Error("Unknown error occurred")
         }
-        Timber.d("Response: ${response.series}")
+        Timber.d("Airing today series: ${response.series}")
         return Resource.Success(response)
     }
 
@@ -142,7 +142,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         } catch (e: Exception) {
             return Resource.Error("Unknown error occurred")
         }
-        Timber.d("Response: ${response.series}")
+        Timber.d("Popular series: ${response.series}")
         return Resource.Success(response)
     }
 
@@ -152,7 +152,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         } catch (e: Exception) {
             return Resource.Error("Unknown error occurred")
         }
-        Timber.d("Movie details: $response")
+        Timber.d("Series details: $response")
         return Resource.Success(response)
     }
 
@@ -162,7 +162,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         } catch (e: Exception) {
             return Resource.Error("Unknown error occurred")
         }
-        Timber.d("Response: $response")
+        Timber.d("Series genres: $response")
         return Resource.Success(response)
     }
 
@@ -173,7 +173,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
             return Resource.Error("Unknown error occurred")
         }
 
-        Timber.d("Casts ${response.toString()}")
+        Timber.d("Series casts ${response.toString()}")
         return Resource.Success(response)
     }
 

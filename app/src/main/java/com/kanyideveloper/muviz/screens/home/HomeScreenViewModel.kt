@@ -91,9 +91,19 @@ class HomeScreenViewModel @Inject constructor(
     var loadingError = mutableStateOf("")
 
     init {
+        getTrendingMovies(null, 1, "en")
+        getNowPayingMovies(null, 1, "en")
+        getUpcomingMovies(null, 1, "en")
+        getTopRatedMovies(null, 1, "en")
         getPopularMovies(null, 1, "en")
         getPopularTvSeries(null, 1, "en")
         getMoviesGenres()
+
+        getAiringTodayTvSeries(null, 1, "en")
+        getTrendingTvSeries(null, 1, "en")
+        getOnTheAirTvSeries(null, 1, "en")
+        getTopRatedTvSeries(null, 1, "en")
+        getOnTheAirTvSeries(null, 1, "en")
         getSeriesGenres()
     }
 
