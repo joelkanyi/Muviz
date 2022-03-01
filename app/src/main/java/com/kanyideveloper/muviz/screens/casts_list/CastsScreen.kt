@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -18,17 +19,24 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.data.remote.responses.Cast
+import com.kanyideveloper.muviz.data.remote.responses.Credits
 import com.kanyideveloper.muviz.presentation.components.StandardToolbar
+import com.kanyideveloper.muviz.screens.commons.CastItem
 import com.kanyideveloper.muviz.ui.theme.lightGray
+import com.kanyideveloper.muviz.util.Constants
+import com.kanyideveloper.muviz.util.Constants.IMAGE_BASE_URL
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import timber.log.Timber
 
 @OptIn(ExperimentalFoundationApi::class)
 @Destination
 @Composable
 fun CastsScreen(
+    credits: Credits,
     navigator: DestinationsNavigator
 ) {
     Column(
@@ -48,48 +56,20 @@ fun CastsScreen(
             showBackArrow = true
         )
 
-        LazyVerticalGrid(
+        Timber.d(credits.cast[0].profilePath)
+
+/*        LazyVerticalGrid(
             cells = GridCells.Fixed(2),
             contentPadding = PaddingValues(8.dp)
         ) {
-            items(10) {
-               /* CastItem(
-                    painter = painterResource(id = R.drawable.charac),
-                    ("")
-                )*/
+            items(credits.cast) { cast ->
+                Timber.d(cast.toString())
+                CastItem(
+                    size = 150.dp,
+                    castImageUrl = IMAGE_BASE_URL,*//*"${Constants.IMAGE_BASE_UR}/${cast.profilePath}"*//*
+                    castName = "cast.name"
+                )
             }
-        }
-    }
-}
-
-
-@Composable
-fun CastItem(
-    painter: Painter,
-    cast: Cast
-) {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            painter = painter,
-            modifier = Modifier
-                .height(150.dp)
-                .width(150.dp)
-                .padding(8.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop,
-            contentDescription = "Character"
-        )
-
-        Text(
-            text = "Ralph Fiennes",
-            color = lightGray,
-            fontWeight = FontWeight.ExtraLight,
-            fontSize = 14.sp
-        )
-        
-        Spacer(modifier = Modifier.height(8.dp))
+        }*/
     }
 }

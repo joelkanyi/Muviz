@@ -43,11 +43,13 @@ import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.data.remote.responses.Credits
 import com.kanyideveloper.muviz.data.remote.responses.MovieDetails
 import com.kanyideveloper.muviz.model.FilmType
+import com.kanyideveloper.muviz.screens.commons.CastItem
 import com.kanyideveloper.muviz.screens.destinations.CastsScreenDestination
 import com.kanyideveloper.muviz.ui.theme.*
 import com.kanyideveloper.muviz.util.Constants
 import com.kanyideveloper.muviz.util.Resource
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import timber.log.Timber
 import kotlin.math.max
 
 @OptIn(ExperimentalAnimationApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
@@ -229,10 +231,12 @@ fun FilmInfo(
             }
         }
         item {
-            CastDetails(
-                casts,
-                navigator = navigator
-            )
+            if (casts is Resource.Success){
+                CastDetails(
+                    casts.data!!,
+                    navigator = navigator
+                )
+            }
         }
     }
 }
@@ -384,7 +388,7 @@ fun VoteAverageRatingIndicator(
 
 @Composable
 fun CastDetails(
-    casts: Resource<Credits>,
+    credits: Credits,
     navigator: DestinationsNavigator,
     modifier: Modifier = Modifier.fillMaxWidth()
 ) {
@@ -417,7 +421,10 @@ fun CastDetails(
                 )
 
                 IconButton(onClick = {
-                    navigator.navigate(CastsScreenDestination)
+                    if (credits.equals(null)){
+                        return@IconButton
+                    }
+                    navigator.navigate(CastsScreenDestination(credits))
                 }) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_chevron_right),
@@ -428,52 +435,15 @@ fun CastDetails(
             }
         }
 
-        if (casts is Resource.Success){
-            LazyRow(content = {
-                items(casts.data?.cast!!) { cast ->
-                    CastItem(
-                        castImageUrl = "${Constants.IMAGE_BASE_UR}/${cast.profilePath}",
-                        castName = cast.name
-                    )
-                }
-            })
-        }
-    }
-}
 
-@Composable
-fun CastItem(
-    castName: String,
-    castImageUrl: String
-) {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Image(
-            painter = rememberImagePainter(
-                data = castImageUrl,
-                builder = {
-                    placeholder(R.drawable.ic_placeholder)
-                    crossfade(true)
-                }
-            ),
-            modifier = Modifier
-                .fillMaxSize()
-                .height(90.dp)
-                .width(90.dp)
-                .padding(8.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop,
-            contentDescription = "Character"
-        )
-
-        Text(
-            text = castName,
-            color = lightGray,
-            fontWeight = FontWeight.ExtraLight,
-            fontSize = 12.sp
-        )
+        LazyRow(content = {
+            items(credits.cast) { cast ->
+                CastItem(
+                    size = 90.dp,
+                    castImageUrl = "${Constants.IMAGE_BASE_UR}/${cast.profilePath}",
+                    castName = cast.name
+                )
+            }
+        })
     }
 }

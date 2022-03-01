@@ -1,7 +1,10 @@
 package com.kanyideveloper.muviz.data.remote.responses
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Cast(
     @SerializedName("adult")
     val adult: Boolean,
@@ -27,4 +30,4 @@ data class Cast(
     val popularity: Double,
     @SerializedName("profile_path")
     val profilePath: String
-)
+) : Parcelable
