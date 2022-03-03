@@ -3,6 +3,7 @@ package com.kanyideveloper.muviz.data.repository
 import android.util.Log
 import com.kanyideveloper.muviz.data.remote.TMDBApi
 import com.kanyideveloper.muviz.data.remote.responses.*
+import com.kanyideveloper.muviz.data.remote.responses.debug.MultiSearchResponse
 import com.kanyideveloper.muviz.util.Resource
 import timber.log.Timber
 import javax.inject.Inject
@@ -174,6 +175,27 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         }
 
         Timber.d("Series casts ${response.toString()}")
+        return Resource.Success(response)
+    }
+
+    suspend fun multiSearch(queryParam: String): Resource<SearchMovieResponse> {
+        val response = try {
+            api.multiSearch(queryParam)
+        } catch (e: Exception) {
+            return Resource.Error("Unknown error occurred")
+        }
+
+        Timber.d("Series casts ${response.results}")
+        return Resource.Success(response)
+    }
+
+    suspend fun searchAll(queryParam: String) : Resource<MultiSearchResponse>{
+        val response = try {
+            api.searchAll(queryParam)
+        }catch (e: Exception){
+            return Resource.Error(e.localizedMessage)
+        }
+        Timber.d("All Searches result: ${response.results}")
         return Resource.Success(response)
     }
 

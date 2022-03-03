@@ -2,6 +2,7 @@ package com.kanyideveloper.muviz.data.remote
 
 import com.kanyideveloper.muviz.BuildConfig.API_KEY
 import com.kanyideveloper.muviz.data.remote.responses.*
+import com.kanyideveloper.muviz.data.remote.responses.debug.MultiSearchResponse
 import com.kanyideveloper.muviz.util.Constants.STARTING_PAGE_INDEX
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -117,4 +118,19 @@ interface TMDBApi {
         @Query("api_key") apiKey: String = API_KEY,
         @Query("language") language: String = "en"
     ): GenresResponse
+
+    @GET("search/movie")
+    suspend fun multiSearch(
+        @Query("query") query: String,
+        @Query("api_key") apiKey: String = API_KEY,
+        //@Query("page") page: Int = 1,
+        //@Query("year") year: Int?,
+        //@Query("primary_release_year") releaseYear: Int?
+    ): SearchMovieResponse
+
+    @GET("search/multi")
+    suspend fun searchAll(
+        @Query("query") query: String,
+        @Query("api_key") apiKey: String = API_KEY
+    ) : MultiSearchResponse
 }

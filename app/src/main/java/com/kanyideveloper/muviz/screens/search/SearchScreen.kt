@@ -2,25 +2,43 @@ package com.kanyideveloper.muviz.screens.search
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material.Card
-import androidx.compose.material.Text
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberImagePainter
 import com.kanyideveloper.muviz.R
-import com.kanyideveloper.muviz.model.Film
+import com.kanyideveloper.muviz.data.remote.responses.Search
+import com.kanyideveloper.muviz.data.remote.responses.debug.Result
 import com.kanyideveloper.muviz.presentation.components.StandardToolbar
+import com.kanyideveloper.muviz.ui.theme.primaryDarkVariant
+import com.kanyideveloper.muviz.ui.theme.primaryGray
+import com.kanyideveloper.muviz.util.Constants
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -28,8 +46,11 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun SearchScreen(
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    viewModel: SearchViewModel = hiltViewModel()
 ) {
+    val searchResult = viewModel.searchResult.value
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -47,26 +68,97 @@ fun SearchScreen(
             showBackArrow = true
         )
 
-        LazyColumn(
-            contentPadding = PaddingValues(8.dp)
+        SearchBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(67.dp)
+                .padding(8.dp),
+            onSearch = { searchParam ->
+                viewModel.searchAll(searchParam)
+            }
+        )
+
+        Box(
+            Modifier
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
         ) {
-            items(10) {
-                SearchItem(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    painter = painterResource(id = R.drawable.chosen),
-                    Film("")
-                )
+            LazyColumn(
+                contentPadding = PaddingValues(8.dp)
+            ) {
+                items(searchResult) { search ->
+                    SearchItem(
+                        search,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    )
+                }
+            }
+
+            if (viewModel.isLoading.value) {
+                CircularProgressIndicator()
             }
         }
     }
 }
 
 @Composable
-fun SearchItem(
+fun SearchBar(
     modifier: Modifier = Modifier,
-    painter: Painter,
-    film: Film
+    onSearch: (String) -> Unit = {}
+) {
+    var text by remember {
+        mutableStateOf("")
+    }
+    TextField(
+        value = text,
+        onValueChange = {
+            text = it
+        },
+        placeholder = {
+            Text(
+                text = "Search...",
+                color = primaryGray
+            )
+        },
+        modifier = modifier
+            .fillMaxWidth()
+            .shadow(4.dp, CircleShape)
+            .background(Color.Transparent, CircleShape),
+        shape = MaterialTheme.shapes.medium,
+        keyboardOptions = KeyboardOptions(
+            capitalization = KeyboardCapitalization.Words,
+            autoCorrect = true,
+            keyboardType = KeyboardType.Text,
+        ),
+        colors = TextFieldDefaults.textFieldColors(
+            textColor = Color.White,
+            disabledTextColor = Color.Transparent,
+            backgroundColor = primaryDarkVariant,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent
+        ),
+        textStyle = TextStyle(color = Color.White),
+        maxLines = 1,
+        singleLine = true,
+        trailingIcon = {
+            IconButton(onClick = { onSearch(text) }) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    tint = primaryGray,
+                    contentDescription = null
+                )
+            }
+        },
+    )
+}
+
+
+@Composable
+fun SearchItem(
+    search: Result,
+    modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier.padding(4.dp)
@@ -78,7 +170,13 @@ fun SearchItem(
                     .fillMaxHeight()
             ) {
                 Image(
-                    painter = painter,
+                    painter = rememberImagePainter(
+                        data = "${Constants.IMAGE_BASE_UR}/${search.posterPath}",
+                        builder = {
+                            placeholder(R.drawable.ic_placeholder)
+                            crossfade(true)
+                        }
+                    ),
                     modifier = Modifier
                         .fillMaxSize()
                         .height(110.dp),
@@ -92,22 +190,26 @@ fun SearchItem(
                     .fillMaxWidth(0.7f)
                     .padding(8.dp)
             ) {
-                Row(
-                    modifier = modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+
+                Text(
+                    text = (search.name ?: search.originalName ?: search.originalTitle
+                    ?: "No title provided"),
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 13.sp
+                )
+
+
+                Spacer(modifier = Modifier.height(5.dp))
+
+                (search.firstAirDate ?: search.releaseDate)?.let {
                     Text(
-                        text = "The Chosen",
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp
-                    )
-                    Text(
-                        text = "27/07/2022",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Right,
+                        text = it,
                         color = Color.White,
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 11.sp
+                        fontSize = 10.sp
                     )
                 }
 
@@ -116,13 +218,13 @@ fun SearchItem(
                 LazyRow(
                     modifier = modifier.fillMaxWidth(),
                 ) {
-                    items(3){
+                    items(3) {
                         Text(
                             modifier = modifier,
-                            text = "Adventure . ",
+                            text = search.genreIds.toString(),
                             color = Color.White,
                             fontWeight = FontWeight.Light,
-                            fontSize = 10.sp
+                            fontSize = 9.sp
                         )
                     }
                 }
@@ -131,12 +233,12 @@ fun SearchItem(
 
                 Text(
                     modifier = modifier,
-                    text = "The tale of an extraordinary family, the Madrigals, who live hidden in the mountains of Colombia",
+                    text = search.overview ?: "No description",
                     color = Color.White,
                     fontWeight = FontWeight.Light,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
-                    fontSize = 12.sp
+                    fontSize = 11.sp
                 )
             }
         }
