@@ -3,6 +3,8 @@ package com.kanyideveloper.muviz.screens.home
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.kanyideveloper.muviz.data.remote.responses.Genre
 import com.kanyideveloper.muviz.data.remote.responses.Movie
 import com.kanyideveloper.muviz.data.remote.responses.MovieDetails
@@ -10,6 +12,7 @@ import com.kanyideveloper.muviz.data.remote.responses.Series
 import com.kanyideveloper.muviz.data.repository.FilmsRepository
 import com.kanyideveloper.muviz.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -91,7 +94,7 @@ class HomeScreenViewModel @Inject constructor(
     var loadingError = mutableStateOf("")
 
     init {
-        getTrendingMovies(null, 1, "en")
+        //getTrendingMovies(null, 1, "en")
         getNowPayingMovies(null, 1, "en")
         getUpcomingMovies(null, 1, "en")
         getTopRatedMovies(null, 1, "en")
@@ -110,7 +113,12 @@ class HomeScreenViewModel @Inject constructor(
     /**
      * Movies
      */
-    fun getTrendingMovies(genreId: Int? = null, page: Int = 1, language: String = "en") {
+
+
+
+    fun trendingMovies() : Flow<PagingData<Movie>> = filmsRepository.getTrendingMoviesThisWeek().cachedIn(viewModelScope)
+
+/*    fun getTrendingMovies(genreId: Int? = null, page: Int = 1, language: String = "en") {
         isLoadingTrendingMovies.value = true
         viewModelScope.launch {
             when (val result = filmsRepository.getTrendingMoviesThisWeek(page, language)) {
@@ -128,7 +136,7 @@ class HomeScreenViewModel @Inject constructor(
                 }
             }
         }
-    }
+    }*/
 
     fun getUpcomingMovies(genreId: Int? = null, page: Int = 1, language: String = "en") {
         isLoadingUpcomingMovies.value = true

@@ -30,7 +30,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.kanyideveloper.muviz.R
+import com.kanyideveloper.muviz.data.remote.responses.Movie
 import com.kanyideveloper.muviz.model.FilmType
 import com.kanyideveloper.muviz.screens.commons.MovieItem
 import com.kanyideveloper.muviz.presentation.components.StandardToolbar
@@ -53,6 +57,9 @@ fun HomeScreen(
     navigator: DestinationsNavigator,
     viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
+
+    val tm: LazyPagingItems<Movie> = viewModel.trendingMovies().collectAsLazyPagingItems()
+
     val trendingMovies = viewModel.trendingMovies
     val upcomingMovies = viewModel.upcomingMovies
     val topRatedMovies = viewModel.topRatedMovies
@@ -156,16 +163,15 @@ fun HomeScreen(
                                 )
                             }
                         } else {
-                            items(trendingMovies.value) { film ->
-
+                            items(tm) { film ->
                                 MovieItem(
                                     cardModifier = Modifier
                                         .height(200.dp)
                                         .width(230.dp)
                                         .clickable {
-                                            navigator.navigate(MovieDetailsScreenDestination(film.id))
+                                            navigator.navigate(MovieDetailsScreenDestination(film?.id!!))
                                         },
-                                    imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                    imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
                                 )
                             }
                         }
