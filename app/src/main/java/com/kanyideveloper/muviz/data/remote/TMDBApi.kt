@@ -10,10 +10,10 @@ import retrofit2.http.Query
 
 interface TMDBApi {
     @GET("trending/movie/day")
-    suspend fun getTrendingMovies(
+    suspend fun getTrendingTodayMovies(
+        @Query("page") page: Int = STARTING_PAGE_INDEX,
         @Query("api_key") apiKey: String = API_KEY,
-/*        @Query("page") page: Int = STARTING_PAGE_INDEX,
-        @Query("language") language: String = "en"*/
+        @Query("language") language: String = "en"
     ): MoviesResponse
 
     @GET("movie/popular")

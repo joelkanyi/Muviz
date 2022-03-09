@@ -1,23 +1,27 @@
 package com.kanyideveloper.muviz.data.repository
 
 import android.util.Log
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import com.kanyideveloper.muviz.data.paging.TrendingMoviesSource
 import com.kanyideveloper.muviz.data.remote.TMDBApi
 import com.kanyideveloper.muviz.data.remote.responses.*
 import com.kanyideveloper.muviz.data.remote.responses.debug.MultiSearchResponse
 import com.kanyideveloper.muviz.util.Resource
+import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 import javax.inject.Inject
 
 class FilmsRepository @Inject constructor(private val api: TMDBApi) {
     // Movies
-    suspend fun getTrendingMoviesThisWeek(page: Int, language: String): Resource<MoviesResponse> {
-        val response = try {
-            api.getTrendingMovies()
-        } catch (e: Exception) {
-            return Resource.Error("Unknown error occurred")
-        }
-        Timber.d("Trending movies: ${response.results}")
-        return Resource.Success(response)
+    fun getTrendingMoviesThisWeek(genreId: Int? = null): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            pagingSourceFactory = {
+                TrendingMoviesSource(api, genreId)
+            }
+        ).flow
     }
 
     suspend fun getUpcomingMovies(page: Int, language: String): Resource<MoviesResponse> {

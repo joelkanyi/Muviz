@@ -27,10 +27,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.kanyideveloper.muviz.R
+import com.kanyideveloper.muviz.data.remote.responses.Movie
 import com.kanyideveloper.muviz.model.FilmType
 import com.kanyideveloper.muviz.screens.commons.MovieItem
 import com.kanyideveloper.muviz.presentation.components.StandardToolbar
@@ -46,6 +52,8 @@ import com.kanyideveloper.muviz.util.Constants.IMAGE_BASE_UR
 import com.kanyideveloper.muviz.util.Constants.IMAGE_BASE_URL
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import retrofit2.HttpException
+import java.io.IOException
 
 @Destination(start = true)
 @Composable
@@ -53,7 +61,11 @@ fun HomeScreen(
     navigator: DestinationsNavigator,
     viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
-    val trendingMovies = viewModel.trendingMovies
+
+    val testoo = viewModel.testo.value.collectAsLazyPagingItems()
+
+    //val tm: LazyPagingItems<Movie> = viewModel.trendingMovies(null).collectAsLazyPagingItems()
+
     val upcomingMovies = viewModel.upcomingMovies
     val topRatedMovies = viewModel.topRatedMovies
     val nowPlayingMovies = viewModel.nowPlayingMovies
@@ -128,7 +140,7 @@ fun HomeScreen(
             }
 
             item {
-                Text(text = "Trending this week", color = Color.White, fontSize = 18.sp)
+                Text(text = "Trending today", color = Color.White, fontSize = 18.sp)
 
                 Spacer(modifier = Modifier.height(8.dp))
             }
@@ -156,35 +168,60 @@ fun HomeScreen(
                                 )
                             }
                         } else {
-                            items(trendingMovies.value) { film ->
-
+                            items(testoo) { film ->
                                 MovieItem(
                                     cardModifier = Modifier
                                         .height(200.dp)
                                         .width(230.dp)
                                         .clickable {
-                                            navigator.navigate(MovieDetailsScreenDestination(film.id))
+                                            navigator.navigate(MovieDetailsScreenDestination(film?.id!!))
                                         },
-                                    imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                    imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
+                                )
+                            }
+                        }
+
+                        if (testoo.loadState.append == LoadState.Loading) {
+                            item {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .wrapContentWidth(Alignment.CenterHorizontally)
                                 )
                             }
                         }
                     }
                     )
 
-                    if (viewModel.isLoadingTrendingMovies.value){
-                        CircularProgressIndicator(
-                            modifier = Modifier,
-                            color = primaryPink,
-                            strokeWidth = 2.dp
-                        )
-                    }
-
-                    if (viewModel.loadingError.value != null){
-                        Text(
-                            text = viewModel.loadingError.value,
-                            color = primaryPink
-                        )
+                    testoo.apply {
+                        loadState
+                        when (loadState.refresh) {
+                            is LoadState.Loading -> {
+                                CircularProgressIndicator(
+                                    modifier = Modifier,
+                                    color = primaryPink,
+                                    strokeWidth = 2.dp
+                                )
+                            }
+                            is LoadState.Error -> {
+                                val e = testoo.loadState.refresh as LoadState.Error
+                                Text(
+                                    text = when (e.error) {
+                                        is HttpException -> {
+                                            "Oops, something went wrong!"
+                                        }
+                                        is IOException -> {
+                                            "Couldn't reach server, check your internet connection!"
+                                        }
+                                        else -> {
+                                            "Unknown error occurred"
+                                        }
+                                    },
+                                    textAlign = TextAlign.Center,
+                                    color = primaryPink
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -235,7 +272,7 @@ fun HomeScreen(
                         }
                     })
 
-                    if (viewModel.isLoadingTopRatedMovies.value){
+                    if (viewModel.isLoadingTopRatedMovies.value) {
                         CircularProgressIndicator(
                             modifier = Modifier,
                             color = primaryPink,
@@ -243,7 +280,7 @@ fun HomeScreen(
                         )
                     }
 
-                    if (viewModel.loadingError.value != null){
+                    if (viewModel.loadingError.value != null) {
                         Text(
                             text = viewModel.loadingError.value,
                             color = primaryPink
@@ -300,7 +337,7 @@ fun HomeScreen(
                         }
                     })
 
-                    if (viewModel.isLoadingUpcomingMovies.value){
+                    if (viewModel.isLoadingUpcomingMovies.value) {
                         CircularProgressIndicator(
                             modifier = Modifier,
                             color = primaryPink,
@@ -308,7 +345,7 @@ fun HomeScreen(
                         )
                     }
 
-                    if (viewModel.loadingError.value != null){
+                    if (viewModel.loadingError.value != null) {
                         Text(
                             text = viewModel.loadingError.value,
                             color = primaryPink
@@ -365,7 +402,7 @@ fun HomeScreen(
                         }
                     })
 
-                    if (viewModel.isLoadingNowPlayingMovies.value){
+                    if (viewModel.isLoadingNowPlayingMovies.value) {
                         CircularProgressIndicator(
                             modifier = Modifier,
                             color = primaryPink,
@@ -373,7 +410,7 @@ fun HomeScreen(
                         )
                     }
 
-                    if (viewModel.loadingError.value != null){
+                    if (viewModel.loadingError.value != null) {
                         Text(
                             text = viewModel.loadingError.value,
                             color = primaryPink
@@ -428,7 +465,7 @@ fun HomeScreen(
                         }
                     })
 
-                    if (viewModel.isLoadingPopularMovies.value){
+                    if (viewModel.isLoadingPopularMovies.value) {
                         CircularProgressIndicator(
                             modifier = Modifier,
                             color = primaryPink,
@@ -436,7 +473,7 @@ fun HomeScreen(
                         )
                     }
 
-                    if (viewModel.loadingError.value != null){
+                    if (viewModel.loadingError.value != null) {
                         Text(
                             text = viewModel.loadingError.value,
                             color = primaryPink
@@ -537,7 +574,7 @@ fun Genres(
                     )
                     .clickable {
                         viewModel.setGenre(genre.name)
-                        viewModel.getPopularMovies(genre.id)
+                        viewModel.trendingMovies(genre.id)
                     }
                     .background(
                         if (genre.name == viewModel.selectedGenre.value) {
