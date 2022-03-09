@@ -32,24 +32,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.kanyideveloper.muviz.R
-import com.kanyideveloper.muviz.data.remote.responses.Movie
-import com.kanyideveloper.muviz.model.FilmType
 import com.kanyideveloper.muviz.screens.commons.MovieItem
 import com.kanyideveloper.muviz.presentation.components.StandardToolbar
 import com.kanyideveloper.muviz.screens.destinations.MovieDetailsScreenDestination
 import com.kanyideveloper.muviz.screens.destinations.SearchScreenDestination
 import com.kanyideveloper.muviz.screens.destinations.TvSeriesDetailsScreenDestination
-import com.kanyideveloper.muviz.screens.film_details.series.TvSeriesDetailsScreen
 import com.kanyideveloper.muviz.ui.theme.lightGray
 import com.kanyideveloper.muviz.ui.theme.primaryDark
 import com.kanyideveloper.muviz.ui.theme.primaryGray
 import com.kanyideveloper.muviz.ui.theme.primaryPink
 import com.kanyideveloper.muviz.util.Constants.IMAGE_BASE_UR
-import com.kanyideveloper.muviz.util.Constants.IMAGE_BASE_URL
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import retrofit2.HttpException
@@ -62,20 +57,17 @@ fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
 
-    val testoo = viewModel.testo.value.collectAsLazyPagingItems()
+    val trendingMovies = viewModel.trendingMovies.value.collectAsLazyPagingItems()
+    val upcomingMovies = viewModel.upcomingMovies.value.collectAsLazyPagingItems()
+    val topRatedMovies = viewModel.topRatedMovies.value.collectAsLazyPagingItems()
+    val nowPlayingMovies = viewModel.nowPlayingMovies.value.collectAsLazyPagingItems()
+    val popularMovies = viewModel.popularMovies.value.collectAsLazyPagingItems()
 
-    //val tm: LazyPagingItems<Movie> = viewModel.trendingMovies(null).collectAsLazyPagingItems()
-
-    val upcomingMovies = viewModel.upcomingMovies
-    val topRatedMovies = viewModel.topRatedMovies
-    val nowPlayingMovies = viewModel.nowPlayingMovies
-    val popularMovies = viewModel.popularMovies
-
-    val trendingTvSeries = viewModel.trendingTvSeries
-    val onAirTvSeries = viewModel.onAirTvSeries
-    val topRatedTvSeries = viewModel.topRatedTvSeries
-    val airingTodayTvSeries = viewModel.airingTodayTvSeries
-    val popularTvSeries = viewModel.popularTvSeries
+    val trendingTvSeries = viewModel.trendingTvSeries.value.collectAsLazyPagingItems()
+    val onAirTvSeries = viewModel.onAirTvSeries.value.collectAsLazyPagingItems()
+    val topRatedTvSeries = viewModel.topRatedTvSeries.value.collectAsLazyPagingItems()
+    val airingTodayTvSeries = viewModel.airingTodayTvSeries.value.collectAsLazyPagingItems()
+    val popularTvSeries = viewModel.popularTvSeries.value.collectAsLazyPagingItems()
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -155,20 +147,20 @@ fun HomeScreen(
                     LazyRow(content = {
 
                         if (viewModel.selectedOption.value == "Tv Shows") {
-                            items(trendingTvSeries.value) { film ->
+                            items(trendingTvSeries) { film ->
 
                                 MovieItem(
                                     cardModifier = Modifier
                                         .height(210.dp)
                                         .width(240.dp)
                                         .clickable {
-                                            navigator.navigate(TvSeriesDetailsScreenDestination(film.id))
+                                            navigator.navigate(TvSeriesDetailsScreenDestination(film?.id!!))
                                         },
-                                    imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
+                                    imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
                                 )
                             }
                         } else {
-                            items(testoo) { film ->
+                            items(trendingMovies) { film ->
                                 MovieItem(
                                     cardModifier = Modifier
                                         .height(200.dp)
@@ -181,7 +173,7 @@ fun HomeScreen(
                             }
                         }
 
-                        if (testoo.loadState.append == LoadState.Loading) {
+                        if (trendingMovies.loadState.append == LoadState.Loading) {
                             item {
                                 CircularProgressIndicator(
                                     modifier = Modifier
@@ -193,7 +185,7 @@ fun HomeScreen(
                     }
                     )
 
-                    testoo.apply {
+                    trendingMovies.apply {
                         loadState
                         when (loadState.refresh) {
                             is LoadState.Loading -> {
@@ -204,7 +196,7 @@ fun HomeScreen(
                                 )
                             }
                             is LoadState.Error -> {
-                                val e = testoo.loadState.refresh as LoadState.Error
+                                val e = trendingMovies.loadState.refresh as LoadState.Error
                                 Text(
                                     text = when (e.error) {
                                         is HttpException -> {
@@ -242,49 +234,74 @@ fun HomeScreen(
                 ) {
                     LazyRow(content = {
                         if (viewModel.selectedOption.value == "Tv Shows") {
-                            items(topRatedTvSeries.value) { film ->
+                            items(topRatedTvSeries) { film ->
 
                                 MovieItem(
                                     cardModifier = Modifier
                                         .height(200.dp)
                                         .width(130.dp)
                                         .clickable {
-                                            navigator.navigate(TvSeriesDetailsScreenDestination(film.id))
+                                            navigator.navigate(TvSeriesDetailsScreenDestination(film?.id!!))
                                         },
-                                    imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
+                                    imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
                                 )
                             }
                         } else {
-                            items(topRatedMovies.value) { film ->
+                            items(topRatedMovies) { film ->
 
                                 MovieItem(
                                     cardModifier = Modifier
                                         .height(200.dp)
                                         .width(130.dp)
                                         .clickable {
-                                            val filmType =
-                                                FilmType(viewModel.selectedOption.value, film.id)
-                                            navigator.navigate(MovieDetailsScreenDestination(film.id))
+                                            navigator.navigate(MovieDetailsScreenDestination(film?.id!!))
                                         },
-                                    imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                    imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
                                 )
                             }
                         }
-                    })
 
-                    if (viewModel.isLoadingTopRatedMovies.value) {
-                        CircularProgressIndicator(
-                            modifier = Modifier,
-                            color = primaryPink,
-                            strokeWidth = 2.dp
-                        )
+                        if (topRatedMovies.loadState.append == LoadState.Loading) {
+                            item {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .wrapContentWidth(Alignment.CenterHorizontally)
+                                )
+                            }
+                        }
                     }
+                    )
 
-                    if (viewModel.loadingError.value != null) {
-                        Text(
-                            text = viewModel.loadingError.value,
-                            color = primaryPink
-                        )
+                    topRatedMovies.apply {
+                        loadState
+                        when (loadState.refresh) {
+                            is LoadState.Loading -> {
+                                CircularProgressIndicator(
+                                    modifier = Modifier,
+                                    color = primaryPink,
+                                    strokeWidth = 2.dp
+                                )
+                            }
+                            is LoadState.Error -> {
+                                val e = topRatedMovies.loadState.refresh as LoadState.Error
+                                Text(
+                                    text = when (e.error) {
+                                        is HttpException -> {
+                                            "Oops, something went wrong!"
+                                        }
+                                        is IOException -> {
+                                            "Couldn't reach server, check your internet connection!"
+                                        }
+                                        else -> {
+                                            "Unknown error occurred"
+                                        }
+                                    },
+                                    textAlign = TextAlign.Center,
+                                    color = primaryPink
+                                )
+                            }
+                        }
                     }
                 }
 
@@ -307,49 +324,73 @@ fun HomeScreen(
                 ) {
                     LazyRow(content = {
                         if (viewModel.selectedOption.value == "Tv Shows") {
-                            items(onAirTvSeries.value) { film ->
+                            items(onAirTvSeries) { film ->
 
                                 MovieItem(
                                     cardModifier = Modifier
                                         .height(200.dp)
                                         .width(130.dp)
                                         .clickable {
-                                            navigator.navigate(TvSeriesDetailsScreenDestination(film.id))
+                                            navigator.navigate(MovieDetailsScreenDestination(film?.id!!))
                                         },
-                                    imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
+                                    imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
                                 )
                             }
                         } else {
-                            items(upcomingMovies.value) { film ->
+                            items(upcomingMovies) { film ->
 
                                 MovieItem(
                                     cardModifier = Modifier
                                         .height(200.dp)
                                         .width(130.dp)
                                         .clickable {
-                                            val filmType =
-                                                FilmType(viewModel.selectedOption.value, film.id)
-                                            navigator.navigate(MovieDetailsScreenDestination(film.id))
+                                            navigator.navigate(MovieDetailsScreenDestination(film?.id!!))
                                         },
-                                    imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                    imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
                                 )
                             }
                         }
-                    })
-
-                    if (viewModel.isLoadingUpcomingMovies.value) {
-                        CircularProgressIndicator(
-                            modifier = Modifier,
-                            color = primaryPink,
-                            strokeWidth = 2.dp
-                        )
+                        if (upcomingMovies.loadState.append == LoadState.Loading) {
+                            item {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .wrapContentWidth(Alignment.CenterHorizontally)
+                                )
+                            }
+                        }
                     }
+                    )
 
-                    if (viewModel.loadingError.value != null) {
-                        Text(
-                            text = viewModel.loadingError.value,
-                            color = primaryPink
-                        )
+                    upcomingMovies.apply {
+                        loadState
+                        when (loadState.refresh) {
+                            is LoadState.Loading -> {
+                                CircularProgressIndicator(
+                                    modifier = Modifier,
+                                    color = primaryPink,
+                                    strokeWidth = 2.dp
+                                )
+                            }
+                            is LoadState.Error -> {
+                                val e = upcomingMovies.loadState.refresh as LoadState.Error
+                                Text(
+                                    text = when (e.error) {
+                                        is HttpException -> {
+                                            "Oops, something went wrong!"
+                                        }
+                                        is IOException -> {
+                                            "Couldn't reach server, check your internet connection!"
+                                        }
+                                        else -> {
+                                            "Unknown error occurred"
+                                        }
+                                    },
+                                    textAlign = TextAlign.Center,
+                                    color = primaryPink
+                                )
+                            }
+                        }
                     }
                 }
 
@@ -372,49 +413,72 @@ fun HomeScreen(
                 ) {
                     LazyRow(content = {
                         if (viewModel.selectedOption.value == "Tv Shows") {
-                            items(airingTodayTvSeries.value) { film ->
+                            items(airingTodayTvSeries) { film ->
 
                                 MovieItem(
                                     cardModifier = Modifier
                                         .height(200.dp)
                                         .width(130.dp)
                                         .clickable {
-                                            navigator.navigate(TvSeriesDetailsScreenDestination(film.id))
+                                            navigator.navigate(MovieDetailsScreenDestination(film?.id!!))
                                         },
-                                    imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
+                                    imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
                                 )
                             }
                         } else {
-                            items(nowPlayingMovies.value) { film ->
+                            items(nowPlayingMovies) { film ->
 
                                 MovieItem(
                                     cardModifier = Modifier
                                         .height(200.dp)
                                         .width(130.dp)
                                         .clickable {
-                                            val filmType =
-                                                FilmType(viewModel.selectedOption.value, film.id)
-                                            navigator.navigate(MovieDetailsScreenDestination(film.id))
+                                            navigator.navigate(MovieDetailsScreenDestination(film?.id!!))
                                         },
-                                    imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                    imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
+                                )
+                            }
+                        }
+                        if (nowPlayingMovies.loadState.append == LoadState.Loading) {
+                            item {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .wrapContentWidth(Alignment.CenterHorizontally)
                                 )
                             }
                         }
                     })
 
-                    if (viewModel.isLoadingNowPlayingMovies.value) {
-                        CircularProgressIndicator(
-                            modifier = Modifier,
-                            color = primaryPink,
-                            strokeWidth = 2.dp
-                        )
-                    }
-
-                    if (viewModel.loadingError.value != null) {
-                        Text(
-                            text = viewModel.loadingError.value,
-                            color = primaryPink
-                        )
+                    nowPlayingMovies.apply {
+                        loadState
+                        when (loadState.refresh) {
+                            is LoadState.Loading -> {
+                                CircularProgressIndicator(
+                                    modifier = Modifier,
+                                    color = primaryPink,
+                                    strokeWidth = 2.dp
+                                )
+                            }
+                            is LoadState.Error -> {
+                                val e = nowPlayingMovies.loadState.refresh as LoadState.Error
+                                Text(
+                                    text = when (e.error) {
+                                        is HttpException -> {
+                                            "Oops, something went wrong!"
+                                        }
+                                        is IOException -> {
+                                            "Couldn't reach server, check your internet connection!"
+                                        }
+                                        else -> {
+                                            "Unknown error occurred"
+                                        }
+                                    },
+                                    textAlign = TextAlign.Center,
+                                    color = primaryPink
+                                )
+                            }
+                        }
                     }
                 }
 
@@ -437,47 +501,72 @@ fun HomeScreen(
                 ) {
                     LazyRow(content = {
                         if (viewModel.selectedOption.value == "Tv Shows") {
-                            items(popularTvSeries.value) { film ->
+                            items(popularTvSeries) { film ->
 
                                 MovieItem(
                                     cardModifier = Modifier
                                         .height(200.dp)
                                         .width(130.dp)
                                         .clickable {
-                                            navigator.navigate(TvSeriesDetailsScreenDestination(film.id))
+                                            navigator.navigate(MovieDetailsScreenDestination(film?.id!!))
                                         },
-                                    imageUrl = "$IMAGE_BASE_UR/${film.poster_path}"
+                                    imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
                                 )
                             }
                         } else {
-                            items(popularMovies.value) { film ->
+                            items(popularMovies) { film ->
 
                                 MovieItem(
                                     cardModifier = Modifier
                                         .height(200.dp)
                                         .width(130.dp)
                                         .clickable {
-                                            navigator.navigate(MovieDetailsScreenDestination(film.id))
+                                            navigator.navigate(MovieDetailsScreenDestination(film?.id!!))
                                         },
-                                    imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                    imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
+                                )
+                            }
+                        }
+                        if (popularMovies.loadState.append == LoadState.Loading) {
+                            item {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .wrapContentWidth(Alignment.CenterHorizontally)
                                 )
                             }
                         }
                     })
 
-                    if (viewModel.isLoadingPopularMovies.value) {
-                        CircularProgressIndicator(
-                            modifier = Modifier,
-                            color = primaryPink,
-                            strokeWidth = 2.dp
-                        )
-                    }
-
-                    if (viewModel.loadingError.value != null) {
-                        Text(
-                            text = viewModel.loadingError.value,
-                            color = primaryPink
-                        )
+                    popularMovies.apply {
+                        loadState
+                        when (loadState.refresh) {
+                            is LoadState.Loading -> {
+                                CircularProgressIndicator(
+                                    modifier = Modifier,
+                                    color = primaryPink,
+                                    strokeWidth = 2.dp
+                                )
+                            }
+                            is LoadState.Error -> {
+                                val e = popularMovies.loadState.refresh as LoadState.Error
+                                Text(
+                                    text = when (e.error) {
+                                        is HttpException -> {
+                                            "Oops, something went wrong!"
+                                        }
+                                        is IOException -> {
+                                            "Couldn't reach server, check your internet connection!"
+                                        }
+                                        else -> {
+                                            "Unknown error occurred"
+                                        }
+                                    },
+                                    textAlign = TextAlign.Center,
+                                    color = primaryPink
+                                )
+                            }
+                        }
                     }
                 }
 
@@ -574,7 +663,7 @@ fun Genres(
                     )
                     .clickable {
                         viewModel.setGenre(genre.name)
-                        viewModel.trendingMovies(genre.id)
+                        viewModel.getTrendingMovies(genre.id)
                     }
                     .background(
                         if (genre.name == viewModel.selectedGenre.value) {

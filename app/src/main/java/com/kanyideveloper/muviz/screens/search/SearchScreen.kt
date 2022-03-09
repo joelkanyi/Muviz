@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -31,16 +30,21 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import coil.compose.rememberImagePainter
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.data.remote.responses.Search
-import com.kanyideveloper.muviz.data.remote.responses.debug.Result
 import com.kanyideveloper.muviz.presentation.components.StandardToolbar
 import com.kanyideveloper.muviz.ui.theme.primaryDarkVariant
 import com.kanyideveloper.muviz.ui.theme.primaryGray
+import com.kanyideveloper.muviz.ui.theme.primaryPink
 import com.kanyideveloper.muviz.util.Constants
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import retrofit2.HttpException
+import java.io.IOException
 
 @OptIn(ExperimentalFoundationApi::class)
 @Destination
@@ -49,7 +53,7 @@ fun SearchScreen(
     navigator: DestinationsNavigator,
     viewModel: SearchViewModel = hiltViewModel()
 ) {
-    val searchResult = viewModel.searchResult.value
+    val searchResult = viewModel.searchSearch.value.collectAsLazyPagingItems()
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -92,11 +96,49 @@ fun SearchScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                     )
+
+                }
+
+                if (searchResult.loadState.append == LoadState.Loading) {
+                    item {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.CenterHorizontally)
+                        )
+                    }
                 }
             }
 
-            if (viewModel.isLoading.value) {
-                CircularProgressIndicator()
+            searchResult.apply {
+                loadState
+                when (loadState.refresh) {
+                    is LoadState.Loading -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier,
+                            color = primaryPink,
+                            strokeWidth = 2.dp
+                        )
+                    }
+                    is LoadState.Error -> {
+                        val e = searchResult.loadState.refresh as LoadState.Error
+                        Text(
+                            text = when (e.error) {
+                                is HttpException -> {
+                                    "Oops, something went wrong!"
+                                }
+                                is IOException -> {
+                                    "Couldn't reach server, check your internet connection!"
+                                }
+                                else -> {
+                                    "Unknown error occurred"
+                                }
+                            },
+                            textAlign = TextAlign.Center,
+                            color = primaryPink
+                        )
+                    }
+                }
             }
         }
     }
@@ -157,7 +199,7 @@ fun SearchBar(
 
 @Composable
 fun SearchItem(
-    search: Result,
+    search: Search?,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -171,7 +213,7 @@ fun SearchItem(
             ) {
                 Image(
                     painter = rememberImagePainter(
-                        data = "${Constants.IMAGE_BASE_UR}/${search.posterPath}",
+                        data = "${Constants.IMAGE_BASE_UR}/${search?.posterPath}",
                         builder = {
                             placeholder(R.drawable.ic_placeholder)
                             crossfade(true)
@@ -192,7 +234,7 @@ fun SearchItem(
             ) {
 
                 Text(
-                    text = (search.name ?: search.originalName ?: search.originalTitle
+                    text = (search?.name ?: search?.originalName ?: search?.originalTitle
                     ?: "No title provided"),
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
@@ -202,7 +244,7 @@ fun SearchItem(
 
                 Spacer(modifier = Modifier.height(5.dp))
 
-                (search.firstAirDate ?: search.releaseDate)?.let {
+                (search?.firstAirDate ?: search?.releaseDate)?.let {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Right,
@@ -221,7 +263,7 @@ fun SearchItem(
                     items(3) {
                         Text(
                             modifier = modifier,
-                            text = search.genreIds.toString(),
+                            text = search?.genreIds.toString(),
                             color = Color.White,
                             fontWeight = FontWeight.Light,
                             fontSize = 9.sp
@@ -233,7 +275,7 @@ fun SearchItem(
 
                 Text(
                     modifier = modifier,
-                    text = search.overview ?: "No description",
+                    text = search?.overview ?: "No description",
                     color = Color.White,
                     fontWeight = FontWeight.Light,
                     maxLines = 3,
