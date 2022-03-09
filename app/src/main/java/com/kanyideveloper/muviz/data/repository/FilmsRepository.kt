@@ -15,31 +15,14 @@ import javax.inject.Inject
 
 class FilmsRepository @Inject constructor(private val api: TMDBApi) {
     // Movies
-    fun getTrendingMoviesThisWeek(): Flow<PagingData<Movie>> {
+    fun getTrendingMoviesThisWeek(genreId: Int? = null): Flow<PagingData<Movie>> {
         return Pager(
             config = PagingConfig(enablePlaceholders = false, pageSize = 27),
             pagingSourceFactory = {
-                TrendingMoviesSource(api)
+                TrendingMoviesSource(api, genreId)
             }
         ).flow
-/*        val response = try {
-            api.getTrendingMovies()
-        } catch (e: Exception) {
-            return Resource.Error("Unknown error occurred")
-        }
-        Timber.d("Trending movies: ${response.results}")
-        return Resource.Success(response)*/
     }
-
-    /*
-    *     fun getCharacter() : Flow<PagingData<CharacterData>> {
-        return Pager(
-            config = PagingConfig(enablePlaceholders = false, pageSize = 30),
-            pagingSourceFactory = {
-                CharacterPagingSource(retrofitService)
-            }
-        ).flow
-    }*/
 
     suspend fun getUpcomingMovies(page: Int, language: String): Resource<MoviesResponse> {
         val response = try {

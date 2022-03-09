@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.filter
 import com.kanyideveloper.muviz.data.remote.responses.Genre
 import com.kanyideveloper.muviz.data.remote.responses.Movie
 import com.kanyideveloper.muviz.data.remote.responses.MovieDetails
@@ -13,6 +15,9 @@ import com.kanyideveloper.muviz.data.repository.FilmsRepository
 import com.kanyideveloper.muviz.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -93,6 +98,10 @@ class HomeScreenViewModel @Inject constructor(
 
     var loadingError = mutableStateOf("")
 
+
+    private var _testo = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
+    val testo: State<Flow<PagingData<Movie>>> = _testo
+
     init {
         //getTrendingMovies(null, 1, "en")
         getNowPayingMovies(null, 1, "en")
@@ -108,6 +117,8 @@ class HomeScreenViewModel @Inject constructor(
         getTopRatedTvSeries(null, 1, "en")
         getOnTheAirTvSeries(null, 1, "en")
         getSeriesGenres()
+
+        trendingMovies(null)
     }
 
     /**
@@ -115,8 +126,20 @@ class HomeScreenViewModel @Inject constructor(
      */
 
 
+    fun trendingMovies(genreId: Int?) {
+        viewModelScope.launch {
+            _testo.value = if (genreId != null){
+                filmsRepository.getTrendingMoviesThisWeek(genreId).map { pagingData ->
+                    pagingData.filter {
+                        it.genreIds.contains(genreId)
+                    }
+                }.cachedIn(viewModelScope)
+            }else{
+                filmsRepository.getTrendingMoviesThisWeek(genreId).cachedIn(viewModelScope)
+            }
+        }
+    }
 
-    fun trendingMovies() : Flow<PagingData<Movie>> = filmsRepository.getTrendingMoviesThisWeek().cachedIn(viewModelScope)
 
 /*    fun getTrendingMovies(genreId: Int? = null, page: Int = 1, language: String = "en") {
         isLoadingTrendingMovies.value = true
