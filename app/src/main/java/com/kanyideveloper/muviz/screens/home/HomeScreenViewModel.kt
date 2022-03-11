@@ -83,18 +83,18 @@ class HomeScreenViewModel @Inject constructor(
 
     init {
         getTrendingMovies(null)
-/*        getNowPayingMovies(null)
+        getNowPayingMovies(null)
         getUpcomingMovies(null)
         getTopRatedMovies(null)
         getPopularMovies(null)
-        getPopularTvSeries(null)*/
+        getPopularTvSeries(null)
         getMoviesGenres()
 
-/*        getAiringTodayTvSeries(null)
+        getAiringTodayTvSeries(null)
         getTrendingTvSeries(null)
         getOnTheAirTvSeries(null)
         getTopRatedTvSeries(null)
-        getOnTheAirTvSeries(null)*/
+        getOnTheAirTvSeries(null)
         getSeriesGenres()
     }
 
@@ -104,7 +104,11 @@ class HomeScreenViewModel @Inject constructor(
     fun getTrendingMovies(genreId: Int?) {
         viewModelScope.launch {
             _trendingMovies.value = if (genreId != null) {
-                filmsRepository.getTrendingMoviesThisWeek().cachedIn(viewModelScope)
+                filmsRepository.getTrendingMoviesThisWeek().map { pagingData ->
+                    pagingData.filter {
+                        it.genreIds.contains(genreId)
+                    }
+                }.cachedIn(viewModelScope)
             } else {
                 filmsRepository.getTrendingMoviesThisWeek().cachedIn(viewModelScope)
             }

@@ -7,7 +7,7 @@ import com.kanyideveloper.muviz.data.remote.responses.Movie
 import retrofit2.HttpException
 import java.io.IOException
 
-class TopRatedMoviesSource(private val api: TMDBApi, private val genreId: Int?) :
+class TopRatedMoviesSource(private val api: TMDBApi) :
     PagingSource<Int, Movie>() {
     override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
         return state.anchorPosition
@@ -18,15 +18,10 @@ class TopRatedMoviesSource(private val api: TMDBApi, private val genreId: Int?) 
             val nextPage = params.key ?: 1
             val trendingMoviesList = api.getTrendingTodayMovies(nextPage)
             LoadResult.Page(
-                data = if (genreId == null) {
-                    trendingMoviesList.results
-                } else {
-                    trendingMoviesList.results.filter {
-                        it.genreIds.contains(genreId)
-                    }
-                },
+                data = trendingMoviesList.searches
+                ,
                 prevKey = if (nextPage == 1) null else nextPage - 1,
-                nextKey = if (trendingMoviesList.results.isEmpty()) null else trendingMoviesList.page + 1
+                nextKey = if (trendingMoviesList.searches.isEmpty()) null else trendingMoviesList.page + 1
             )
         } catch (exception: IOException) {
             return LoadResult.Error(exception)

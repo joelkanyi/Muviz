@@ -131,12 +131,12 @@ fun HomeScreen(
                 )
             }
 
-            item {
+            item(content = {
                 Text(text = "Trending today", color = Color.White, fontSize = 18.sp)
 
                 Spacer(modifier = Modifier.height(8.dp))
-            }
-            item {
+            })
+            item(content = {
                 Spacer(modifier = Modifier.height(5.dp))
                 Box(
                     Modifier
@@ -213,14 +213,17 @@ fun HomeScreen(
                                     color = primaryPink
                                 )
                             }
+                            else -> {
+                                Unit
+                            }
                         }
                     }
                 }
-            }
+            })
 
             item {
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Top Rated", color = Color.White, fontSize = 18.sp)
+                Text(text = "Popular", color = Color.White, fontSize = 18.sp)
             }
 
             item {
@@ -232,9 +235,9 @@ fun HomeScreen(
                         .height(210.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    LazyRow(content = {
+                    LazyRow {
                         if (viewModel.selectedOption.value == "Tv Shows") {
-                            items(topRatedTvSeries) { film ->
+                            items(popularTvSeries) { film ->
 
                                 MovieItem(
                                     cardModifier = Modifier
@@ -247,7 +250,7 @@ fun HomeScreen(
                                 )
                             }
                         } else {
-                            items(topRatedMovies) { film ->
+                            items(popularMovies) { film ->
 
                                 MovieItem(
                                     cardModifier = Modifier
@@ -261,7 +264,7 @@ fun HomeScreen(
                             }
                         }
 
-                        if (topRatedMovies.loadState.append == LoadState.Loading) {
+                        if (popularMovies.loadState.append == LoadState.Loading) {
                             item {
                                 CircularProgressIndicator(
                                     modifier = Modifier
@@ -271,9 +274,8 @@ fun HomeScreen(
                             }
                         }
                     }
-                    )
 
-                    topRatedMovies.apply {
+                    popularMovies.apply {
                         loadState
                         when (loadState.refresh) {
                             is LoadState.Loading -> {
@@ -284,7 +286,7 @@ fun HomeScreen(
                                 )
                             }
                             is LoadState.Error -> {
-                                val e = topRatedMovies.loadState.refresh as LoadState.Error
+                                val e = popularMovies.loadState.refresh as LoadState.Error
                                 Text(
                                     text = when (e.error) {
                                         is HttpException -> {
@@ -301,6 +303,9 @@ fun HomeScreen(
                                     color = primaryPink
                                 )
                             }
+                            else -> {
+                                Unit
+                            }
                         }
                     }
                 }
@@ -310,7 +315,15 @@ fun HomeScreen(
 
             item {
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Upcoming", color = Color.White, fontSize = 18.sp)
+                Text(
+                    text = if (viewModel.selectedOption.value == "Tv Shows") {
+                        "On Air"
+                    } else {
+                        "Upcoming"
+                    },
+                    color = Color.White,
+                    fontSize = 18.sp
+                )
             }
 
             item {
@@ -399,7 +412,15 @@ fun HomeScreen(
 
             item {
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Now Playing", color = Color.White, fontSize = 18.sp)
+                Text(
+                    text = if (viewModel.selectedOption.value == "Tv Shows") {
+                        "Airing today"
+                    } else {
+                        "Now playing"
+                    },
+                    color = Color.White,
+                    fontSize = 18.sp
+                )
             }
 
             item {
@@ -487,7 +508,11 @@ fun HomeScreen(
 
             item {
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Popular", color = Color.White, fontSize = 18.sp)
+                Text(
+                    text = "Top rated",
+                    color = Color.White,
+                    fontSize = 18.sp
+                )
             }
 
             item {
@@ -501,7 +526,7 @@ fun HomeScreen(
                 ) {
                     LazyRow(content = {
                         if (viewModel.selectedOption.value == "Tv Shows") {
-                            items(popularTvSeries) { film ->
+                            items(topRatedTvSeries) { film ->
 
                                 MovieItem(
                                     cardModifier = Modifier
@@ -514,7 +539,7 @@ fun HomeScreen(
                                 )
                             }
                         } else {
-                            items(popularMovies) { film ->
+                            items(topRatedMovies) { film ->
 
                                 MovieItem(
                                     cardModifier = Modifier
@@ -527,7 +552,7 @@ fun HomeScreen(
                                 )
                             }
                         }
-                        if (popularMovies.loadState.append == LoadState.Loading) {
+                        if (topRatedMovies.loadState.append == LoadState.Loading) {
                             item {
                                 CircularProgressIndicator(
                                     modifier = Modifier
@@ -538,7 +563,7 @@ fun HomeScreen(
                         }
                     })
 
-                    popularMovies.apply {
+                    topRatedMovies.apply {
                         loadState
                         when (loadState.refresh) {
                             is LoadState.Loading -> {
@@ -549,7 +574,7 @@ fun HomeScreen(
                                 )
                             }
                             is LoadState.Error -> {
-                                val e = popularMovies.loadState.refresh as LoadState.Error
+                                val e = topRatedMovies.loadState.refresh as LoadState.Error
                                 Text(
                                     text = when (e.error) {
                                         is HttpException -> {
@@ -662,8 +687,21 @@ fun Genres(
                         ),
                     )
                     .clickable {
-                        viewModel.setGenre(genre.name)
-                        viewModel.getTrendingMovies(genre.id)
+                        if (viewModel.selectedOption.value == "Movies") {
+                            viewModel.setGenre(genre.name)
+                            viewModel.getTrendingMovies(genre.id)
+                            viewModel.getTopRatedMovies(genre.id)
+                            viewModel.getUpcomingMovies(genre.id)
+                            viewModel.getNowPayingMovies(genre.id)
+                            viewModel.getPopularMovies(genre.id)
+                        } else if (viewModel.selectedOption.value == "Tv Shows") {
+                            viewModel.setGenre(genre.name)
+                            viewModel.getTrendingTvSeries(genre.id)
+                            viewModel.getTopRatedTvSeries(genre.id)
+                            viewModel.getAiringTodayTvSeries(genre.id)
+                            viewModel.getOnTheAirTvSeries(genre.id)
+                            viewModel.getPopularTvSeries(genre.id)
+                        }
                     }
                     .background(
                         if (genre.name == viewModel.selectedGenre.value) {

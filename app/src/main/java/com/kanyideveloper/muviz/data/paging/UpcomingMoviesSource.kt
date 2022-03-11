@@ -4,7 +4,6 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.kanyideveloper.muviz.data.remote.TMDBApi
 import com.kanyideveloper.muviz.data.remote.responses.Movie
-import com.kanyideveloper.muviz.data.remote.responses.Series
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -19,9 +18,9 @@ class UpcomingMoviesSource(private val api: TMDBApi) :
             val nextPage = params.key ?: 1
             val trendingMoviesList = api.getUpcomingMovies(nextPage)
             LoadResult.Page(
-                data = trendingMoviesList.results,
+                data = trendingMoviesList.searches,
                 prevKey = if (nextPage == 1) null else nextPage - 1,
-                nextKey = if (trendingMoviesList.results.isEmpty()) null else trendingMoviesList.page + 1
+                nextKey = if (trendingMoviesList.searches.isEmpty()) null else trendingMoviesList.page + 1
             )
         } catch (exception: IOException) {
             return LoadResult.Error(exception)

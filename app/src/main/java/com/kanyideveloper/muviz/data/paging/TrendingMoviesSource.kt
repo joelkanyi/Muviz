@@ -5,6 +5,7 @@ import androidx.paging.PagingState
 import com.kanyideveloper.muviz.data.remote.TMDBApi
 import com.kanyideveloper.muviz.data.remote.responses.Movie
 import retrofit2.HttpException
+import timber.log.Timber
 import java.io.IOException
 
 class TrendingMoviesSource(private val api: TMDBApi) :
@@ -17,10 +18,11 @@ class TrendingMoviesSource(private val api: TMDBApi) :
         return try {
             val nextPage = params.key ?: 1
             val trendingMoviesList = api.getTrendingTodayMovies(nextPage)
+            Timber.d("trending movies list : ${trendingMoviesList.searches}")
             LoadResult.Page(
-                data = trendingMoviesList.results,
+                data = trendingMoviesList.searches,
                 prevKey = if (nextPage == 1) null else nextPage - 1,
-                nextKey = if (trendingMoviesList.results.isEmpty()) null else trendingMoviesList.page + 1
+                nextKey = if (trendingMoviesList.searches.isEmpty()) null else trendingMoviesList.page + 1
             )
         } catch (exception: IOException) {
             return LoadResult.Error(exception)
