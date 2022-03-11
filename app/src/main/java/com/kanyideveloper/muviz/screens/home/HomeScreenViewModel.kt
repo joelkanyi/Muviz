@@ -174,7 +174,7 @@ class HomeScreenViewModel @Inject constructor(
 
     private fun getMoviesGenres() {
         viewModelScope.launch {
-            when (val result = filmsRepository.getMoviesGenres("en")) {
+            when (val result = filmsRepository.getMoviesGenres()) {
                 is Resource.Success -> {
                     _moviesGenres.value = result.data?.genres!!
                 }
@@ -260,7 +260,7 @@ class HomeScreenViewModel @Inject constructor(
 
     private fun getSeriesGenres() {
         viewModelScope.launch {
-            when (val result = filmsRepository.getSeriesGenres("en")) {
+            when (val result = filmsRepository.getSeriesGenres()) {
                 is Resource.Success -> {
                     _tvSeriesGenres.value = result.data?.genres!!
                 }
