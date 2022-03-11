@@ -1,4 +1,4 @@
-package com.kanyideveloper.muviz.data.remote.responses
+package com.kanyideveloper.muviz.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName

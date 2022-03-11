@@ -134,4 +134,7 @@ dependencies {
 
     // Paging Compose
     implementation "androidx.paging:paging-compose:1.0.0-alpha14"
+
+    // Swipe to refresh
+    implementation "com.google.accompanist:accompanist-swiperefresh:0.24.3-alpha"
 }

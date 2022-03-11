@@ -5,18 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.filter
-import com.kanyideveloper.muviz.data.remote.responses.Genre
-import com.kanyideveloper.muviz.data.remote.responses.Movie
-import com.kanyideveloper.muviz.data.remote.responses.MovieDetails
-import com.kanyideveloper.muviz.data.remote.responses.Series
+import com.kanyideveloper.muviz.model.Genre
+import com.kanyideveloper.muviz.model.Movie
+import com.kanyideveloper.muviz.model.Series
 import com.kanyideveloper.muviz.data.repository.FilmsRepository
 import com.kanyideveloper.muviz.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -44,206 +41,140 @@ class HomeScreenViewModel @Inject constructor(
     /**
      * Movies states
      */
-    private val _trendingMovies = mutableStateOf<List<Movie>>(emptyList())
-    val trendingMovies: State<List<Movie>> = _trendingMovies
+    private var _trendingMovies = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
+    val trendingMovies: State<Flow<PagingData<Movie>>> = _trendingMovies
 
-    private val _upcomingMovies = mutableStateOf<List<Movie>>(emptyList())
-    val upcomingMovies: State<List<Movie>> = _upcomingMovies
+    private val _upcomingMovies = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
+    val upcomingMovies: State<Flow<PagingData<Movie>>> = _upcomingMovies
 
-    private val _topRatedMovies = mutableStateOf<List<Movie>>(emptyList())
-    val topRatedMovies: State<List<Movie>> = _topRatedMovies
+    private val _topRatedMovies = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
+    val topRatedMovies: State<Flow<PagingData<Movie>>> = _topRatedMovies
 
-    private val _nowPlayingMovies = mutableStateOf<List<Movie>>(emptyList())
-    val nowPlayingMovies: State<List<Movie>> = _nowPlayingMovies
+    private val _nowPlayingMovies = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
+    val nowPlayingMovies: State<Flow<PagingData<Movie>>> = _nowPlayingMovies
 
-    private val _popularMovies = mutableStateOf<List<Movie>>(emptyList())
-    val popularMovies: State<List<Movie>> = _popularMovies
+    private val _popularMovies = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
+    val popularMovies: State<Flow<PagingData<Movie>>> = _popularMovies
 
     private val _moviesGenres = mutableStateOf<List<Genre>>(emptyList())
     val moviesGenres: State<List<Genre>> = _moviesGenres
-
-    var isLoadingTrendingMovies = mutableStateOf(false)
-    var isLoadingUpcomingMovies = mutableStateOf(false)
-    var isLoadingTopRatedMovies = mutableStateOf(false)
-    var isLoadingNowPlayingMovies = mutableStateOf(false)
-    var isLoadingPopularMovies = mutableStateOf(false)
 
 
     /**
      * Tv Series states
      */
-    private val _trendingTvSeries = mutableStateOf<List<Series>>(emptyList())
-    val trendingTvSeries: State<List<Series>> = _trendingTvSeries
+    private val _trendingTvSeries = mutableStateOf<Flow<PagingData<Series>>>(emptyFlow())
+    val trendingTvSeries: State<Flow<PagingData<Series>>> = _trendingTvSeries
 
-    private val _onAirTvSeries = mutableStateOf<List<Series>>(emptyList())
-    val onAirTvSeries: State<List<Series>> = _onAirTvSeries
+    private val _onAirTvSeries = mutableStateOf<Flow<PagingData<Series>>>(emptyFlow())
+    val onAirTvSeries: State<Flow<PagingData<Series>>> = _onAirTvSeries
 
-    private val _topRatedTvSeries = mutableStateOf<List<Series>>(emptyList())
-    val topRatedTvSeries: State<List<Series>> = _topRatedTvSeries
+    private val _topRatedTvSeries = mutableStateOf<Flow<PagingData<Series>>>(emptyFlow())
+    val topRatedTvSeries: State<Flow<PagingData<Series>>> = _topRatedTvSeries
 
-    private val _airingTodayTvSeries = mutableStateOf<List<Series>>(emptyList())
-    val airingTodayTvSeries: State<List<Series>> = _airingTodayTvSeries
+    private val _airingTodayTvSeries = mutableStateOf<Flow<PagingData<Series>>>(emptyFlow())
+    val airingTodayTvSeries: State<Flow<PagingData<Series>>> = _airingTodayTvSeries
 
-    private val _popularTvSeries = mutableStateOf<List<Series>>(emptyList())
-    val popularTvSeries: State<List<Series>> = _popularTvSeries
+    private val _popularTvSeries = mutableStateOf<Flow<PagingData<Series>>>(emptyFlow())
+    val popularTvSeries: State<Flow<PagingData<Series>>> = _popularTvSeries
 
     private val _tvSeriesGenres = mutableStateOf<List<Genre>>(emptyList())
     val tvSeriesGenres: State<List<Genre>> = _tvSeriesGenres
 
-    var isLoadingTrendingSeries = mutableStateOf(false)
-    var isLoadingOnAirSeries = mutableStateOf(false)
-    var isLoadingTopRatedSeries = mutableStateOf(false)
-    var isLoadingAiringTodaySeries = mutableStateOf(false)
-    var isLoadingPopularSeries = mutableStateOf(false)
-
-    var loadingError = mutableStateOf("")
-
-
-    private var _testo = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
-    val testo: State<Flow<PagingData<Movie>>> = _testo
-
     init {
-        //getTrendingMovies(null, 1, "en")
-        getNowPayingMovies(null, 1, "en")
-        getUpcomingMovies(null, 1, "en")
-        getTopRatedMovies(null, 1, "en")
-        getPopularMovies(null, 1, "en")
-        getPopularTvSeries(null, 1, "en")
+        getTrendingMovies(null)
+        getNowPayingMovies(null)
+        getUpcomingMovies(null)
+        getTopRatedMovies(null)
+        getPopularMovies(null)
+        getPopularTvSeries(null)
         getMoviesGenres()
 
-        getAiringTodayTvSeries(null, 1, "en")
-        getTrendingTvSeries(null, 1, "en")
-        getOnTheAirTvSeries(null, 1, "en")
-        getTopRatedTvSeries(null, 1, "en")
-        getOnTheAirTvSeries(null, 1, "en")
+        getAiringTodayTvSeries(null)
+        getTrendingTvSeries(null)
+        getOnTheAirTvSeries(null)
+        getTopRatedTvSeries(null)
+        getOnTheAirTvSeries(null)
         getSeriesGenres()
-
-        trendingMovies(null)
     }
 
     /**
      * Movies
      */
-
-
-    fun trendingMovies(genreId: Int?) {
+    fun getTrendingMovies(genreId: Int?) {
         viewModelScope.launch {
-            _testo.value = if (genreId != null){
-                filmsRepository.getTrendingMoviesThisWeek(genreId).map { pagingData ->
+            _trendingMovies.value = if (genreId != null) {
+                filmsRepository.getTrendingMoviesThisWeek().map { pagingData ->
                     pagingData.filter {
                         it.genreIds.contains(genreId)
                     }
                 }.cachedIn(viewModelScope)
-            }else{
-                filmsRepository.getTrendingMoviesThisWeek(genreId).cachedIn(viewModelScope)
+            } else {
+                filmsRepository.getTrendingMoviesThisWeek().cachedIn(viewModelScope)
             }
         }
     }
 
 
-/*    fun getTrendingMovies(genreId: Int? = null, page: Int = 1, language: String = "en") {
-        isLoadingTrendingMovies.value = true
+    fun getUpcomingMovies(genreId: Int?) {
         viewModelScope.launch {
-            when (val result = filmsRepository.getTrendingMoviesThisWeek(page, language)) {
-                is Resource.Success -> {
-                    _trendingMovies.value = if (genreId != null) {
-                        result.data?.results!!.filter { it.genreIds.contains(genreId) }
-                    } else {
-                        result.data?.results!!
+            _upcomingMovies.value = if (genreId != null) {
+                filmsRepository.getUpcomingMovies().map { pagingData ->
+                    pagingData.filter {
+                        it.genreIds.contains(genreId)
                     }
-                    isLoadingTrendingMovies.value = false
-                }
-                is Resource.Error -> {
-                    loadingError.value = result.message.toString()
-                    isLoadingTrendingMovies.value = false
-                }
-            }
-        }
-    }*/
-
-    fun getUpcomingMovies(genreId: Int? = null, page: Int = 1, language: String = "en") {
-        isLoadingUpcomingMovies.value = true
-        viewModelScope.launch {
-            when (val result = filmsRepository.getUpcomingMovies(page, language)) {
-                is Resource.Success -> {
-                    _upcomingMovies.value = if (genreId != null) {
-                        result.data?.results!!.filter { it.genreIds.contains(genreId) }
-                    } else {
-                        result.data?.results!!
-                    }
-                    isLoadingUpcomingMovies.value = false
-                }
-                is Resource.Error -> {
-                    loadingError.value = result.message.toString()
-                    isLoadingUpcomingMovies.value = false
-                }
+                }.cachedIn(viewModelScope)
+            } else {
+                filmsRepository.getUpcomingMovies().cachedIn(viewModelScope)
             }
         }
     }
 
-    fun getTopRatedMovies(genreId: Int? = null, page: Int = 1, language: String = "en") {
-        isLoadingTopRatedMovies.value = true
+    fun getTopRatedMovies(genreId: Int?) {
         viewModelScope.launch {
-            when (val result = filmsRepository.getTopRatedMovies(page, language)) {
-                is Resource.Success -> {
-                    _topRatedMovies.value = if (genreId != null) {
-                        result.data?.results!!.filter { it.genreIds.contains(genreId) }
-                    } else {
-                        result.data?.results!!
+            _topRatedMovies.value = if (genreId != null) {
+                filmsRepository.getTopRatedMovies().map { pagingData ->
+                    pagingData.filter {
+                        it.genreIds.contains(genreId)
                     }
-                    isLoadingTopRatedMovies.value = false
-                }
-                is Resource.Error -> {
-                    loadingError.value = result.message.toString()
-                    isLoadingTopRatedMovies.value = false
-                }
+                }.cachedIn(viewModelScope)
+            } else {
+                filmsRepository.getTopRatedMovies().cachedIn(viewModelScope)
             }
         }
     }
 
-    fun getNowPayingMovies(genreId: Int? = null, page: Int = 1, language: String = "en") {
-        isLoadingNowPlayingMovies.value = true
+    fun getNowPayingMovies(genreId: Int?) {
         viewModelScope.launch {
-            when (val result = filmsRepository.getNowPlayingMovies(page, language)) {
-                is Resource.Success -> {
-                    _nowPlayingMovies.value = if (genreId != null) {
-                        result.data?.results!!.filter { it.genreIds.contains(genreId) }
-                    } else {
-                        result.data?.results!!
+            _nowPlayingMovies.value = if (genreId != null) {
+                filmsRepository.getNowPlayingMovies().map { pagingData ->
+                    pagingData.filter {
+                        it.genreIds.contains(genreId)
                     }
-                    isLoadingNowPlayingMovies.value = false
-                }
-                is Resource.Error -> {
-                    loadingError.value = result.message.toString()
-                    isLoadingNowPlayingMovies.value = false
-                }
+                }.cachedIn(viewModelScope)
+            } else {
+                filmsRepository.getNowPlayingMovies().cachedIn(viewModelScope)
             }
         }
     }
 
-    fun getPopularMovies(genreId: Int? = null, page: Int = 1, language: String = "en") {
-        isLoadingPopularMovies.value = true
+    fun getPopularMovies(genreId: Int?) {
         viewModelScope.launch {
-            when (val result = filmsRepository.getPopularMovies(page, language)) {
-                is Resource.Success -> {
-                    _popularMovies.value = if (genreId != null) {
-                        result.data?.results!!.filter { it.genreIds.contains(genreId) }
-                    } else {
-                        result.data?.results!!
+            _popularMovies.value = if (genreId != null) {
+                filmsRepository.getPopularMovies().map { pagingData ->
+                    pagingData.filter {
+                        it.genreIds.contains(genreId)
                     }
-                    isLoadingPopularMovies.value = false
-                }
-                is Resource.Error -> {
-                    loadingError.value = result.message.toString()
-                    isLoadingPopularMovies.value = false
-                }
+                }.cachedIn(viewModelScope)
+            } else {
+                filmsRepository.getPopularMovies().cachedIn(viewModelScope)
             }
         }
     }
 
     private fun getMoviesGenres() {
         viewModelScope.launch {
-            when (val result = filmsRepository.getMoviesGenres("en")) {
+            when (val result = filmsRepository.getMoviesGenres()) {
                 is Resource.Success -> {
                     _moviesGenres.value = result.data?.genres!!
                 }
@@ -257,109 +188,79 @@ class HomeScreenViewModel @Inject constructor(
     /**
      * Tv Series
      */
-    fun getTrendingTvSeries(genreId: Int? = null, page: Int = 1, language: String = "en") {
-        isLoadingTrendingSeries.value = true
+    fun getTrendingTvSeries(genreId: Int?) {
         viewModelScope.launch {
-            when (val result = filmsRepository.getTrendingThisWeekTvSeries(page, language)) {
-                is Resource.Success -> {
-                    _trendingTvSeries.value = if (genreId != null) {
-                        result.data?.series!!.filter { it.genre_ids.contains(genreId) }
-                    } else {
-                        result.data?.series!!
+            _trendingTvSeries.value = if (genreId != null) {
+                filmsRepository.getTrendingThisWeekTvSeries().map { pagingData ->
+                    pagingData.filter {
+                        it.genreIds.contains(genreId)
                     }
-                    isLoadingTrendingSeries.value = false
-                }
-                is Resource.Error -> {
-                    loadingError.value = result.message.toString()
-                    isLoadingTrendingSeries.value = false
-                }
+                }.cachedIn(viewModelScope)
+            } else {
+                filmsRepository.getTrendingThisWeekTvSeries().cachedIn(viewModelScope)
             }
         }
     }
 
-    fun getOnTheAirTvSeries(genreId: Int? = null, page: Int = 1, language: String = "en") {
-        isLoadingOnAirSeries.value = true
+    fun getOnTheAirTvSeries(genreId: Int?) {
         viewModelScope.launch {
-            when (val result = filmsRepository.getOnTheAirTvSeries(page, language)) {
-                is Resource.Success -> {
-                    _onAirTvSeries.value = if (genreId != null) {
-                        result.data?.series!!.filter { it.genre_ids.contains(genreId) }
-                    } else {
-                        result.data?.series!!
+            _onAirTvSeries.value = if (genreId != null) {
+                filmsRepository.getOnTheAirTvSeries().map { pagingData ->
+                    pagingData.filter {
+                        it.genreIds.contains(genreId)
                     }
-                    isLoadingOnAirSeries.value = false
-                }
-                is Resource.Error -> {
-                    loadingError.value = result.message.toString()
-                    isLoadingOnAirSeries.value = false
-                }
+                }.cachedIn(viewModelScope)
+            } else {
+                filmsRepository.getOnTheAirTvSeries().cachedIn(viewModelScope)
             }
         }
     }
 
-    fun getTopRatedTvSeries(genreId: Int? = null, page: Int = 1, language: String = "en") {
-        isLoadingTopRatedSeries.value = true
+    fun getTopRatedTvSeries(genreId: Int?) {
         viewModelScope.launch {
-            when (val result = filmsRepository.getTopRatedTvSeries(page, language)) {
-                is Resource.Success -> {
-                    _topRatedTvSeries.value = if (genreId != null) {
-                        result.data?.series!!.filter { it.genre_ids.contains(genreId) }
-                    } else {
-                        result.data?.series!!
+            _topRatedTvSeries.value = if (genreId != null) {
+                filmsRepository.getTopRatedTvSeries().map { pagingData ->
+                    pagingData.filter {
+                        it.genreIds.contains(genreId)
                     }
-                    isLoadingTopRatedSeries.value = false
-                }
-                is Resource.Error -> {
-                    loadingError.value = result.message.toString()
-                    isLoadingTopRatedSeries.value = false
-                }
+                }.cachedIn(viewModelScope)
+            } else {
+                filmsRepository.getTopRatedTvSeries().cachedIn(viewModelScope)
             }
         }
     }
 
-    fun getAiringTodayTvSeries(genreId: Int? = null, page: Int = 1, language: String = "en") {
-        isLoadingAiringTodaySeries.value = true
+    fun getAiringTodayTvSeries(genreId: Int?) {
         viewModelScope.launch {
-            when (val result = filmsRepository.getAiringTodayTvSeries(page, language)) {
-                is Resource.Success -> {
-                    _airingTodayTvSeries.value = if (genreId != null) {
-                        result.data?.series!!.filter { it.genre_ids.contains(genreId) }
-                    } else {
-                        result.data?.series!!
+            _airingTodayTvSeries.value = if (genreId != null) {
+                filmsRepository.getAiringTodayTvSeries().map { pagingData ->
+                    pagingData.filter {
+                        it.genreIds.contains(genreId)
                     }
-                    isLoadingAiringTodaySeries.value = false
-                }
-                is Resource.Error -> {
-                    loadingError.value = result.message.toString()
-                    isLoadingAiringTodaySeries.value = false
-                }
+                }.cachedIn(viewModelScope)
+            } else {
+                filmsRepository.getAiringTodayTvSeries().cachedIn(viewModelScope)
             }
         }
     }
 
-    fun getPopularTvSeries(genreId: Int? = null, page: Int = 1, language: String = "en") {
-        isLoadingPopularSeries.value = true
+    fun getPopularTvSeries(genreId: Int?) {
         viewModelScope.launch {
-            when (val result = filmsRepository.getPopularTvSeries(page, language)) {
-                is Resource.Success -> {
-                    _popularTvSeries.value = if (genreId != null) {
-                        result.data?.series!!.filter { it.genre_ids.contains(genreId) }
-                    } else {
-                        result.data?.series!!
+            _popularTvSeries.value = if (genreId != null) {
+                filmsRepository.getPopularTvSeries().map { pagingData ->
+                    pagingData.filter {
+                        it.genreIds.contains(genreId)
                     }
-                    isLoadingPopularSeries.value = false
-                }
-                is Resource.Error -> {
-                    loadingError.value = result.message.toString()
-                    isLoadingPopularSeries.value = false
-                }
+                }.cachedIn(viewModelScope)
+            } else {
+                filmsRepository.getPopularTvSeries().cachedIn(viewModelScope)
             }
         }
     }
 
     private fun getSeriesGenres() {
         viewModelScope.launch {
-            when (val result = filmsRepository.getSeriesGenres("en")) {
+            when (val result = filmsRepository.getSeriesGenres()) {
                 is Resource.Success -> {
                     _tvSeriesGenres.value = result.data?.genres!!
                 }

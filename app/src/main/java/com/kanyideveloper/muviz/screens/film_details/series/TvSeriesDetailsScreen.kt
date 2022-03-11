@@ -5,16 +5,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.unit.*
 import com.ramcosta.composedestinations.annotation.Destination
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.kanyideveloper.muviz.data.remote.responses.Credits
+import com.kanyideveloper.muviz.data.remote.responses.CreditsResponse
 import com.kanyideveloper.muviz.data.remote.responses.TvSeriesDetails
 import com.kanyideveloper.muviz.screens.film_details.FilmDetailsViewModel
 import com.kanyideveloper.muviz.screens.film_details.common.FilmImageBanner
 import com.kanyideveloper.muviz.screens.film_details.common.FilmInfo
-import com.kanyideveloper.muviz.ui.theme.*
 import com.kanyideveloper.muviz.util.Constants
 import com.kanyideveloper.muviz.util.Resource
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -33,7 +31,7 @@ fun TvSeriesDetailsScreen(
         value = viewModel.getTvSeriesDetails(filmId)
     }.value
 
-    val casts = produceState<Resource<Credits>>(initialValue = Resource.Loading()) {
+    val casts = produceState<Resource<CreditsResponse>>(initialValue = Resource.Loading()) {
         value = viewModel.getTvSeriesCasts(filmId)
     }.value
 

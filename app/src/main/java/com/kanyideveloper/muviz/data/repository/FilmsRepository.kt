@@ -1,13 +1,14 @@
 package com.kanyideveloper.muviz.data.repository
 
-import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.kanyideveloper.muviz.data.paging.TrendingMoviesSource
+import com.kanyideveloper.muviz.data.paging.*
 import com.kanyideveloper.muviz.data.remote.TMDBApi
 import com.kanyideveloper.muviz.data.remote.responses.*
-import com.kanyideveloper.muviz.data.remote.responses.debug.MultiSearchResponse
+import com.kanyideveloper.muviz.model.Movie
+import com.kanyideveloper.muviz.model.Search
+import com.kanyideveloper.muviz.model.Series
 import com.kanyideveloper.muviz.util.Resource
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
@@ -15,56 +16,52 @@ import javax.inject.Inject
 
 class FilmsRepository @Inject constructor(private val api: TMDBApi) {
     // Movies
-    fun getTrendingMoviesThisWeek(genreId: Int? = null): Flow<PagingData<Movie>> {
+    fun getTrendingMoviesThisWeek(): Flow<PagingData<Movie>> {
         return Pager(
             config = PagingConfig(enablePlaceholders = false, pageSize = 27),
             pagingSourceFactory = {
-                TrendingMoviesSource(api, genreId)
+                TrendingMoviesSource(api)
             }
         ).flow
     }
 
-    suspend fun getUpcomingMovies(page: Int, language: String): Resource<MoviesResponse> {
-        val response = try {
-            api.getUpcomingMovies()
-        } catch (e: Exception) {
-            return Resource.Error("Unknown error occurred")
-        }
-        Timber.d("Upcoming movies: ${response.results}")
-        return Resource.Success(response)
+    fun getUpcomingMovies(): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            pagingSourceFactory = {
+                UpcomingMoviesSource(api)
+            }
+        ).flow
     }
 
-    suspend fun getTopRatedMovies(page: Int, language: String): Resource<MoviesResponse> {
-        val response = try {
-            api.getTopRatedMovies()
-        } catch (e: Exception) {
-            return Resource.Error("Unknown error occurred")
-        }
-        Timber.d("Top rated movies: ${response.results}")
-        return Resource.Success(response)
+    fun getTopRatedMovies(): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            pagingSourceFactory = {
+                TopRatedMoviesSource(api)
+            }
+        ).flow
     }
 
-    suspend fun getNowPlayingMovies(page: Int, language: String): Resource<MoviesResponse> {
-        val response = try {
-            api.getNowPlayingMovies()
-        } catch (e: Exception) {
-            return Resource.Error("Unknown error occurred")
-        }
-        Timber.d("Now playing movies: ${response.results}")
-        return Resource.Success(response)
+    fun getNowPlayingMovies(): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            pagingSourceFactory = {
+                NowPlayingMoviesSource(api)
+            }
+        ).flow
     }
 
-    suspend fun getPopularMovies(page: Int, language: String): Resource<MoviesResponse> {
-        val response = try {
-            api.getPopularMovies()
-        } catch (e: Exception) {
-            return Resource.Error("Unknown error occurred")
-        }
-        Timber.d("Popular movies: ${response.results}")
-        return Resource.Success(response)
+    fun getPopularMovies(): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            pagingSourceFactory = {
+                PopularMoviesSource(api)
+            }
+        ).flow
     }
 
-    suspend fun getMoviesDetails(movieId: Int, language: String = "en"): Resource<MovieDetails> {
+    suspend fun getMoviesDetails(movieId: Int): Resource<MovieDetails> {
         val response = try {
             api.getMovieDetails(movieId)
         } catch (e: Exception) {
@@ -74,7 +71,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         return Resource.Success(response)
     }
 
-    suspend fun getMoviesGenres(language: String): Resource<GenresResponse> {
+    suspend fun getMoviesGenres(): Resource<GenresResponse> {
         val response = try {
             api.getMovieGenres()
         } catch (e: Exception) {
@@ -84,7 +81,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         return Resource.Success(response)
     }
 
-    suspend fun getMovieCasts(movieId: Int): Resource<Credits> {
+    suspend fun getMovieCasts(movieId: Int): Resource<CreditsResponse> {
         val response = try {
             api.getMovieCredits(movieId)
         } catch (e: Exception) {
@@ -98,60 +95,52 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
 
     //.....................................................................................//
     // Tv Series
-    suspend fun getTrendingThisWeekTvSeries(
-        page: Int,
-        language: String
-    ): Resource<TvSeriesResponse> {
-        val response = try {
-            api.getTrendingTvSeries()
-        } catch (e: Exception) {
-            return Resource.Error("Unknown error occurred")
-        }
-        Timber.d("Trending series: ${response.series}")
-        return Resource.Success(response)
+    fun getTrendingThisWeekTvSeries(): Flow<PagingData<Series>> {
+        return Pager(
+            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            pagingSourceFactory = {
+                TrendingSeriesSource(api)
+            }
+        ).flow
     }
 
-    suspend fun getOnTheAirTvSeries(page: Int, language: String): Resource<TvSeriesResponse> {
-        val response = try {
-            api.getOnTheAirTvSeries()
-        } catch (e: Exception) {
-            return Resource.Error("Unknown error occurred")
-        }
-        Timber.d("On air series: ${response.series}")
-        return Resource.Success(response)
+    fun getOnTheAirTvSeries(): Flow<PagingData<Series>> {
+        return Pager(
+            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            pagingSourceFactory = {
+                OnTheAirSeriesSource(api)
+            }
+        ).flow
     }
 
-    suspend fun getTopRatedTvSeries(page: Int, language: String): Resource<TvSeriesResponse> {
-        val response = try {
-            api.getTopRatedTvSeries()
-        } catch (e: Exception) {
-            return Resource.Error("Unknown error occurred")
-        }
-        Timber.d("Top rated series: ${response.series}")
-        return Resource.Success(response)
+    fun getTopRatedTvSeries(): Flow<PagingData<Series>> {
+        return Pager(
+            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            pagingSourceFactory = {
+                TopRatedSeriesSource(api)
+            }
+        ).flow
     }
 
-    suspend fun getAiringTodayTvSeries(page: Int, language: String): Resource<TvSeriesResponse> {
-        val response = try {
-            api.getAiringTodayTvSeries()
-        } catch (e: Exception) {
-            return Resource.Error("Unknown error occurred")
-        }
-        Timber.d("Airing today series: ${response.series}")
-        return Resource.Success(response)
+    fun getAiringTodayTvSeries(): Flow<PagingData<Series>> {
+        return Pager(
+            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            pagingSourceFactory = {
+                AiringTodayTvSeriesSource(api)
+            }
+        ).flow
     }
 
-    suspend fun getPopularTvSeries(page: Int, language: String): Resource<TvSeriesResponse> {
-        val response = try {
-            api.getPopularTvSeries()
-        } catch (e: Exception) {
-            return Resource.Error("Unknown error occurred")
-        }
-        Timber.d("Popular series: ${response.series}")
-        return Resource.Success(response)
+    fun getPopularTvSeries(): Flow<PagingData<Series>> {
+        return Pager(
+            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            pagingSourceFactory = {
+                PopularSeriesSource(api)
+            }
+        ).flow
     }
 
-    suspend fun getTvSeriesDetails(tvId: Int, language: String = "en"): Resource<TvSeriesDetails> {
+    suspend fun getTvSeriesDetails(tvId: Int): Resource<TvSeriesDetails> {
         val response = try {
             api.getTvSeriesDetails(tvId)
         } catch (e: Exception) {
@@ -161,7 +150,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         return Resource.Success(response)
     }
 
-    suspend fun getSeriesGenres(language: String): Resource<GenresResponse> {
+    suspend fun getSeriesGenres(): Resource<GenresResponse> {
         val response = try {
             api.getTvSeriesGenres()
         } catch (e: Exception) {
@@ -171,47 +160,23 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         return Resource.Success(response)
     }
 
-    suspend fun getTvSeriesCasts(tvId: Int): Resource<Credits> {
+    suspend fun getTvSeriesCasts(tvId: Int): Resource<CreditsResponse> {
         val response = try {
             api.getTvSeriesCredits(tvId)
         } catch (e: Exception) {
             return Resource.Error("Unknown error occurred")
         }
 
-        Timber.d("Series casts ${response.toString()}")
+        Timber.d("Series casts $response")
         return Resource.Success(response)
     }
 
-    suspend fun multiSearch(queryParam: String): Resource<SearchMovieResponse> {
-        val response = try {
-            api.multiSearch(queryParam)
-        } catch (e: Exception) {
-            return Resource.Error("Unknown error occurred")
-        }
-
-        Timber.d("Series casts ${response.results}")
-        return Resource.Success(response)
+    fun multiSearch(queryParam: String): Flow<PagingData<Search>> {
+        return Pager(
+            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            pagingSourceFactory = {
+                SearchPagingSource(api, queryParam)
+            }
+        ).flow
     }
-
-    suspend fun searchAll(queryParam: String) : Resource<MultiSearchResponse>{
-        val response = try {
-            api.searchAll(queryParam)
-        }catch (e: Exception){
-            return Resource.Error(e.localizedMessage)
-        }
-        Timber.d("All Searches result: ${response.results}")
-        return Resource.Success(response)
-    }
-
-
-/*    suspend fun getUpcomingMovies(page: Int, language: String): MoviesResponse
-    suspend fun getNowPlayingMovies(page: Int, language: String): MoviesResponse
-    suspend fun getTopRatedMovies(page: Int, language: String): MoviesResponse
-    suspend fun getTrendingMovies(page: Int, language: String): MoviesResponse
-
-    // TV Series
-    suspend fun getTopRatedTvSeries(page: Int, language: String): TvSeriesResponse
-    suspend fun getOnTheAirTvSeries(page: Int, language: String): TvSeriesResponse
-    suspend fun getAiringTodayTvSeries(page: Int, language: String): TvSeriesResponse
-    suspend fun getTrendingTvSeries(page: Int, language: String): TvSeriesResponse*/
 }
