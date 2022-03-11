@@ -35,7 +35,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.rememberImagePainter
 import com.kanyideveloper.muviz.R
-import com.kanyideveloper.muviz.data.remote.responses.Search
+import com.kanyideveloper.muviz.model.Search
 import com.kanyideveloper.muviz.presentation.components.StandardToolbar
 import com.kanyideveloper.muviz.ui.theme.primaryDarkVariant
 import com.kanyideveloper.muviz.ui.theme.primaryGray

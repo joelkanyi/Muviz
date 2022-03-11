@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
-import com.kanyideveloper.muviz.data.remote.responses.Genre
-import com.kanyideveloper.muviz.data.remote.responses.Movie
-import com.kanyideveloper.muviz.data.remote.responses.Series
+import com.kanyideveloper.muviz.model.Genre
+import com.kanyideveloper.muviz.model.Movie
+import com.kanyideveloper.muviz.model.Series
 import com.kanyideveloper.muviz.data.repository.FilmsRepository
 import com.kanyideveloper.muviz.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel

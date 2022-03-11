@@ -93,19 +93,19 @@ interface TMDBApi {
         @Query("language") language: String = "en"
     ): TvSeriesDetails
 
-    @GET("movie/{movie_id}/credits")
+    @GET("movie/{movie_id}/creditsResponse")
     suspend fun getMovieCredits(
         @Path("movie_id") movieId: Int,
         @Query("api_key") apiKey: String = API_KEY,
         @Query("language") language: String = "en"
-    ): Credits
+    ): CreditsResponse
 
-    @GET("tv/{tv_id}/credits")
+    @GET("tv/{tv_id}/creditsResponse")
     suspend fun getTvSeriesCredits(
         @Path("tv_id") tvSeriesId: Int,
         @Query("api_key") apiKey: String = API_KEY,
         @Query("language") language: String = "en"
-    ): Credits
+    ): CreditsResponse
 
     @GET("genre/movie/list")
     suspend fun getMovieGenres(

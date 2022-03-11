@@ -1,7 +1,7 @@
 package com.kanyideveloper.muviz.screens.film_details
 
 import androidx.lifecycle.ViewModel
-import com.kanyideveloper.muviz.data.remote.responses.Credits
+import com.kanyideveloper.muviz.data.remote.responses.CreditsResponse
 import com.kanyideveloper.muviz.data.remote.responses.MovieDetails
 import com.kanyideveloper.muviz.data.remote.responses.TvSeriesDetails
 import com.kanyideveloper.muviz.data.repository.FilmsRepository
@@ -22,11 +22,11 @@ private val filmsRepository: FilmsRepository
         return filmsRepository.getTvSeriesDetails(tvId)
     }
 
-    suspend fun getMovieCasts(movieId: Int): Resource<Credits>{
+    suspend fun getMovieCasts(movieId: Int): Resource<CreditsResponse>{
         return filmsRepository.getMovieCasts(movieId)
     }
 
-    suspend fun getTvSeriesCasts(tvId: Int): Resource<Credits>{
+    suspend fun getTvSeriesCasts(tvId: Int): Resource<CreditsResponse>{
         return filmsRepository.getTvSeriesCasts(tvId)
     }
 

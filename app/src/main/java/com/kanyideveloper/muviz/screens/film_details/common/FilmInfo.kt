@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kanyideveloper.muviz.data.remote.responses.Credits
+import com.kanyideveloper.muviz.data.remote.responses.CreditsResponse
 import com.kanyideveloper.muviz.ui.theme.AppBarExpendedHeight
 import com.kanyideveloper.muviz.util.Resource
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -20,7 +20,7 @@ fun FilmInfo(
     scrollState: LazyListState,
     releaseDate: String,
     overview: String,
-    casts: Resource<Credits>,
+    casts: Resource<CreditsResponse>,
     navigator: DestinationsNavigator
 ) {
 

@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
-import com.kanyideveloper.muviz.data.remote.responses.Search
+import com.kanyideveloper.muviz.model.Search
 import com.kanyideveloper.muviz.data.repository.FilmsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow

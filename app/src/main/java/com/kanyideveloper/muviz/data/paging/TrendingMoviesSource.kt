@@ -3,7 +3,7 @@ package com.kanyideveloper.muviz.data.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.kanyideveloper.muviz.data.remote.TMDBApi
-import com.kanyideveloper.muviz.data.remote.responses.Movie
+import com.kanyideveloper.muviz.model.Movie
 import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException

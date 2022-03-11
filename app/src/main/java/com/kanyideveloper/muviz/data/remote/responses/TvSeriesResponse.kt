@@ -1,6 +1,7 @@
 package com.kanyideveloper.muviz.data.remote.responses
 
 import com.google.gson.annotations.SerializedName
+import com.kanyideveloper.muviz.model.Series
 
 data class TvSeriesResponse(
     @SerializedName("page")

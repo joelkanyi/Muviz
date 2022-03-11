@@ -6,7 +6,9 @@ import androidx.paging.PagingData
 import com.kanyideveloper.muviz.data.paging.*
 import com.kanyideveloper.muviz.data.remote.TMDBApi
 import com.kanyideveloper.muviz.data.remote.responses.*
-import com.kanyideveloper.muviz.data.remote.responses.Search
+import com.kanyideveloper.muviz.model.Movie
+import com.kanyideveloper.muviz.model.Search
+import com.kanyideveloper.muviz.model.Series
 import com.kanyideveloper.muviz.util.Resource
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
@@ -59,7 +61,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         ).flow
     }
 
-    suspend fun getMoviesDetails(movieId: Int, language: String = "en"): Resource<MovieDetails> {
+    suspend fun getMoviesDetails(movieId: Int): Resource<MovieDetails> {
         val response = try {
             api.getMovieDetails(movieId)
         } catch (e: Exception) {
@@ -69,7 +71,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         return Resource.Success(response)
     }
 
-    suspend fun getMoviesGenres(language: String): Resource<GenresResponse> {
+    suspend fun getMoviesGenres(): Resource<GenresResponse> {
         val response = try {
             api.getMovieGenres()
         } catch (e: Exception) {
@@ -79,7 +81,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         return Resource.Success(response)
     }
 
-    suspend fun getMovieCasts(movieId: Int): Resource<Credits> {
+    suspend fun getMovieCasts(movieId: Int): Resource<CreditsResponse> {
         val response = try {
             api.getMovieCredits(movieId)
         } catch (e: Exception) {
@@ -138,7 +140,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         ).flow
     }
 
-    suspend fun getTvSeriesDetails(tvId: Int, language: String = "en"): Resource<TvSeriesDetails> {
+    suspend fun getTvSeriesDetails(tvId: Int): Resource<TvSeriesDetails> {
         val response = try {
             api.getTvSeriesDetails(tvId)
         } catch (e: Exception) {
@@ -148,7 +150,7 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         return Resource.Success(response)
     }
 
-    suspend fun getSeriesGenres(language: String): Resource<GenresResponse> {
+    suspend fun getSeriesGenres(): Resource<GenresResponse> {
         val response = try {
             api.getTvSeriesGenres()
         } catch (e: Exception) {
@@ -158,14 +160,14 @@ class FilmsRepository @Inject constructor(private val api: TMDBApi) {
         return Resource.Success(response)
     }
 
-    suspend fun getTvSeriesCasts(tvId: Int): Resource<Credits> {
+    suspend fun getTvSeriesCasts(tvId: Int): Resource<CreditsResponse> {
         val response = try {
             api.getTvSeriesCredits(tvId)
         } catch (e: Exception) {
             return Resource.Error("Unknown error occurred")
         }
 
-        Timber.d("Series casts ${response.toString()}")
+        Timber.d("Series casts $response")
         return Resource.Success(response)
     }
 

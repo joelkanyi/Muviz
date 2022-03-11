@@ -15,7 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kanyideveloper.muviz.R
-import com.kanyideveloper.muviz.data.remote.responses.Credits
+import com.kanyideveloper.muviz.data.remote.responses.CreditsResponse
 import com.kanyideveloper.muviz.screens.commons.CastItem
 import com.kanyideveloper.muviz.screens.destinations.CastsScreenDestination
 import com.kanyideveloper.muviz.ui.theme.primaryPink
@@ -25,7 +25,7 @@ import timber.log.Timber
 
 @Composable
 fun CastDetails(
-    credits: Credits?,
+    creditsResponse: CreditsResponse?,
     navigator: DestinationsNavigator,
     modifier: Modifier = Modifier.fillMaxWidth()
 ) {
@@ -58,12 +58,12 @@ fun CastDetails(
                 )
 
                 IconButton(onClick = {
-                    Timber.d("${credits == null}")
+                    Timber.d("${creditsResponse == null}")
 
-                    if (credits == null){
+                    if (creditsResponse == null){
                         return@IconButton
                     }
-                    navigator.navigate(CastsScreenDestination(credits))
+                    navigator.navigate(CastsScreenDestination(creditsResponse))
                 }) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_chevron_right),
@@ -76,7 +76,7 @@ fun CastDetails(
 
 
         LazyRow(content = {
-            items(credits?.cast!!) { cast ->
+            items(creditsResponse?.cast!!) { cast ->
                 CastItem(
                     size = 90.dp,
                     castImageUrl = "${Constants.IMAGE_BASE_UR}/${cast.profilePath}",

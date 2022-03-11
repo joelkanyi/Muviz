@@ -141,7 +141,7 @@ fun HomeScreen(
                 Box(
                     Modifier
                         .fillMaxWidth()
-                        .height(210.dp),
+                        .height(220.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     LazyRow(content = {
@@ -151,8 +151,8 @@ fun HomeScreen(
 
                                 MovieItem(
                                     cardModifier = Modifier
-                                        .height(210.dp)
-                                        .width(240.dp)
+                                        .height(220.dp)
+                                        .width(250.dp)
                                         .clickable {
                                             navigator.navigate(TvSeriesDetailsScreenDestination(film?.id!!))
                                         },

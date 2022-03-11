@@ -3,8 +3,7 @@ package com.kanyideveloper.muviz.data.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.kanyideveloper.muviz.data.remote.TMDBApi
-import com.kanyideveloper.muviz.data.remote.responses.Movie
-import com.kanyideveloper.muviz.data.remote.responses.Series
+import com.kanyideveloper.muviz.model.Series
 import retrofit2.HttpException
 import java.io.IOException
 
