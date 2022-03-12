@@ -1,7 +1,7 @@
 package com.kanyideveloper.muviz.di
 
 import com.kanyideveloper.muviz.data.remote.TMDBApi
-import com.kanyideveloper.muviz.data.repository.FilmsRepository
+import com.kanyideveloper.muviz.data.repository.*
 import com.kanyideveloper.muviz.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -50,5 +50,21 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideFilmsRepository(api: TMDBApi) = FilmsRepository(api)
+    fun provideFilmsDetailsRepository(api: TMDBApi) = FilmsDetailsRepository(api)
+
+    @Provides
+    @Singleton
+    fun provideGenresRepository(api: TMDBApi) = GenresRepository(api)
+
+    @Provides
+    @Singleton
+    fun provideMoviesRepository(api: TMDBApi) = MoviesRepository(api)
+
+    @Provides
+    @Singleton
+    fun provideTvSeriesRepository(api: TMDBApi) = TvSeriesRepository(api)
+
+    @Provides
+    @Singleton
+    fun provideSearchRepository(api: TMDBApi) = SearchRepository(api)
 }

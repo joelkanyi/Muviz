@@ -7,27 +7,27 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Cast(
     @SerializedName("adult")
-    val adult: Boolean? = null,
+    val adult: Boolean,
     @SerializedName("cast_id")
-    val castId: Int? = null,
+    val castId: Int,
     @SerializedName("character")
-    val character: String? = null,
+    val character: String,
     @SerializedName("credit_id")
-    val creditId: String? = null,
+    val creditId: String,
     @SerializedName("gender")
-    val gender: Int? = null,
+    val gender: Int,
     @SerializedName("id")
-    val id: Int? = null,
+    val id: Int,
     @SerializedName("known_for_department")
-    val knownForDepartment: String? = null,
+    val knownForDepartment: String,
     @SerializedName("name")
-    val name: String? = null,
+    val name: String,
     @SerializedName("order")
-    val order: Int? = null,
+    val order: Int,
     @SerializedName("original_name")
-    val originalName: String? = null,
+    val originalName: String,
     @SerializedName("popularity")
-    val popularity: Double? = null,
+    val popularity: Double,
     @SerializedName("profile_path")
     val profilePath: String? = "https://pixy.org/src/9/94083.png"
 ) : Parcelable

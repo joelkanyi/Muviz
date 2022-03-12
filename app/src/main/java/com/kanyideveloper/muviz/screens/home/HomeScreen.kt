@@ -54,7 +54,7 @@ import java.io.IOException
 @Composable
 fun HomeScreen(
     navigator: DestinationsNavigator,
-    viewModel: HomeScreenViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
 
     val trendingMovies = viewModel.trendingMovies.value.collectAsLazyPagingItems()
@@ -605,7 +605,7 @@ fun HomeScreen(
 fun FilmCategory(
     items: List<String>,
     modifier: Modifier = Modifier,
-    viewModel: HomeScreenViewModel
+    viewModel: HomeViewModel
 ) {
     Row(
         modifier = modifier,
@@ -663,7 +663,7 @@ fun FilmCategory(
 
 @Composable
 fun Genres(
-    viewModel: HomeScreenViewModel
+    viewModel: HomeViewModel
 ) {
     val genres = if (viewModel.selectedOption.value == "Tv Shows") {
         viewModel.tvSeriesGenres.value
