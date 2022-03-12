@@ -6,10 +6,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
+import com.kanyideveloper.muviz.data.repository.FilmsDetailsRepository
+import com.kanyideveloper.muviz.data.repository.GenresRepository
+import com.kanyideveloper.muviz.data.repository.MoviesRepository
+import com.kanyideveloper.muviz.data.repository.TvSeriesRepository
 import com.kanyideveloper.muviz.model.Genre
 import com.kanyideveloper.muviz.model.Movie
 import com.kanyideveloper.muviz.model.Series
-import com.kanyideveloper.muviz.data.repository.FilmsRepository
 import com.kanyideveloper.muviz.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -21,8 +24,10 @@ import javax.inject.Inject
 private const val TAG = "HomeScreenViewModel"
 
 @HiltViewModel
-class HomeScreenViewModel @Inject constructor(
-    private val filmsRepository: FilmsRepository
+class HomeViewModel @Inject constructor(
+    private val moviesRepository: MoviesRepository,
+    private val seriesRepository: TvSeriesRepository,
+    private val genresRepository: GenresRepository
 ) : ViewModel() {
     private val _selectedOption = mutableStateOf("Movies")
     val selectedOption: State<String> = _selectedOption
@@ -104,13 +109,13 @@ class HomeScreenViewModel @Inject constructor(
     fun getTrendingMovies(genreId: Int?) {
         viewModelScope.launch {
             _trendingMovies.value = if (genreId != null) {
-                filmsRepository.getTrendingMoviesThisWeek().map { pagingData ->
+                moviesRepository.getTrendingMoviesThisWeek().map { pagingData ->
                     pagingData.filter {
                         it.genreIds.contains(genreId)
                     }
                 }.cachedIn(viewModelScope)
             } else {
-                filmsRepository.getTrendingMoviesThisWeek().cachedIn(viewModelScope)
+                moviesRepository.getTrendingMoviesThisWeek().cachedIn(viewModelScope)
             }
         }
     }
@@ -119,13 +124,13 @@ class HomeScreenViewModel @Inject constructor(
     fun getUpcomingMovies(genreId: Int?) {
         viewModelScope.launch {
             _upcomingMovies.value = if (genreId != null) {
-                filmsRepository.getUpcomingMovies().map { pagingData ->
+                moviesRepository.getUpcomingMovies().map { pagingData ->
                     pagingData.filter {
                         it.genreIds.contains(genreId)
                     }
                 }.cachedIn(viewModelScope)
             } else {
-                filmsRepository.getUpcomingMovies().cachedIn(viewModelScope)
+                moviesRepository.getUpcomingMovies().cachedIn(viewModelScope)
             }
         }
     }
@@ -133,13 +138,13 @@ class HomeScreenViewModel @Inject constructor(
     fun getTopRatedMovies(genreId: Int?) {
         viewModelScope.launch {
             _topRatedMovies.value = if (genreId != null) {
-                filmsRepository.getTopRatedMovies().map { pagingData ->
+                moviesRepository.getTopRatedMovies().map { pagingData ->
                     pagingData.filter {
                         it.genreIds.contains(genreId)
                     }
                 }.cachedIn(viewModelScope)
             } else {
-                filmsRepository.getTopRatedMovies().cachedIn(viewModelScope)
+                moviesRepository.getTopRatedMovies().cachedIn(viewModelScope)
             }
         }
     }
@@ -147,13 +152,13 @@ class HomeScreenViewModel @Inject constructor(
     fun getNowPayingMovies(genreId: Int?) {
         viewModelScope.launch {
             _nowPlayingMovies.value = if (genreId != null) {
-                filmsRepository.getNowPlayingMovies().map { pagingData ->
+                moviesRepository.getNowPlayingMovies().map { pagingData ->
                     pagingData.filter {
                         it.genreIds.contains(genreId)
                     }
                 }.cachedIn(viewModelScope)
             } else {
-                filmsRepository.getNowPlayingMovies().cachedIn(viewModelScope)
+                moviesRepository.getNowPlayingMovies().cachedIn(viewModelScope)
             }
         }
     }
@@ -161,20 +166,20 @@ class HomeScreenViewModel @Inject constructor(
     fun getPopularMovies(genreId: Int?) {
         viewModelScope.launch {
             _popularMovies.value = if (genreId != null) {
-                filmsRepository.getPopularMovies().map { pagingData ->
+                moviesRepository.getPopularMovies().map { pagingData ->
                     pagingData.filter {
                         it.genreIds.contains(genreId)
                     }
                 }.cachedIn(viewModelScope)
             } else {
-                filmsRepository.getPopularMovies().cachedIn(viewModelScope)
+                moviesRepository.getPopularMovies().cachedIn(viewModelScope)
             }
         }
     }
 
     private fun getMoviesGenres() {
         viewModelScope.launch {
-            when (val result = filmsRepository.getMoviesGenres()) {
+            when (val result = genresRepository.getMoviesGenres()) {
                 is Resource.Success -> {
                     _moviesGenres.value = result.data?.genres!!
                 }
@@ -191,13 +196,13 @@ class HomeScreenViewModel @Inject constructor(
     fun getTrendingTvSeries(genreId: Int?) {
         viewModelScope.launch {
             _trendingTvSeries.value = if (genreId != null) {
-                filmsRepository.getTrendingThisWeekTvSeries().map { pagingData ->
+                seriesRepository.getTrendingThisWeekTvSeries().map { pagingData ->
                     pagingData.filter {
                         it.genreIds.contains(genreId)
                     }
                 }.cachedIn(viewModelScope)
             } else {
-                filmsRepository.getTrendingThisWeekTvSeries().cachedIn(viewModelScope)
+                seriesRepository.getTrendingThisWeekTvSeries().cachedIn(viewModelScope)
             }
         }
     }
@@ -205,13 +210,13 @@ class HomeScreenViewModel @Inject constructor(
     fun getOnTheAirTvSeries(genreId: Int?) {
         viewModelScope.launch {
             _onAirTvSeries.value = if (genreId != null) {
-                filmsRepository.getOnTheAirTvSeries().map { pagingData ->
+                seriesRepository.getOnTheAirTvSeries().map { pagingData ->
                     pagingData.filter {
                         it.genreIds.contains(genreId)
                     }
                 }.cachedIn(viewModelScope)
             } else {
-                filmsRepository.getOnTheAirTvSeries().cachedIn(viewModelScope)
+                seriesRepository.getOnTheAirTvSeries().cachedIn(viewModelScope)
             }
         }
     }
@@ -219,13 +224,13 @@ class HomeScreenViewModel @Inject constructor(
     fun getTopRatedTvSeries(genreId: Int?) {
         viewModelScope.launch {
             _topRatedTvSeries.value = if (genreId != null) {
-                filmsRepository.getTopRatedTvSeries().map { pagingData ->
+                seriesRepository.getTopRatedTvSeries().map { pagingData ->
                     pagingData.filter {
                         it.genreIds.contains(genreId)
                     }
                 }.cachedIn(viewModelScope)
             } else {
-                filmsRepository.getTopRatedTvSeries().cachedIn(viewModelScope)
+                seriesRepository.getTopRatedTvSeries().cachedIn(viewModelScope)
             }
         }
     }
@@ -233,13 +238,13 @@ class HomeScreenViewModel @Inject constructor(
     fun getAiringTodayTvSeries(genreId: Int?) {
         viewModelScope.launch {
             _airingTodayTvSeries.value = if (genreId != null) {
-                filmsRepository.getAiringTodayTvSeries().map { pagingData ->
+                seriesRepository.getAiringTodayTvSeries().map { pagingData ->
                     pagingData.filter {
                         it.genreIds.contains(genreId)
                     }
                 }.cachedIn(viewModelScope)
             } else {
-                filmsRepository.getAiringTodayTvSeries().cachedIn(viewModelScope)
+                seriesRepository.getAiringTodayTvSeries().cachedIn(viewModelScope)
             }
         }
     }
@@ -247,20 +252,20 @@ class HomeScreenViewModel @Inject constructor(
     fun getPopularTvSeries(genreId: Int?) {
         viewModelScope.launch {
             _popularTvSeries.value = if (genreId != null) {
-                filmsRepository.getPopularTvSeries().map { pagingData ->
+                seriesRepository.getPopularTvSeries().map { pagingData ->
                     pagingData.filter {
                         it.genreIds.contains(genreId)
                     }
                 }.cachedIn(viewModelScope)
             } else {
-                filmsRepository.getPopularTvSeries().cachedIn(viewModelScope)
+                seriesRepository.getPopularTvSeries().cachedIn(viewModelScope)
             }
         }
     }
 
     private fun getSeriesGenres() {
         viewModelScope.launch {
-            when (val result = filmsRepository.getSeriesGenres()) {
+            when (val result = genresRepository.getSeriesGenres()) {
                 is Resource.Success -> {
                     _tvSeriesGenres.value = result.data?.genres!!
                 }

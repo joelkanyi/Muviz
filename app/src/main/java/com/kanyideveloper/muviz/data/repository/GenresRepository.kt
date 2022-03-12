@@ -1,15 +1,29 @@
 package com.kanyideveloper.muviz.data.repository
 
-/*
+import com.kanyideveloper.muviz.data.remote.TMDBApi
+import com.kanyideveloper.muviz.data.remote.responses.GenresResponse
+import com.kanyideveloper.muviz.util.Resource
+import timber.log.Timber
+import javax.inject.Inject
+
 class GenresRepository @Inject constructor(private val api: TMDBApi) {
-    suspend fun getMoviesGenres(language: String): Resource<List<Genre>>{
+    suspend fun getMoviesGenres(): Resource<GenresResponse> {
         val response = try {
             api.getMovieGenres()
-        }catch (e: Exception){
+        } catch (e: Exception) {
             return Resource.Error("Unknown error occurred")
         }
-        Timber.d("Response: $response")
+        Timber.d("Movies genres: $response")
         return Resource.Success(response)
     }
-    //suspend fun getTvSeriesGenres(language: String): Genre
-}*/
+
+    suspend fun getSeriesGenres(): Resource<GenresResponse> {
+        val response = try {
+            api.getTvSeriesGenres()
+        } catch (e: Exception) {
+            return Resource.Error("Unknown error occurred")
+        }
+        Timber.d("Series genres: $response")
+        return Resource.Success(response)
+    }
+}
