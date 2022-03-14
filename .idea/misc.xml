@@ -7,11 +7,15 @@
         <entry key="../../../../../layout/compose-model-1644678792704.xml" value="0.21579391891891891" />
         <entry key="../../../../../layout/compose-model-1644679022783.xml" value="0.22719594594594594" />
         <entry key="../../../../../layout/compose-model-1644719746946.xml" value="0.21579391891891891" />
+        <entry key="app/src/main/res/drawable/ic__search_big.xml" value="0.1985" />
+        <entry key="app/src/main/res/drawable/ic__search_biggy.xml" value="0.1985" />
         <entry key="app/src/main/res/drawable/ic_chevron_right.xml" value="0.2445" />
+        <entry key="app/src/main/res/drawable/ic_empty_cuate.xml" value="0.1985" />
         <entry key="app/src/main/res/drawable/ic_globe_outline.xml" value="0.1425" />
         <entry key="app/src/main/res/drawable/ic_home.xml" value="0.1425" />
         <entry key="app/src/main/res/drawable/ic_profile.xml" value="0.1425" />
         <entry key="app/src/main/res/drawable/ic_search.xml" value="0.1425" />
+        <entry key="app/src/main/res/drawable/ic_search_engine__monochromatic.xml" value="0.1985" />
         <entry key="app/src/main/res/drawable/ic_star.xml" value="0.1425" />
       </map>
     </option>

@@ -2,6 +2,8 @@ package com.kanyideveloper.muviz.screens.search
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -20,6 +22,13 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
     private val repository: SearchRepository
 ) : ViewModel() {
+
+    private val _searchTerm = mutableStateOf("")
+    val searchTerm: State<String> = _searchTerm
+
+    fun setSearchTerm(term: String){
+        _searchTerm.value = term
+    }
 
     private val _searchResult = mutableStateOf<Flow<PagingData<Search>>>(emptyFlow())
     val searchSearch: State<Flow<PagingData<Search>>> = _searchResult

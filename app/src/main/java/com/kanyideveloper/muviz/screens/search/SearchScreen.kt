@@ -3,24 +3,25 @@ package com.kanyideveloper.muviz.screens.search
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -35,8 +36,12 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.rememberImagePainter
 import com.kanyideveloper.muviz.R
+import com.kanyideveloper.muviz.model.Genre
 import com.kanyideveloper.muviz.model.Search
 import com.kanyideveloper.muviz.presentation.components.StandardToolbar
+import com.kanyideveloper.muviz.screens.destinations.MovieDetailsScreenDestination
+import com.kanyideveloper.muviz.screens.destinations.TvSeriesDetailsScreenDestination
+import com.kanyideveloper.muviz.screens.home.HomeViewModel
 import com.kanyideveloper.muviz.ui.theme.primaryDarkVariant
 import com.kanyideveloper.muviz.ui.theme.primaryGray
 import com.kanyideveloper.muviz.ui.theme.primaryPink
@@ -46,19 +51,18 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import retrofit2.HttpException
 import java.io.IOException
 
-@OptIn(ExperimentalFoundationApi::class)
-@Destination
+@OptIn(ExperimentalFoundationApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
+@Destination(start = false)
 @Composable
 fun SearchScreen(
     navigator: DestinationsNavigator,
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     val searchResult = viewModel.searchSearch.value.collectAsLazyPagingItems()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(
-        modifier = Modifier.fillMaxSize()
     ) {
-
         StandardToolbar(
             navigator = navigator,
             title = {
@@ -73,20 +77,22 @@ fun SearchScreen(
         )
 
         SearchBar(
+            viewModel = viewModel,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(67.dp)
                 .padding(8.dp),
             onSearch = { searchParam ->
                 viewModel.searchAll(searchParam)
+                keyboardController?.hide()
             }
         )
 
         Box(
-            Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
+
             LazyColumn(
                 contentPadding = PaddingValues(8.dp)
             ) {
@@ -95,8 +101,22 @@ fun SearchScreen(
                         search,
                         modifier = Modifier
                             .fillMaxWidth()
+                            .height(130.dp)
+                            .padding(4.dp),
+                        onClick = {
+                            when (search?.mediaType) {
+                                "movie" -> {
+                                    navigator.navigate(MovieDetailsScreenDestination(search.id!!))
+                                }
+                                "tv" -> {
+                                    navigator.navigate(TvSeriesDetailsScreenDestination(search.id!!))
+                                }
+                                else -> {
+                                    return@SearchItem
+                                }
+                            }
+                        }
                     )
-
                 }
 
                 if (searchResult.loadState.append == LoadState.Loading) {
@@ -111,14 +131,14 @@ fun SearchScreen(
             }
 
             searchResult.apply {
-                loadState
                 when (loadState.refresh) {
                     is LoadState.Loading -> {
                         CircularProgressIndicator(
-                            modifier = Modifier,
+                            modifier = Modifier.wrapContentSize(Alignment.Center),
                             color = primaryPink,
-                            strokeWidth = 2.dp
-                        )
+                            strokeWidth = 2.dp,
+
+                            )
                     }
                     is LoadState.Error -> {
                         val e = searchResult.loadState.refresh as LoadState.Error
@@ -138,6 +158,22 @@ fun SearchScreen(
                             color = primaryPink
                         )
                     }
+
+                    is LoadState.NotLoading -> {
+                        if (searchResult.itemCount <= 0) {
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Image(
+                                    modifier = Modifier
+                                        .size(250.dp),
+                                    painter = painterResource(id = R.drawable.ic_empty_cuate),
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -146,16 +182,17 @@ fun SearchScreen(
 
 @Composable
 fun SearchBar(
+    viewModel: SearchViewModel,
     modifier: Modifier = Modifier,
     onSearch: (String) -> Unit = {}
 ) {
-    var text by remember {
-        mutableStateOf("")
-    }
+
+    val searchTerm = viewModel.searchTerm.value
+
     TextField(
-        value = text,
+        value = searchTerm,
         onValueChange = {
-            text = it
+            viewModel.setSearchTerm(it)
         },
         placeholder = {
             Text(
@@ -185,7 +222,7 @@ fun SearchBar(
         maxLines = 1,
         singleLine = true,
         trailingIcon = {
-            IconButton(onClick = { onSearch(text) }) {
+            IconButton(onClick = { onSearch(searchTerm) }) {
                 Icon(
                     imageVector = Icons.Default.Search,
                     tint = primaryGray,
@@ -200,32 +237,32 @@ fun SearchBar(
 @Composable
 fun SearchItem(
     search: Search?,
+    homeViewModel: HomeViewModel = hiltViewModel(),
     modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     Card(
-        modifier = modifier.padding(4.dp)
+        modifier = modifier
+            .clickable {
+                onClick()
+            },
+        shape = RoundedCornerShape(8.dp),
+        elevation = 5.dp
     ) {
-        Row(modifier = modifier) {
-            Box(
+        Row() {
+            Image(
+                painter = rememberImagePainter(
+                    data = "${Constants.IMAGE_BASE_UR}/${search?.posterPath}",
+                    builder = {
+                        placeholder(R.drawable.ic_placeholder)
+                        crossfade(true)
+                    }
+                ),
                 modifier = Modifier
-                    .fillMaxWidth(0.3f)
-                    .fillMaxHeight()
-            ) {
-                Image(
-                    painter = rememberImagePainter(
-                        data = "${Constants.IMAGE_BASE_UR}/${search?.posterPath}",
-                        builder = {
-                            placeholder(R.drawable.ic_placeholder)
-                            crossfade(true)
-                        }
-                    ),
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .height(110.dp),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = null
-                )
-            }
+                    .fillMaxWidth(0.3f),
+                contentScale = ContentScale.Crop,
+                contentDescription = null
+            )
 
             Column(
                 modifier = modifier
@@ -258,13 +295,29 @@ fun SearchItem(
                 Spacer(modifier = Modifier.height(5.dp))
 
                 LazyRow(
-                    modifier = modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    items(3) {
+
+                    val moviesGenres = homeViewModel.moviesGenres.value
+                    val seriesGenres = homeViewModel.tvSeriesGenres.value
+
+                    var searchGenres: List<Genre> = emptyList()
+                    if (search?.mediaType == "tv") {
+                        searchGenres = seriesGenres.filter {
+                            search.genreIds?.contains(it.id)!!
+                        }
+                    }
+                    if (search?.mediaType == "movie") {
+                        searchGenres = moviesGenres.filter {
+                            search.genreIds?.contains(it.id)!!
+                        }
+                    }
+
+                    items(searchGenres){ genre ->
                         Text(
-                            modifier = modifier,
-                            text = search?.genreIds.toString(),
-                            color = Color.White,
+                            modifier = Modifier.fillMaxWidth().padding(5.dp),
+                            text = genre.name,
+                            color = primaryPink,
                             fontWeight = FontWeight.Light,
                             fontSize = 9.sp
                         )
@@ -274,7 +327,7 @@ fun SearchItem(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    modifier = modifier,
+                    modifier = Modifier.fillMaxWidth(),
                     text = search?.overview ?: "No description",
                     color = Color.White,
                     fontWeight = FontWeight.Light,
