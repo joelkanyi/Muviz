@@ -53,7 +53,7 @@ fun TvSeriesDetailsScreen(
                 posterUrl = "${Constants.IMAGE_BASE_UR}/${details.data?.posterPath}",
                 filmName = details.data?.name.toString(),
                 filmId = details.data?.id!!,
-                filmType = "movie",
+                filmType = "tv",
                 releaseDate = details.data?.firstAirDate.toString(),
                 rating = details.data.voteAverage.toFloat()!!,
                 navigator = navigator,

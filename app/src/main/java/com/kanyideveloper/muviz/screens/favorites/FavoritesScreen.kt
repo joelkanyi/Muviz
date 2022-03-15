@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -38,6 +39,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import com.kanyideveloper.muviz.data.local.Favorite
+import com.kanyideveloper.muviz.screens.destinations.MovieDetailsScreenDestination
+import com.kanyideveloper.muviz.screens.destinations.TvSeriesDetailsScreenDestination
 import com.kanyideveloper.muviz.screens.film_details.common.VoteAverageRatingIndicator
 import timber.log.Timber
 
@@ -137,6 +140,13 @@ fun FavoritesScreen(
                                 .fillMaxWidth()
                                 .height(230.dp)
                                 .align(alignment = Alignment.CenterVertically)
+                                .clickable {
+                                    if (favorite.mediaType == "tv"){
+                                        navigator.navigate(TvSeriesDetailsScreenDestination(favorite.mediaId))
+                                    }else if (favorite.mediaType == "movie"){
+                                        navigator.navigate(MovieDetailsScreenDestination(favorite.mediaId))
+                                    }
+                                }
                         ) {
                             FilmItem(
                                 filmItem = favorite,
