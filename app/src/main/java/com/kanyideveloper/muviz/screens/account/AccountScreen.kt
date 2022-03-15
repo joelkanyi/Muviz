@@ -15,7 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.model.AccountItem
-import com.kanyideveloper.muviz.presentation.components.StandardToolbar
+import com.kanyideveloper.muviz.screens.commons.StandardToolbar
 import com.kanyideveloper.muviz.ui.theme.primaryGray
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator

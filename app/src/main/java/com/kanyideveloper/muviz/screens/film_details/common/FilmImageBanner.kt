@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -18,6 +19,8 @@ import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.statusBarsPadding
 import com.kanyideveloper.muviz.R
+import com.kanyideveloper.muviz.data.local.Favorite
+import com.kanyideveloper.muviz.screens.favorites.FavoritesViewModel
 import com.kanyideveloper.muviz.ui.theme.AppBarCollapsedHeight
 import com.kanyideveloper.muviz.ui.theme.AppBarExpendedHeight
 import com.kanyideveloper.muviz.ui.theme.Transparent
@@ -31,10 +34,15 @@ fun FilmImageBanner(
     scrollState: LazyListState,
     posterUrl: String,
     filmName: String,
+    filmId: Int,
+    filmType: String,
+    releaseDate: String,
     rating: Float,
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    viewModel: FavoritesViewModel
 ) {
     val imageHeight = AppBarExpendedHeight - AppBarCollapsedHeight
+    viewModel.getAFavorites(filmId)
 
     val maxOffset = with(LocalDensity.current) {
         imageHeight.roundToPx()
@@ -107,6 +115,29 @@ fun FilmImageBanner(
                 navigator.popBackStack()
             }
         )
-        CircularFavoriteButtons()
+
+        viewModel.isFavorite.observeAsState().let { isFav ->
+            CircularFavoriteButtons(
+                isLiked = isFav.value!!,
+                onClick = {
+                    if (isFav.value!!) {
+                        return@CircularFavoriteButtons
+                    } else {
+                        viewModel.insertFavorite(
+                            Favorite(
+                                favorite = true,
+                                mediaId = filmId,
+                                mediaType = filmType,
+                                image = posterUrl,
+                                title = filmName,
+                                releaseDate = releaseDate,
+                                rating = rating
+                            )
+                        //  - Let me store the film banner image, the title, the release date and the rating
+                        )
+                    }
+                }
+            )
+        }
     }
 }

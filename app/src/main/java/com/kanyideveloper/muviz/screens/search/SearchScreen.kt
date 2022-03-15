@@ -38,7 +38,7 @@ import coil.compose.rememberImagePainter
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.model.Genre
 import com.kanyideveloper.muviz.model.Search
-import com.kanyideveloper.muviz.presentation.components.StandardToolbar
+import com.kanyideveloper.muviz.screens.commons.StandardToolbar
 import com.kanyideveloper.muviz.screens.destinations.MovieDetailsScreenDestination
 import com.kanyideveloper.muviz.screens.destinations.TvSeriesDetailsScreenDestination
 import com.kanyideveloper.muviz.screens.home.HomeViewModel

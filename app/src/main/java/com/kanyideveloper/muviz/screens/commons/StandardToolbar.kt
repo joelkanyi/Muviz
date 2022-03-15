@@ -1,4 +1,4 @@
-package com.kanyideveloper.muviz.presentation.components
+package com.kanyideveloper.muviz.screens.commons
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.Icon
