@@ -1,61 +1,59 @@
 package com.kanyideveloper.muviz.screens.favorites
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kanyideveloper.muviz.R
-import com.kanyideveloper.muviz.model.Film
-import com.kanyideveloper.muviz.presentation.components.StandardToolbar
+import com.kanyideveloper.muviz.screens.commons.StandardToolbar
 import com.kanyideveloper.muviz.ui.theme.Transparent
 import com.kanyideveloper.muviz.ui.theme.primaryDark
-import com.kanyideveloper.muviz.ui.theme.primaryGray
 import com.kanyideveloper.muviz.ui.theme.primaryPink
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 
 import androidx.compose.material.Card
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberImagePainter
+import com.kanyideveloper.muviz.data.local.Favorite
 import com.kanyideveloper.muviz.screens.film_details.common.VoteAverageRatingIndicator
+import timber.log.Timber
 
+@OptIn(ExperimentalMaterialApi::class)
 @Destination
 @Composable
 fun FavoritesScreen(
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    viewModel: FavoritesViewModel = hiltViewModel()
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
 
-        val openDialogCustom = remember{ mutableStateOf(false) }
-
-        //SimpleAlertDialog()
-
-        /*Dialog(onDismissRequest = { openDialogCustom.value = false}) {
-            CustomDialogUI(openDialogCustom = openDialogCustom)
-        }*/
-
+        val openDialog = remember { mutableStateOf(false) }
+        val favoriteFilms = viewModel.favorites.observeAsState(initial = emptyList())
 
         StandardToolbar(
             navigator = navigator,
@@ -70,6 +68,7 @@ fun FavoritesScreen(
             showBackArrow = false,
             navActions = {
                 IconButton(onClick = {
+                    openDialog.value = true
                 }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
@@ -81,49 +80,180 @@ fun FavoritesScreen(
         )
 
         LazyColumn {
-            items(10) {
-                FilmItem(
+            items(items = favoriteFilms.value, key = { favoriteFilm: Favorite ->
+                favoriteFilm.mediaId
+            }) { favorite ->
+
+                val dismissState = rememberDismissState()
+
+                if (dismissState.isDismissed(DismissDirection.EndToStart)) {
+                    viewModel.deleteOneFavorite(favorite)
+                }
+                SwipeToDismiss(
+                    state = dismissState,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp),
-                    painter = painterResource(id = R.drawable.motherland)
+                        .padding(vertical = Dp(1f)),
+                    directions = setOf(
+                        DismissDirection.EndToStart
+                    ),
+                    dismissThresholds = { direction ->
+                        FractionalThreshold(if (direction == DismissDirection.EndToStart) 0.1f else 0.05f)
+                    },
+                    background = {
+                        val color by animateColorAsState(
+                            when (dismissState.targetValue) {
+                                DismissValue.Default -> primaryDark
+                                else -> primaryPink
+                            }
+                        )
+                        val alignment = Alignment.CenterEnd
+                        val icon = Icons.Default.Delete
+
+                        val scale by animateFloatAsState(
+                            if (dismissState.targetValue == DismissValue.Default) 0.75f else 1f
+                        )
+
+                        Box(
+                            Modifier
+                                .fillMaxSize()
+                                .background(color)
+                                .padding(horizontal = Dp(20f)),
+                            contentAlignment = alignment
+                        ) {
+                            Icon(
+                                icon,
+                                contentDescription = "Delete Icon",
+                                modifier = Modifier.scale(scale)
+                            )
+                        }
+                    },
+                    dismissContent = {
+
+                        Card(
+                            elevation = animateDpAsState(
+                                if (dismissState.dismissDirection != null) 4.dp else 0.dp
+                            ).value,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(230.dp)
+                                .align(alignment = Alignment.CenterVertically)
+                        ) {
+                            FilmItem(
+                                filmItem = favorite,
+                            )
+                        }
+                    }
                 )
             }
         }
+
+
+        Timber.d(favoriteFilms.value.isEmpty().toString())
+
+        if ((favoriteFilms.value.isEmpty() || favoriteFilms.value.isNullOrEmpty())) {
+            Timber.d("Empty")
+            Column(
+                Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    modifier = Modifier
+                        .size(250.dp),
+                    painter = painterResource(id = R.drawable.ic_empty_cuate),
+                    contentDescription = null
+                )
+            }
+        }
+
+
+        if (openDialog.value) {
+            AlertDialog(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                onDismissRequest = {
+                    openDialog.value = false
+                },
+                title = {
+                    Text(text = "Delete all favorites")
+                },
+                text = {
+                    Text(text = "Are you want to delete all?")
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            viewModel.deleteAllFavorites()
+                            openDialog.value = false
+                        },
+                        colors = ButtonDefaults.buttonColors(primaryPink)
+                    ) {
+                        Text(text = "Yes", color = Color.White)
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            openDialog.value = false
+                        },
+                        colors = ButtonDefaults.buttonColors(primaryPink)
+                    ) {
+                        Text(text = "No", color = Color.White)
+                    }
+                },
+                backgroundColor = Color.White,
+                contentColor = Color.Black,
+                shape = RoundedCornerShape(10.dp)
+            )
+        }
+
     }
 }
 
 @Composable
-fun FilmItem(modifier: Modifier, painter: Painter) {
-    Card(modifier = modifier.padding(4.dp)) {
-        Box {
-            Image(
-                painter = painter,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop,
-                contentDescription = "Movie Banner"
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            colorStops = arrayOf(
-                                Pair(0.3f, Transparent),
-                                Pair(1.5f, primaryDark)
-                            )
+fun FilmItem(
+    filmItem: Favorite,
+) {
+    Box {
+        Image(
+            painter = rememberImagePainter(
+                data = filmItem.image,
+                builder = {
+                    placeholder(R.drawable.ic_placeholder)
+                    crossfade(true)
+                }
+            ),
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop,
+            contentDescription = "Movie Banner"
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colorStops = arrayOf(
+                            Pair(0.3f, Transparent),
+                            Pair(1.5f, primaryDark)
                         )
                     )
-            )
+                )
+        )
 
-            FilmDetails(film = Film(""))
-        }
+        FilmDetails(
+            title = filmItem.title,
+            releaseDate = filmItem.releaseDate,
+            rating = filmItem.rating
+        )
     }
 }
 
 @Composable
 fun FilmDetails(
-    film: Film
+    title: String,
+    releaseDate: String,
+    rating: Float
 ) {
     Row(
         modifier = Modifier
@@ -139,123 +269,21 @@ fun FilmDetails(
         ) {
             Column {
                 Text(
-                    text = "Motherland Fort Salem",
+                    text = title,
                     color = Color.White,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = "2021. Tv Series",
+                    text = releaseDate,
                     color = Color.White,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Light
                 )
             }
             VoteAverageRatingIndicator(
-                percentage = 0.75f
+                percentage = rating
             )
-        }
-    }
-}
-
-@Composable
-fun SimpleAlertDialog() {
-    AlertDialog(
-        onDismissRequest = { },
-        confirmButton = {
-            TextButton(onClick = {})
-            { Text(text = "OK") }
-        },
-        dismissButton = {
-            TextButton(onClick = {})
-            { Text(text = "Cancel") }
-        },
-        title = { Text(text = "Please confirm") },
-        text = { Text(text = "Should I continue with the requested action?") }
-    )
-}
-
-//Layout
-@Composable
-fun CustomDialogUI(modifier: Modifier = Modifier, openDialogCustom: MutableState<Boolean>) {
-    Card(
-        //shape = MaterialTheme.shapes.medium,
-        shape = RoundedCornerShape(10.dp),
-        // modifier = modifier.size(280.dp, 240.dp)
-        modifier = Modifier.padding(10.dp, 5.dp, 10.dp, 10.dp),
-        elevation = 8.dp
-    ) {
-        Column(
-            modifier
-                .background(Color.White)
-        ) {
-
-            //.......................................................................
-            Image(
-                imageVector = Icons.Default.Delete,
-                contentDescription = null, // decorative
-                contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(
-                    color = primaryPink
-                ),
-                modifier = Modifier
-                    .padding(top = 35.dp)
-                    .height(70.dp)
-                    .fillMaxWidth(),
-
-                )
-
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = "Get Updates",
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(top = 5.dp)
-                        .fillMaxWidth(),
-                    style = MaterialTheme.typography.h3,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    text = "Allow Permission to send you notifications when new art styles added.",
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(top = 10.dp, start = 25.dp, end = 25.dp)
-                        .fillMaxWidth(),
-                    style = MaterialTheme.typography.body1
-                )
-            }
-            //.......................................................................
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp)
-                    .background(primaryGray),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-
-                TextButton(onClick = {
-                    openDialogCustom.value = false
-                }) {
-
-                    Text(
-                        "Not Now",
-                        fontWeight = FontWeight.Bold,
-                        color = primaryPink,
-                        modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
-                    )
-                }
-                TextButton(onClick = {
-                    openDialogCustom.value = false
-                }) {
-                    Text(
-                        "Allow",
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Color.Black,
-                        modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
-                    )
-                }
-            }
         }
     }
 }

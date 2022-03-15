@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kanyideveloper.muviz.data.remote.responses.CreditsResponse
 import com.kanyideveloper.muviz.data.remote.responses.MovieDetails
+import com.kanyideveloper.muviz.screens.favorites.FavoritesViewModel
 import com.kanyideveloper.muviz.screens.film_details.FilmDetailsViewModel
 import com.kanyideveloper.muviz.screens.film_details.common.FilmImageBanner
 import com.kanyideveloper.muviz.screens.film_details.common.FilmInfo
@@ -23,7 +24,8 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 fun MovieDetailsScreen(
     filmId: Int,
     navigator: DestinationsNavigator,
-    viewModel: FilmDetailsViewModel = hiltViewModel()
+    viewModel: FilmDetailsViewModel = hiltViewModel(),
+    favoritesViewModel: FavoritesViewModel = hiltViewModel(),
 ) {
     val scrollState = rememberLazyListState()
 
@@ -50,8 +52,12 @@ fun MovieDetailsScreen(
                 scrollState = scrollState,
                 posterUrl = "${Constants.IMAGE_BASE_UR}/${details.data?.posterPath}",
                 filmName = details.data?.title.toString(),
-                rating = details.data?.voteAverage?.toFloat()!!,
-                navigator = navigator
+                filmId = details.data?.id!!,
+                filmType = "movie",
+                releaseDate = details.data?.releaseDate.toString(),
+                rating = details.data.voteAverage?.toFloat()!!,
+                navigator = navigator,
+                viewModel = favoritesViewModel
             )
         }else{
             CircularProgressIndicator()

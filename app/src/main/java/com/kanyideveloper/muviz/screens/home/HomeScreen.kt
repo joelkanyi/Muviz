@@ -36,7 +36,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.screens.commons.MovieItem
-import com.kanyideveloper.muviz.presentation.components.StandardToolbar
+import com.kanyideveloper.muviz.screens.commons.StandardToolbar
 import com.kanyideveloper.muviz.screens.destinations.MovieDetailsScreenDestination
 import com.kanyideveloper.muviz.screens.destinations.SearchScreenDestination
 import com.kanyideveloper.muviz.screens.destinations.TvSeriesDetailsScreenDestination

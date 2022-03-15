@@ -137,4 +137,7 @@ dependencies {
 
     // Swipe to refresh
     implementation "com.google.accompanist:accompanist-swiperefresh:0.24.3-alpha"
+
+    // Livedata
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
 }

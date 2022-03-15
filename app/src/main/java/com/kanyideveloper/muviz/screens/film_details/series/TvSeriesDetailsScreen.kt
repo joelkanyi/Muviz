@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kanyideveloper.muviz.data.remote.responses.CreditsResponse
 import com.kanyideveloper.muviz.data.remote.responses.TvSeriesDetails
+import com.kanyideveloper.muviz.screens.favorites.FavoritesViewModel
 import com.kanyideveloper.muviz.screens.film_details.FilmDetailsViewModel
 import com.kanyideveloper.muviz.screens.film_details.common.FilmImageBanner
 import com.kanyideveloper.muviz.screens.film_details.common.FilmInfo
@@ -23,8 +24,9 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 fun TvSeriesDetailsScreen(
     filmId: Int,
     navigator: DestinationsNavigator,
-    viewModel: FilmDetailsViewModel = hiltViewModel()
-) {
+    viewModel: FilmDetailsViewModel = hiltViewModel(),
+    favoritesViewModel: FavoritesViewModel = hiltViewModel()
+    ) {
     val scrollState = rememberLazyListState()
 
     val details = produceState<Resource<TvSeriesDetails>>(initialValue = Resource.Loading()) {
@@ -50,8 +52,12 @@ fun TvSeriesDetailsScreen(
                 scrollState = scrollState,
                 posterUrl = "${Constants.IMAGE_BASE_UR}/${details.data?.posterPath}",
                 filmName = details.data?.name.toString(),
-                rating = details.data?.voteAverage?.toFloat()!!,
-                navigator = navigator
+                filmId = details.data?.id!!,
+                filmType = "movie",
+                releaseDate = details.data?.firstAirDate.toString(),
+                rating = details.data.voteAverage.toFloat()!!,
+                navigator = navigator,
+                viewModel = favoritesViewModel
             )
         } else {
             CircularProgressIndicator()

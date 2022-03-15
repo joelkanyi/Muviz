@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kanyideveloper.muviz.data.remote.responses.CreditsResponse
-import com.kanyideveloper.muviz.presentation.components.StandardToolbar
+import com.kanyideveloper.muviz.screens.commons.StandardToolbar
 import com.kanyideveloper.muviz.screens.commons.CastItem
 import com.kanyideveloper.muviz.util.Constants
 import com.ramcosta.composedestinations.annotation.Destination

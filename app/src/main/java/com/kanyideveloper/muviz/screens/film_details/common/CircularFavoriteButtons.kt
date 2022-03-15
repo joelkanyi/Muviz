@@ -16,7 +16,7 @@ import com.kanyideveloper.muviz.ui.theme.primaryPink
 
 @Composable
 fun CircularFavoriteButtons(
-    isLiked: Boolean = true,
+    isLiked: Boolean,
     onClick: () -> Unit = {}
 ) {
     IconButton(onClick = {

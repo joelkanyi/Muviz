@@ -1,8 +1,12 @@
 package com.kanyideveloper.muviz.di
 
+import android.app.Application
+import androidx.room.Room
+import com.kanyideveloper.muviz.data.local.FavoritesDatabase
 import com.kanyideveloper.muviz.data.remote.TMDBApi
 import com.kanyideveloper.muviz.data.repository.*
 import com.kanyideveloper.muviz.util.Constants.BASE_URL
+import com.kanyideveloper.muviz.util.Constants.DATABASE_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,6 +50,16 @@ object AppModule {
             .client(okHttpClient)
             .build()
             .create(TMDBApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFavoritesDatabase(application: Application): FavoritesDatabase {
+        return Room.databaseBuilder(
+            application.applicationContext,
+            FavoritesDatabase::class.java,
+            DATABASE_NAME
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Provides

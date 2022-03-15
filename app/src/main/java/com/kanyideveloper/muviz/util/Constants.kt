@@ -5,4 +5,6 @@ object Constants {
     const val STARTING_PAGE_INDEX = 0
     const val IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg"
     const val IMAGE_BASE_UR = "https://image.tmdb.org/t/p/w500/"
+    const val DATABASE_NAME = "favorites_database"
+    const val TABLE_NAME = "favorites_table"
 }
