@@ -50,7 +50,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import retrofit2.HttpException
 import java.io.IOException
 
-@Destination(start = true)
+@Destination(start = false)
 @Composable
 fun HomeScreen(
     navigator: DestinationsNavigator,
