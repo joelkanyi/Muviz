@@ -2,7 +2,8 @@
 <resources>
 
     <style name="Theme.Muviz" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/black</item>
+        <item name="android:statusBarColor">@color/main</item>
+        <item name="android:windowBackground">@drawable/window_background</item>
     </style>
 
 </resources>

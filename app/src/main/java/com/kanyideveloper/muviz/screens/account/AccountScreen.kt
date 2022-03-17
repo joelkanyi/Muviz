@@ -25,13 +25,13 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.model.AccountItem
+import com.kanyideveloper.muviz.screens.destinations.AboutScreenDestination
 import com.kanyideveloper.muviz.ui.theme.primaryGray
 import com.kanyideveloper.muviz.ui.theme.primaryPink
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-
-@Destination(start = true)
+@Destination
 @Composable
 fun AccountScreen(
     navigator: DestinationsNavigator
@@ -84,7 +84,8 @@ fun AccountScreen(
                     onClick = {
                         when (item.title) {
                             "About" -> {
-                                Toast.makeText(context, "About the app", Toast.LENGTH_SHORT).show()
+                                //Toast.makeText(context, "About the app", Toast.LENGTH_SHORT).show()
+                                navigator.navigate(AboutScreenDestination)
                             }
                             "Rate us" -> {
                                 val rateIntent = Intent(
@@ -99,7 +100,7 @@ fun AccountScreen(
                                 sendIntent.action = Intent.ACTION_SEND
                                 sendIntent.putExtra(
                                     Intent.EXTRA_TEXT,
-                                    "Check out the App at: https://play.google.com/store/apps/details?id=$appPackageName"
+                                    "Check out Muviz App on Playstore: https://play.google.com/store/apps/details?id=$appPackageName"
                                 )
                                 sendIntent.type = "text/plain"
                                 context.startActivity(sendIntent)
@@ -149,6 +150,11 @@ fun AccountScreen(
                                     Toast
                                         .makeText(context, "Linkedin", Toast.LENGTH_SHORT)
                                         .show()
+
+                                    val intent = Intent(Intent.ACTION_VIEW)
+                                    intent.data =
+                                        Uri.parse("https://www.linkedin.com/in/joel-kanyi-037270174/")
+                                    startActivity(context, intent, null)
                                 },
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
@@ -186,6 +192,11 @@ fun AccountScreen(
                                     Toast
                                         .makeText(context, "Twitter", Toast.LENGTH_SHORT)
                                         .show()
+
+                                    val intent = Intent(Intent.ACTION_VIEW)
+                                    intent.data =
+                                        Uri.parse("https://twitter.com/_joelkanyi")
+                                    startActivity(context, intent, null)
                                 },
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
@@ -265,6 +276,11 @@ fun AccountScreen(
                                     Toast
                                         .makeText(context, "Facebook", Toast.LENGTH_SHORT)
                                         .show()
+
+                                    val intent = Intent(Intent.ACTION_VIEW)
+                                    intent.data =
+                                        Uri.parse("https://www.facebook.com/joel.kanyi.71/")
+                                    startActivity(context, intent, null)
                                 },
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
@@ -292,13 +308,6 @@ fun AccountScreen(
                                 contentDescription = null
                             )
                         }
-
-                        /**
-                         * Linkedin
-                         * Twitter
-                         * Github
-                         * Facebook
-                         */
                     }
                 },
                 confirmButton = {
@@ -323,9 +332,8 @@ fun AccountScreen(
 fun AccountItems(
     accountItem: AccountItem,
     onClick: () -> Unit = {},
-    modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier
+    Column(modifier = Modifier
         .clickable {
             onClick()
         }
