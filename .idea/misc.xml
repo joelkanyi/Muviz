@@ -16,7 +16,9 @@
         <entry key="app/src/main/res/drawable/ic_profile.xml" value="0.1425" />
         <entry key="app/src/main/res/drawable/ic_search.xml" value="0.1425" />
         <entry key="app/src/main/res/drawable/ic_search_engine__monochromatic.xml" value="0.1985" />
+        <entry key="app/src/main/res/drawable/ic_share.xml" value="0.271" />
         <entry key="app/src/main/res/drawable/ic_star.xml" value="0.1425" />
+        <entry key="app/src/main/res/drawable/window_background.xml" value="0.271" />
       </map>
     </option>
   </component>
