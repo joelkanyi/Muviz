@@ -54,14 +54,7 @@ The app is built with the Model-View-ViewModel (MVVM) is its structural design p
 
 ### Account screen
 #### Account
-<img src="screenshots/account.png" width="250"/>
-
-#### About
-<img src="screenshots/about.png" width="250"/>
-
-#### Get in touch
-<img src="screenshots/get-in-touch.png" width="250"/>
-
+<img src="screenshots/account.png" width="250"/> <img src="screenshots/about.png" width="250"/> <img src="screenshots/get-in-touch.png" width="250"/>
 
 ## Setup Requirements
 Obtain your key and replace it in the `gradle.properties` file
