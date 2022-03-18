@@ -1,6 +1,5 @@
 package com.kanyideveloper.muviz.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
@@ -14,14 +13,6 @@ private val DarkColorPalette = darkColors(
     primaryVariant = primaryDarkVariant,
     secondary = primaryDark,
     background = primaryDark
-
-
-/*    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,*/
 )
 
 private val LightColorPalette = lightColors(
@@ -29,15 +20,6 @@ private val LightColorPalette = lightColors(
     primaryVariant = Purple700,
     secondary = Teal200,
     background = Color.White
-
-    /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
 )
 
 @Composable

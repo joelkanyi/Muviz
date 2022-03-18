@@ -59,7 +59,7 @@ fun FilmInfo(
             }
         }
         item {
-            if (casts is Resource.Success){
+            if (casts is Resource.Success) {
                 CastDetails(
                     casts.data!!,
                     navigator = navigator

@@ -65,7 +65,9 @@ fun AboutScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             text = stringResource(R.string.about),
             color = Color.White,
             textAlign = TextAlign.Center,

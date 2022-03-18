@@ -150,7 +150,7 @@ fun HomeScreen(
                             items(trendingTvSeries) { film ->
 
                                 MovieItem(
-                                    cardModifier = Modifier
+                                    modifier = Modifier
                                         .height(220.dp)
                                         .width(250.dp)
                                         .clickable {
@@ -162,7 +162,7 @@ fun HomeScreen(
                         } else {
                             items(trendingMovies) { film ->
                                 MovieItem(
-                                    cardModifier = Modifier
+                                    modifier = Modifier
                                         .height(200.dp)
                                         .width(230.dp)
                                         .clickable {
@@ -214,7 +214,6 @@ fun HomeScreen(
                                 )
                             }
                             else -> {
-                                Unit
                             }
                         }
                     }
@@ -240,7 +239,7 @@ fun HomeScreen(
                             items(popularTvSeries) { film ->
 
                                 MovieItem(
-                                    cardModifier = Modifier
+                                    modifier = Modifier
                                         .height(200.dp)
                                         .width(130.dp)
                                         .clickable {
@@ -253,7 +252,7 @@ fun HomeScreen(
                             items(popularMovies) { film ->
 
                                 MovieItem(
-                                    cardModifier = Modifier
+                                    modifier = Modifier
                                         .height(200.dp)
                                         .width(130.dp)
                                         .clickable {
@@ -304,7 +303,6 @@ fun HomeScreen(
                                 )
                             }
                             else -> {
-                                Unit
                             }
                         }
                     }
@@ -340,7 +338,7 @@ fun HomeScreen(
                             items(onAirTvSeries) { film ->
 
                                 MovieItem(
-                                    cardModifier = Modifier
+                                    modifier = Modifier
                                         .height(200.dp)
                                         .width(130.dp)
                                         .clickable {
@@ -353,7 +351,7 @@ fun HomeScreen(
                             items(upcomingMovies) { film ->
 
                                 MovieItem(
-                                    cardModifier = Modifier
+                                    modifier = Modifier
                                         .height(200.dp)
                                         .width(130.dp)
                                         .clickable {
@@ -403,6 +401,7 @@ fun HomeScreen(
                                     color = primaryPink
                                 )
                             }
+                            else -> {}
                         }
                     }
                 }
@@ -437,7 +436,7 @@ fun HomeScreen(
                             items(airingTodayTvSeries) { film ->
 
                                 MovieItem(
-                                    cardModifier = Modifier
+                                    modifier = Modifier
                                         .height(200.dp)
                                         .width(130.dp)
                                         .clickable {
@@ -450,7 +449,7 @@ fun HomeScreen(
                             items(nowPlayingMovies) { film ->
 
                                 MovieItem(
-                                    cardModifier = Modifier
+                                    modifier = Modifier
                                         .height(200.dp)
                                         .width(130.dp)
                                         .clickable {
@@ -499,6 +498,7 @@ fun HomeScreen(
                                     color = primaryPink
                                 )
                             }
+                            else -> {}
                         }
                     }
                 }
@@ -529,7 +529,7 @@ fun HomeScreen(
                             items(topRatedTvSeries) { film ->
 
                                 MovieItem(
-                                    cardModifier = Modifier
+                                    modifier = Modifier
                                         .height(200.dp)
                                         .width(130.dp)
                                         .clickable {
@@ -542,7 +542,7 @@ fun HomeScreen(
                             items(topRatedMovies) { film ->
 
                                 MovieItem(
-                                    cardModifier = Modifier
+                                    modifier = Modifier
                                         .height(200.dp)
                                         .width(130.dp)
                                         .clickable {
@@ -591,6 +591,7 @@ fun HomeScreen(
                                     color = primaryPink
                                 )
                             }
+                            else -> {}
                         }
                     }
                 }

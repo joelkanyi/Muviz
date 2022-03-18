@@ -133,7 +133,7 @@ fun FilmImageBanner(
                                 releaseDate = releaseDate,
                                 rating = rating
                             )
-                        //  - Let me store the film banner image, the title, the release date and the rating
+                            //  - Let me store the film banner image, the title, the release date and the rating
                         )
                     }
                 }

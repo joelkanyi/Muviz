@@ -141,9 +141,9 @@ fun FavoritesScreen(
                                 .height(230.dp)
                                 .align(alignment = Alignment.CenterVertically)
                                 .clickable {
-                                    if (favorite.mediaType == "tv"){
+                                    if (favorite.mediaType == "tv") {
                                         navigator.navigate(TvSeriesDetailsScreenDestination(favorite.mediaId))
-                                    }else if (favorite.mediaType == "movie"){
+                                    } else if (favorite.mediaType == "movie") {
                                         navigator.navigate(MovieDetailsScreenDestination(favorite.mediaId))
                                     }
                                 }

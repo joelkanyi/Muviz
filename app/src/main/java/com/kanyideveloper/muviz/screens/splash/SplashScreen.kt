@@ -62,7 +62,7 @@ fun SplashScreen(
             painterResource(
                 id = R.drawable.muviz
             ),
-            contentDescription = "App logo",
+            contentDescription = "App-logo",
             modifier = Modifier
                 .fillMaxWidth()
                 .height(90.dp)

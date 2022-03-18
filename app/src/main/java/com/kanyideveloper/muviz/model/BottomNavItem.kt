@@ -6,13 +6,6 @@ import com.kanyideveloper.muviz.screens.destinations.Destination
 import com.kanyideveloper.muviz.screens.destinations.FavoritesScreenDestination
 import com.kanyideveloper.muviz.screens.destinations.HomeScreenDestination
 
-
-/*data class BottomNavItem(
-    val name: String,
-    val route: String,
-    val icon: ImageVector
-)*/
-
 sealed class BottomNavItem(var title: String, var icon: Int, var destination: Destination) {
     object Home : BottomNavItem(
         title = "Home",

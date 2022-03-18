@@ -39,7 +39,6 @@ fun CastsScreen(
                     fontWeight = FontWeight.SemiBold
                 )
             },
-            modifier = Modifier.fillMaxWidth(),
             showBackArrow = true
         )
 
@@ -52,16 +51,16 @@ fun CastsScreen(
             items(creditsResponse.cast) { cast ->
                 Timber.d(cast.toString())
 
-                val imageLink = if (cast.profilePath.equals("") || cast.profilePath == null){
+                val imageLink = if (cast.profilePath.equals("") || cast.profilePath == null) {
                     "https://pixy.org/src/9/94083.png"
-                }else{
+                } else {
                     cast.profilePath
                 }
 
                 CastItem(
                     size = 170.dp,
                     castImageUrl = "${Constants.IMAGE_BASE_UR}/$imageLink",
-                    castName = cast.name!!
+                    castName = cast.name
                 )
             }
         }

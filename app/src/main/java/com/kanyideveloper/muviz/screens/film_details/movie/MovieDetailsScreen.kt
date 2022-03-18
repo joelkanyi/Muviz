@@ -29,18 +29,18 @@ fun MovieDetailsScreen(
 ) {
     val scrollState = rememberLazyListState()
 
-    val details = produceState<Resource<MovieDetails>>(initialValue = Resource.Loading()){
+    val details = produceState<Resource<MovieDetails>>(initialValue = Resource.Loading()) {
         value = viewModel.getMovieDetails(filmId)
     }.value
 
-    val casts = produceState<Resource<CreditsResponse>>(initialValue = Resource.Loading()){
+    val casts = produceState<Resource<CreditsResponse>>(initialValue = Resource.Loading()) {
         value = viewModel.getMovieCasts(filmId)
     }.value
 
     // Include Film Genres
 
     Box {
-        if (details is Resource.Success){
+        if (details is Resource.Success) {
             FilmInfo(
                 scrollState = scrollState,
                 overview = details.data?.overview.toString(),
@@ -54,12 +54,12 @@ fun MovieDetailsScreen(
                 filmName = details.data?.title.toString(),
                 filmId = details.data?.id!!,
                 filmType = "movie",
-                releaseDate = details.data?.releaseDate.toString(),
+                releaseDate = details.data.releaseDate.toString(),
                 rating = details.data.voteAverage?.toFloat()!!,
                 navigator = navigator,
                 viewModel = favoritesViewModel
             )
-        }else{
+        } else {
             CircularProgressIndicator()
         }
     }

@@ -2,8 +2,6 @@ package com.kanyideveloper.muviz.screens.search
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -26,7 +24,7 @@ class SearchViewModel @Inject constructor(
     private val _searchTerm = mutableStateOf("")
     val searchTerm: State<String> = _searchTerm
 
-    fun setSearchTerm(term: String){
+    fun setSearchTerm(term: String) {
         _searchTerm.value = term
     }
 

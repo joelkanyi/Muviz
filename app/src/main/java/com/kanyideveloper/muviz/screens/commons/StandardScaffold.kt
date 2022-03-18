@@ -1,9 +1,8 @@
-package com.kanyideveloper.muviz.presentation.components
+package com.kanyideveloper.muviz.screens.commons
 
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -19,7 +18,6 @@ import com.kanyideveloper.muviz.ui.theme.primaryPink
 @Composable
 fun StandardScaffold(
     navController: NavController,
-    modifier: Modifier = Modifier,
     showBottomBar: Boolean = true,
     items: List<BottomNavItem> = listOf(
         BottomNavItem.Home,

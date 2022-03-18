@@ -15,8 +15,8 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
 fun StandardToolbar(
-    navigator: DestinationsNavigator,
     modifier: Modifier = Modifier,
+    navigator: DestinationsNavigator,
     showBackArrow: Boolean = false,
     navActions: @Composable RowScope.() -> Unit = {},
     title: @Composable () -> Unit = {}

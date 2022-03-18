@@ -27,11 +27,11 @@ import timber.log.Timber
 fun CastDetails(
     creditsResponse: CreditsResponse?,
     navigator: DestinationsNavigator,
-    modifier: Modifier = Modifier.fillMaxWidth()
+    modifier: Modifier = Modifier
 ) {
     Column {
         Row(
-            modifier = modifier,
+            modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -60,7 +60,7 @@ fun CastDetails(
                 IconButton(onClick = {
                     Timber.d("${creditsResponse == null}")
 
-                    if (creditsResponse == null){
+                    if (creditsResponse == null) {
                         return@IconButton
                     }
                     navigator.navigate(CastsScreenDestination(creditsResponse))
@@ -80,7 +80,7 @@ fun CastDetails(
                 CastItem(
                     size = 90.dp,
                     castImageUrl = "${Constants.IMAGE_BASE_UR}/${cast.profilePath}",
-                    castName = cast.name!!
+                    castName = cast.name
                 )
             }
         })

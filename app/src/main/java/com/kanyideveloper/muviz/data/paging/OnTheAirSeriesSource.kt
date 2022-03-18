@@ -16,11 +16,11 @@ class OnTheAirSeriesSource(private val api: TMDBApi) :
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Series> {
         return try {
             val nextPage = params.key ?: 1
-            val trendingMoviesList = api.getOnTheAirTvSeries(nextPage)
+            val onAirSeries = api.getOnTheAirTvSeries(nextPage)
             LoadResult.Page(
-                data = trendingMoviesList.results,
+                data = onAirSeries.results,
                 prevKey = if (nextPage == 1) null else nextPage - 1,
-                nextKey = if (trendingMoviesList.results.isEmpty()) null else trendingMoviesList.page + 1
+                nextKey = if (onAirSeries.results.isEmpty()) null else onAirSeries.page + 1
             )
         } catch (exception: IOException) {
             return LoadResult.Error(exception)
