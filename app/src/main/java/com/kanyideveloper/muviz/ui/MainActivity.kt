@@ -28,6 +28,7 @@ import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.defaults.NestedNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
+import com.ramcosta.composedestinations.rememberNavHostEngine
 import dagger.hilt.android.AndroidEntryPoint
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialNavigationApi::class)
@@ -44,7 +45,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberAnimatedNavController()
 
-                    val navHostEngine = rememberAnimatedNavHostEngine(
+                    val navHostEngine = rememberNavHostEngine()
+                        /*rememberAnimatedNavHostEngine()(
                         rootDefaultAnimations = RootNavGraphDefaultAnimations.ACCOMPANIST_FADING,
                         defaultAnimationsForNestedNavGraph = mapOf(
                             NavGraphs.root to NestedNavGraphDefaultAnimations(
@@ -52,7 +54,7 @@ class MainActivity : ComponentActivity() {
                                 exitTransition = { fadeOut(animationSpec = tween(1000)) }
                             )
                         )
-                    )
+                    )*/
 
                     val newBackStackEntry by navController.currentBackStackEntryAsState()
                     val route = newBackStackEntry?.destination?.route
