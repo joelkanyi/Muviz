@@ -59,5 +59,5 @@ The app is built with the Model-View-ViewModel (MVVM) is its structural design p
 ## Setup Requirements
 Obtain your key and replace it in the `gradle.properties` file
     ```gradle
-    API_KEY = "d31c90f6e90f1993a5cbce70c8c53ce8"
+    API_KEY = "API_KEY_VALUE"
     ```
