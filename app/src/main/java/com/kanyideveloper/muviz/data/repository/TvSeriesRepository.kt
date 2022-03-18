@@ -9,7 +9,7 @@ import com.kanyideveloper.muviz.model.Series
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class TvSeriesRepository @Inject constructor(private val api: TMDBApi){
+class TvSeriesRepository @Inject constructor(private val api: TMDBApi) {
     fun getTrendingThisWeekTvSeries(): Flow<PagingData<Series>> {
         return Pager(
             config = PagingConfig(enablePlaceholders = false, pageSize = 27),

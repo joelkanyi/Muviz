@@ -16,11 +16,11 @@ class SearchPagingSource(private val api: TMDBApi, private val query: String) :
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Search> {
         return try {
             val nextPage = params.key ?: 1
-            val trendingMoviesList = api.multiSearch(nextPage, query)
+            val searchResultList = api.multiSearch(nextPage, query)
             LoadResult.Page(
-                data = trendingMoviesList.searches,
+                data = searchResultList.searches,
                 prevKey = if (nextPage == 1) null else nextPage - 1,
-                nextKey = if (trendingMoviesList.searches.isEmpty()) null else trendingMoviesList.page + 1
+                nextKey = if (searchResultList.searches.isEmpty()) null else searchResultList.page + 1
             )
         } catch (exception: IOException) {
             return LoadResult.Error(exception)

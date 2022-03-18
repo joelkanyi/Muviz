@@ -6,23 +6,23 @@ import com.kanyideveloper.muviz.data.local.FavoritesDatabase
 import javax.inject.Inject
 
 class FavoritesRepository @Inject constructor(private val database: FavoritesDatabase) {
-    suspend fun insertFavorite(favorite: Favorite){
+    suspend fun insertFavorite(favorite: Favorite) {
         database.dao.insertFavorite(favorite)
     }
 
-    fun getFavorites(): LiveData<List<Favorite>>{
+    fun getFavorites(): LiveData<List<Favorite>> {
         return database.dao.getAllFavorites()
     }
 
-    suspend fun getAFavorites(mediaId: Int): Favorite?{
+    suspend fun getAFavorites(mediaId: Int): Favorite? {
         return database.dao.getAFavorites(mediaId)
     }
 
-    suspend fun deleteOneFavorite(favorite: Favorite){
+    suspend fun deleteOneFavorite(favorite: Favorite) {
         database.dao.deleteAFavorite(favorite)
     }
 
-    suspend fun deleteAllFavorites(){
+    suspend fun deleteAllFavorites() {
         database.dao.deleteAllFavorites()
     }
 }

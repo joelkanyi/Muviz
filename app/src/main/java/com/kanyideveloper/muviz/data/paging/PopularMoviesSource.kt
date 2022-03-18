@@ -16,11 +16,11 @@ class PopularMoviesSource(private val api: TMDBApi) :
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         return try {
             val nextPage = params.key ?: 1
-            val trendingMoviesList = api.getPopularMovies(nextPage)
+            val popularMovies = api.getPopularMovies(nextPage)
             LoadResult.Page(
-                data = trendingMoviesList.searches,
+                data = popularMovies.searches,
                 prevKey = if (nextPage == 1) null else nextPage - 1,
-                nextKey = if (trendingMoviesList.searches.isEmpty()) null else trendingMoviesList.page + 1
+                nextKey = if (popularMovies.searches.isEmpty()) null else popularMovies.page + 1
             )
         } catch (exception: IOException) {
             return LoadResult.Error(exception)

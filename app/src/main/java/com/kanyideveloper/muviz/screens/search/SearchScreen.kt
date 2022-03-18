@@ -313,9 +313,11 @@ fun SearchItem(
                         }
                     }
 
-                    items(searchGenres){ genre ->
+                    items(searchGenres) { genre ->
                         Text(
-                            modifier = Modifier.fillMaxWidth().padding(5.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(5.dp),
                             text = genre.name,
                             color = primaryPink,
                             fontWeight = FontWeight.Light,

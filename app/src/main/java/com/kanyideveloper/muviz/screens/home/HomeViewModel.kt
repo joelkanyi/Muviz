@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
-import com.kanyideveloper.muviz.data.repository.FilmsDetailsRepository
 import com.kanyideveloper.muviz.data.repository.GenresRepository
 import com.kanyideveloper.muviz.data.repository.MoviesRepository
 import com.kanyideveloper.muviz.data.repository.TvSeriesRepository
@@ -20,8 +19,6 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-private const val TAG = "HomeScreenViewModel"
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -186,6 +183,7 @@ class HomeViewModel @Inject constructor(
                 is Resource.Error -> {
                     //loadingError.value = result.message.toString()
                 }
+                else -> {}
             }
         }
     }
@@ -272,6 +270,7 @@ class HomeViewModel @Inject constructor(
                 is Resource.Error -> {
                     //loadingError.value = result.message.toString()
                 }
+                else -> {}
             }
         }
     }

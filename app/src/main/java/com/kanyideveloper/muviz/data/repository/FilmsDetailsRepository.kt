@@ -30,7 +30,7 @@ class FilmsDetailsRepository @Inject constructor(private val api: TMDBApi) {
             return Resource.Error("Unknown error occurred")
         }
 
-        Timber.d("Movie Casts ${response.toString()}")
+        Timber.d("Movie Casts $response")
         return Resource.Success(response)
     }
 

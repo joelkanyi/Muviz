@@ -26,7 +26,7 @@ fun TvSeriesDetailsScreen(
     navigator: DestinationsNavigator,
     viewModel: FilmDetailsViewModel = hiltViewModel(),
     favoritesViewModel: FavoritesViewModel = hiltViewModel()
-    ) {
+) {
     val scrollState = rememberLazyListState()
 
     val details = produceState<Resource<TvSeriesDetails>>(initialValue = Resource.Loading()) {
@@ -54,8 +54,8 @@ fun TvSeriesDetailsScreen(
                 filmName = details.data?.name.toString(),
                 filmId = details.data?.id!!,
                 filmType = "tv",
-                releaseDate = details.data?.firstAirDate.toString(),
-                rating = details.data.voteAverage.toFloat()!!,
+                releaseDate = details.data.firstAirDate,
+                rating = details.data.voteAverage.toFloat(),
                 navigator = navigator,
                 viewModel = favoritesViewModel
             )
