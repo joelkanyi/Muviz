@@ -49,6 +49,9 @@ The app is built with the Model-View-ViewModel (MVVM) is its structural design p
 #### Placeholder
 <img src="screenshots/placeholder.png" width="250"/>
 
+### Search screen
+<img src="screenshots/search.png" width="250"/>
+
 ### Favorites screen
 <img src="screenshots/favorites.png" width="250"/>
 
