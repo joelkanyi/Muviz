@@ -66,8 +66,8 @@ class MainActivity : ComponentActivity() {
                             FavoritesScreenDestination.route,
                             AccountScreenDestination.route
                         )
-                    ) {
-                        Box(modifier = Modifier.padding(PaddingValues())) {
+                    ) { innerPadding ->
+                        Box(modifier = Modifier.padding(innerPadding)) {
                             DestinationsNavHost(
                                 navGraph = NavGraphs.root,
                                 navController = navController,
