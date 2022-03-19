@@ -1,5 +1,6 @@
 package com.kanyideveloper.muviz.screens.commons
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,7 +25,7 @@ fun StandardScaffold(
         BottomNavItem.Favorites,
         BottomNavItem.Account
     ),
-    content: @Composable () -> Unit,
+    content: @Composable (paddingValues: PaddingValues) -> Unit,
 ) {
     Scaffold(
         bottomBar = {
@@ -70,7 +71,7 @@ fun StandardScaffold(
                 }
             }
         }
-    ) {
-        content()
+    ) { paddingValues ->
+        content(paddingValues)
     }
 }
