@@ -36,7 +36,7 @@ The app is built with the Model-View-ViewModel (MVVM) is its structural design p
 
 
 ## Demo
-### Spash screen
+### Splash screen
 <img src="screenshots/splash.png" width="250"/>
 
 ### Home screen
