@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,6 +27,7 @@ import androidx.core.content.ContextCompat.startActivity
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.model.AccountItem
 import com.kanyideveloper.muviz.screens.destinations.AboutScreenDestination
+import com.kanyideveloper.muviz.ui.theme.primaryDarkVariant
 import com.kanyideveloper.muviz.ui.theme.primaryGray
 import com.kanyideveloper.muviz.ui.theme.primaryPink
 import com.ramcosta.composedestinations.annotation.Destination
@@ -132,6 +134,7 @@ fun AccountScreen(
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = "Get in touch",
+                        color = Color.White,
                         textAlign = TextAlign.Center,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
@@ -147,10 +150,6 @@ fun AccountScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    Toast
-                                        .makeText(context, "Linkedin", Toast.LENGTH_SHORT)
-                                        .show()
-
                                     val intent = Intent(Intent.ACTION_VIEW)
                                     intent.data =
                                         Uri.parse("https://www.linkedin.com/in/joel-kanyi-037270174/")
@@ -171,6 +170,7 @@ fun AccountScreen(
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
                                     text = "Linkedin",
+                                    color = Color.White,
                                     textAlign = TextAlign.Left,
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.SemiBold
@@ -213,6 +213,7 @@ fun AccountScreen(
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
                                     text = "Twitter",
+                                    color = Color.White,
                                     textAlign = TextAlign.Left,
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.SemiBold
@@ -255,6 +256,7 @@ fun AccountScreen(
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
                                     text = "Github",
+                                    color = Color.White,
                                     textAlign = TextAlign.Left,
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.SemiBold
@@ -297,6 +299,7 @@ fun AccountScreen(
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
                                     text = "Facebook",
+                                    color = Color.White,
                                     textAlign = TextAlign.Left,
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.SemiBold
@@ -320,7 +323,7 @@ fun AccountScreen(
                         Text(text = "Okay", color = Color.White)
                     }
                 },
-                backgroundColor = Color.White,
+                backgroundColor = primaryDarkVariant,
                 contentColor = Color.Black,
                 shape = RoundedCornerShape(10.dp)
             )
