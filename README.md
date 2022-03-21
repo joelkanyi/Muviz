@@ -9,6 +9,13 @@ The app is built with the Model-View-ViewModel (MVVM) is its structural design p
 - Views display visual elements and controls on the screen. They’re typically subclasses of UIView.
 - View models transform model information into values that can be displayed on a view. They’re usually classes, so they can be passed around as references.
 
+## Setup Requirements
+Obtain your key from [TMDB API](https://www.themoviedb.org/documentation/api) and replace it in the `gradle.properties` file:
+
+```gradle
+    API_KEY = "API_KEY_VALUE"
+```
+
 ## Tech Stack.
 - [Kotlin](https://developer.android.com/kotlin) - Kotlin is a programming language that can run on JVM. Google has announced Kotlin as one of its officially supported programming languages in Android Studio; and the Android community is migrating at a pace from Java to Kotlin.
 - Jetpack components:
@@ -58,10 +65,3 @@ The app is built with the Model-View-ViewModel (MVVM) is its structural design p
 ### Account screen
 #### Account
 <img src="screenshots/account.png" width="250"/> <img src="screenshots/about.png" width="250"/> <img src="screenshots/get-in-touch.png" width="250"/>
-
-## Setup Requirements
-Obtain your key and replace it in the `gradle.properties` file:
-
-```gradle
-    API_KEY = "API_KEY_VALUE"
-```
