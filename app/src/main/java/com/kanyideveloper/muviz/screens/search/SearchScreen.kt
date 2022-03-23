@@ -62,6 +62,7 @@ fun SearchScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(
+        Modifier.fillMaxSize()
     ) {
         StandardToolbar(
             navigator = navigator,
@@ -90,11 +91,11 @@ fun SearchScreen(
 
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
         ) {
 
             LazyColumn(
-                contentPadding = PaddingValues(8.dp)
+                contentPadding = PaddingValues(8.dp),
+                verticalArrangement = Arrangement.Top
             ) {
                 items(searchResult) { search ->
                     SearchItem(
@@ -134,11 +135,10 @@ fun SearchScreen(
                 when (loadState.refresh) {
                     is LoadState.Loading -> {
                         CircularProgressIndicator(
-                            modifier = Modifier.wrapContentSize(Alignment.Center),
+                            modifier = Modifier.align(Alignment.Center),
                             color = primaryPink,
-                            strokeWidth = 2.dp,
-
-                            )
+                            strokeWidth = 2.dp
+                        )
                     }
                     is LoadState.Error -> {
                         val e = searchResult.loadState.refresh as LoadState.Error
@@ -154,6 +154,9 @@ fun SearchScreen(
                                     "Unknown error occurred"
                                 }
                             },
+                            modifier = Modifier
+                                .align(alignment = Alignment.Center)
+                                .padding(12.dp),
                             textAlign = TextAlign.Center,
                             color = primaryPink
                         )
@@ -162,6 +165,7 @@ fun SearchScreen(
                     is LoadState.NotLoading -> {
                         if (searchResult.itemCount <= 0) {
                             Column(
+                                Modifier.fillMaxSize(),
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
@@ -249,7 +253,7 @@ fun SearchItem(
         shape = RoundedCornerShape(8.dp),
         elevation = 5.dp
     ) {
-        Row() {
+        Row {
             Image(
                 painter = rememberImagePainter(
                     data = "${Constants.IMAGE_BASE_UR}/${search?.posterPath}",
