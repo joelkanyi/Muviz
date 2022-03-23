@@ -16,7 +16,10 @@ interface FavoritesDao {
     fun getAllFavorites(): LiveData<List<Favorite>>
 
     @Query("SELECT * FROM favorites_table WHERE mediaId  == :mediaId")
-    suspend fun getAFavorites(mediaId: Int): Favorite?
+    fun getAFavorites(mediaId: Int): LiveData<Favorite?>
+
+    @Query("SELECT favorite FROM favorites_table WHERE mediaId = :mediaId")
+    fun isFavorite(mediaId: Int): LiveData<Boolean>
 
     @Delete
     suspend fun deleteAFavorite(favorite: Favorite)
