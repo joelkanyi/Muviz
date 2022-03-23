@@ -14,7 +14,11 @@ class FavoritesRepository @Inject constructor(private val database: FavoritesDat
         return database.dao.getAllFavorites()
     }
 
-    suspend fun getAFavorites(mediaId: Int): Favorite? {
+    fun isFavorite(mediaId: Int): LiveData<Boolean>{
+        return database.dao.isFavorite(mediaId)
+    }
+
+    fun getAFavorites(mediaId: Int): LiveData<Favorite?> {
         return database.dao.getAFavorites(mediaId)
     }
 

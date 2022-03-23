@@ -17,11 +17,13 @@ import com.kanyideveloper.muviz.ui.theme.primaryPink
 @Composable
 fun CircularFavoriteButtons(
     isLiked: Boolean,
-    onClick: () -> Unit = {}
+    onClick: (isFav: Boolean) -> Unit = {}
 ) {
-    IconButton(onClick = {
-        onClick()
-    }) {
+    IconButton(
+        onClick = {
+            onClick(isLiked)
+        }) {
+
         Icon(
             modifier = Modifier
                 .width(38.dp)

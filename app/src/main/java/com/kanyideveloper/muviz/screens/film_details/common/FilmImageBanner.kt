@@ -1,5 +1,6 @@
 package com.kanyideveloper.muviz.screens.film_details.common
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -12,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -41,8 +43,10 @@ fun FilmImageBanner(
     navigator: DestinationsNavigator,
     viewModel: FavoritesViewModel
 ) {
+
+    val context = LocalContext.current
+
     val imageHeight = AppBarExpendedHeight - AppBarCollapsedHeight
-    viewModel.getAFavorites(filmId)
 
     val maxOffset = with(LocalDensity.current) {
         imageHeight.roundToPx()
@@ -116,28 +120,27 @@ fun FilmImageBanner(
             }
         )
 
-        viewModel.isFavorite.observeAsState().let { isFav ->
-            CircularFavoriteButtons(
-                isLiked = isFav.value!!,
-                onClick = {
-                    if (isFav.value!!) {
-                        return@CircularFavoriteButtons
-                    } else {
-                        viewModel.insertFavorite(
-                            Favorite(
-                                favorite = true,
-                                mediaId = filmId,
-                                mediaType = filmType,
-                                image = posterUrl,
-                                title = filmName,
-                                releaseDate = releaseDate,
-                                rating = rating
-                            )
-                            //  - Let me store the film banner image, the title, the release date and the rating
+
+        CircularFavoriteButtons(
+            isLiked = viewModel.isAFavorite(filmId).observeAsState().value != null,
+            onClick = { isFav ->
+                if (isFav) {
+                    Toast.makeText(context, "Already added to your favorites", Toast.LENGTH_SHORT).show()
+                    return@CircularFavoriteButtons
+                } else {
+                    viewModel.insertFavorite(
+                        Favorite(
+                            favorite = true,
+                            mediaId = filmId,
+                            mediaType = filmType,
+                            image = posterUrl,
+                            title = filmName,
+                            releaseDate = releaseDate,
+                            rating = rating
                         )
-                    }
+                    )
                 }
-            )
-        }
+            }
+        )
     }
 }

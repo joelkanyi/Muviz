@@ -1,5 +1,6 @@
 package com.kanyideveloper.muviz.screens.favorites
 
+import androidx.compose.runtime.State
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,19 +17,14 @@ class FavoritesViewModel @Inject constructor(private val repository: FavoritesRe
 
     val favorites = repository.getFavorites()
 
-    private val _isFavorite = MutableLiveData(false)
-    val isFavorite: LiveData<Boolean> = _isFavorite
-
     fun insertFavorite(favorite: Favorite) {
         viewModelScope.launch {
             repository.insertFavorite(favorite)
         }
     }
 
-    fun getAFavorites(mediaId: Int) {
-        viewModelScope.launch {
-            _isFavorite.value = repository.getAFavorites(mediaId) != null
-        }
+    fun isAFavorite(mediaId: Int): LiveData<Boolean>{
+        return repository.isFavorite(mediaId)
     }
 
     fun deleteOneFavorite(favorite: Favorite) {
