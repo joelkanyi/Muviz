@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kanyideveloper.muviz.data.remote.responses.CreditsResponse
 import com.kanyideveloper.muviz.ui.theme.AppBarExpendedHeight
+import com.kanyideveloper.muviz.ui.theme.primaryPink
 import com.kanyideveloper.muviz.util.Resource
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -130,7 +131,7 @@ fun ExpandableText(
             val density = LocalDensity.current
             Text(
                 // Fixme: Use your app theme color
-                color = Color(0XFF74e39a),
+                color = primaryPink,
                 text = "... See more",
                 fontWeight = FontWeight.Bold,
                 fontSize = 13.sp,
