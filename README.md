@@ -3,6 +3,12 @@
 # Muviz
 An Android app built with Jetpack Compose consuming [TMDB API](https://www.themoviedb.org/documentation/api) to help movies, Tv shows and series fanatics to have current information of the trending, popular, upcoming, on air and many other films. It also helps user know the details of their favorite films and the casts, this helps users add their favorites films to favorite for easy remembrance. It also helps users search for that show that they have heard about it and they are not sure about it.
 
+[![PlayStore][playstore-image]][playstore-url]
+
+[playstore-imag]: https://github.com/DSC-Kibabii-University/KIBU-OLX/blob/master/screenshots/google-play-badge.png
+
+[playstore-url]: https://play.google.com/store/apps/details?id=com.kanyideveloper.muviz
+
 ### Structural design pattern
 The app is built with the Model-View-ViewModel (MVVM) is its structural design pattern that separates objects into three distinct groups:
 - Models hold application data. They’re usually structs or simple classes.
