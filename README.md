@@ -5,7 +5,7 @@ An Android app built with Jetpack Compose consuming [TMDB API](https://www.themo
 
 [![PlayStore][playstore-image]][playstore-url]
 
-[playstore-imag]: https://github.com/DSC-Kibabii-University/KIBU-OLX/blob/master/screenshots/google-play-badge.png
+[playstore-image]: https://github.com/JoelKanyi/Muviz/blob/main/screenshots/get-it-on-playstore.png
 
 [playstore-url]: https://play.google.com/store/apps/details?id=com.kanyideveloper.muviz
 
