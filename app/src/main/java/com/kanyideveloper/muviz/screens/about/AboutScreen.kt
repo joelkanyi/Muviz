@@ -46,7 +46,7 @@ fun AboutScreen(
             painterResource(
                 id = R.drawable.muviz
             ),
-            contentDescription = "App logo",
+            contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(90.dp)
@@ -55,7 +55,7 @@ fun AboutScreen(
 
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "V1.0.0",
+            text = "V1.0.1",
             color = Color.White,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.SemiBold,
