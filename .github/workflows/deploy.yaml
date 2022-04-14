@@ -51,4 +51,3 @@ jobs:
           packageName: com.kanyideveloper.muviz
           releaseFile: app/build/outputs/bundle/release/app-release.aab
           track: production
-          whatsNewDirectory: whatsnew/
