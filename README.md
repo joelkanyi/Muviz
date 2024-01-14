@@ -16,7 +16,7 @@ The app is built with the Model-View-ViewModel (MVVM) is its structural design p
 - View models transform model information into values that can be displayed on a view. They’re usually classes, so they can be passed around as references.
 
 ## Setup Requirements
-Obtain your key from [TMDB API](https://www.themoviedb.org/documentation/api) and replace it in the `gradle.properties` file:
+Obtain your key from [TMDB API](https://www.themoviedb.org/documentation/api) and replace it in the `local.properties` file:
 
 ```gradle
     API_KEY = "API_KEY_VALUE"
@@ -54,7 +54,7 @@ Obtain your key from [TMDB API](https://www.themoviedb.org/documentation/api) an
 
 ### Home screen
 #### Movies
-<img src="screenshots/movies.png" width="250"/> <img src="screenshots/movie-details.png" width="250"/> <img src="screenshots/movie-cast.png" width="250"/>
+<img src="screenshots/movies.png" width="250"/><img src="screenshots/movie-details.png" width="250"/> <img src="screenshots/movie-cast.png" width="250"/>
 
 #### Tv Shows
 <img src="screenshots/series.png" width="250"/> <img src="screenshots/series-details.png" width="250"/> <img src="screenshots/series-cast.png" width="250"/>

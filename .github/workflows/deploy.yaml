@@ -5,6 +5,10 @@ on:
     branches: [ main ]
     types: [ closed ]
 
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     if: github.event.pull_request.merged == true
@@ -21,7 +25,10 @@ jobs:
           java-version: 11
 
       - name: Grant rights
-        run: chmod +x build.gradle
+        run: chmod +x build.gradle.kts
+
+      - name: Get local.properties from secrets
+        run: echo "${{secrets.LOCAL_PROPERTIES }}" > $GITHUB_WORKSPACE/local.properties
 
       - name: Build with Gradle
         id: build
