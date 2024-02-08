@@ -2,7 +2,7 @@
 kotlin = "1.9.22"
 ksp = "1.9.22-1.0.17"
 gradle = "8.2.2"
-compose = "1.6.0"
+compose = "1.6.1"
 compose-compiler = "1.5.8"
 hiltAndroid = "2.50"
 hiltCompiler = "1.1.0"
