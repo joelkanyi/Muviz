@@ -67,6 +67,12 @@ fun FilmDetailsScreen(
                         event.favorite
                     )
                 }
+
+                is FilmDetailsUiEvents.RemoveFromFavorites -> {
+                    viewModel.deleteFavorite(
+                        event.favorite
+                    )
+                }
             }
         }
     )

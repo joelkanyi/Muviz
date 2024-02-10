@@ -143,8 +143,17 @@ fun FilmImageBanner(
             isLiked = isLiked,
             onClick = { isFav ->
                 if (isFav) {
-                    Toast.makeText(context, "Already added to your favorites", Toast.LENGTH_SHORT).show()
-                    return@CircularFavoriteButtons
+                    onEvents(FilmDetailsUiEvents.RemoveFromFavorites(
+                        Favorite(
+                            favorite = false,
+                            mediaId = filmId,
+                            mediaType = filmType,
+                            image = posterUrl,
+                            title = filmName,
+                            releaseDate = releaseDate,
+                            rating = rating
+                        )
+                    ))
                 } else {
                     onEvents(FilmDetailsUiEvents.AddToFavorites(
                         Favorite(

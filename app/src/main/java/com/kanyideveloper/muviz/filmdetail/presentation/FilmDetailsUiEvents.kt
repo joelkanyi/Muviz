@@ -25,4 +25,7 @@ sealed interface FilmDetailsUiEvents {
 
     data class AddToFavorites(val favorite: Favorite) :
         FilmDetailsUiEvents
+
+    data class RemoveFromFavorites(val favorite: Favorite) :
+        FilmDetailsUiEvents
 }
