@@ -13,8 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.kanyideveloper.muviz.cast.presentation
+package com.kanyideveloper.muviz.cast.presentation.casts
+
+import com.kanyideveloper.muviz.cast.domain.model.Cast
 
 sealed interface CastsUiEvents {
+    data class NavigateToCastDetails(val cast: Cast) :
+        CastsUiEvents
+
     data object NavigateBack : CastsUiEvents
 }

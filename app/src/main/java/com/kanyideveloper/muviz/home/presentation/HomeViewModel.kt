@@ -282,4 +282,18 @@ class HomeViewModel @Inject constructor(
             )
         }
     }
+
+    fun refreshAllData() {
+        getTrendingMovies(homeUiState.value.selectedGenre?.id)
+        getNowPayingMovies(homeUiState.value.selectedGenre?.id)
+        getUpcomingMovies(homeUiState.value.selectedGenre?.id)
+        getTopRatedMovies(homeUiState.value.selectedGenre?.id)
+        getPopularMovies(homeUiState.value.selectedGenre?.id)
+        getPopularTvSeries(homeUiState.value.selectedGenre?.id)
+        getAiringTodayTvSeries(homeUiState.value.selectedGenre?.id)
+        getTrendingTvSeries(homeUiState.value.selectedGenre?.id)
+        getOnTheAirTvSeries(homeUiState.value.selectedGenre?.id)
+        getTopRatedTvSeries(homeUiState.value.selectedGenre?.id)
+        getOnTheAirTvSeries(homeUiState.value.selectedGenre?.id)
+    }
 }
