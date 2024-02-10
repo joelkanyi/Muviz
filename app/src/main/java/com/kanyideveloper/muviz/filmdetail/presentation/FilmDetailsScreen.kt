@@ -16,7 +16,10 @@
 package com.kanyideveloper.muviz.filmdetail.presentation
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -24,8 +27,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.kanyideveloper.muviz.destinations.CastDetailsScreenDestination
 import com.kanyideveloper.muviz.destinations.CastsScreenDestination
 import com.kanyideveloper.muviz.filmdetail.presentation.common.FilmImageBanner
 import com.kanyideveloper.muviz.filmdetail.presentation.common.FilmInfo
@@ -67,6 +73,16 @@ fun FilmDetailsScreen(
                         event.favorite
                     )
                 }
+
+                is FilmDetailsUiEvents.RemoveFromFavorites -> {
+                    viewModel.deleteFavorite(
+                        event.favorite
+                    )
+                }
+
+                is FilmDetailsUiEvents.NavigateToCastDetails -> {
+                    navigator.navigate(CastDetailsScreenDestination(event.cast))
+                }
             }
         }
     )
@@ -79,12 +95,11 @@ fun FilmDetailsScreenContent(
     onEvents: (FilmDetailsUiEvents) -> Unit,
     isLiked: Boolean,
 ) {
-    val scrollState = rememberLazyListState()
 
     Box {
         if (state.isLoading) {
             CircularProgressIndicator(
-                modifier = androidx.compose.ui.Modifier
+                modifier = Modifier
                     .align(androidx.compose.ui.Alignment.Center)
             )
         }
@@ -93,19 +108,30 @@ fun FilmDetailsScreenContent(
             ((filmType == "tv" && state.tvSeriesDetails != null) || (filmType == "movie" && state.movieDetails != null)) &&
             state.error == null
         ) {
-            FilmInfo(
-                scrollState = scrollState,
-                filmType = filmType,
-                state = state,
-                onEvent = onEvents,
-            )
-            FilmImageBanner(
-                scrollState = scrollState,
-                filmType = filmType,
-                state = state,
-                isLiked = isLiked,
-                onEvents = onEvents,
-            )
+            LazyColumn {
+                item {
+                    FilmImageBanner(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(500.dp),
+                        filmType = filmType,
+                        state = state,
+                        isLiked = isLiked,
+                        onEvents = onEvents,
+                    )
+                }
+
+                item {
+                    FilmInfo(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        filmType = filmType,
+                        state = state,
+                        onEvents = onEvents,
+                    )
+                }
+            }
         }
 
         if (

@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.kanyideveloper.muviz.cast.domain.repository
+package com.kanyideveloper.muviz.cast.domain.usecase
 
-import com.kanyideveloper.muviz.cast.domain.model.Credits
-import com.kanyideveloper.muviz.common.util.Resource
+import com.kanyideveloper.muviz.cast.domain.repository.CastRepository
+import javax.inject.Inject
 
-interface CastRepository {
-    suspend fun getTvSeriesCasts(id: Int): Resource<Credits>
-    suspend fun getMovieCasts(id: Int): Resource<Credits>
-    suspend fun getCastDetails(id: Int): Resource<Unit>
+class GetCastDetailsUseCase @Inject constructor(
+    private val repository: CastRepository
+) {
+    suspend operator fun invoke(id: Int) = repository.getCastDetails(id)
 }

@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.kanyideveloper.muviz.cast.presentation
+package com.kanyideveloper.muviz.cast.presentation.casts
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -45,6 +46,7 @@ import com.kanyideveloper.muviz.common.presentation.components.StandardToolbar
 import com.kanyideveloper.muviz.common.presentation.theme.MuvizTheme
 import com.kanyideveloper.muviz.common.presentation.theme.lightGray
 import com.kanyideveloper.muviz.common.util.Constants
+import com.kanyideveloper.muviz.destinations.CastDetailsScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -60,6 +62,12 @@ fun CastsScreen(
             when (event) {
                 is CastsUiEvents.NavigateBack -> {
                     navigator.popBackStack()
+                }
+
+                is CastsUiEvents.NavigateToCastDetails -> {
+                    navigator.navigate(
+                        CastDetailsScreenDestination(event.cast)
+                    )
                 }
             }
         },
@@ -104,7 +112,10 @@ fun CastsScreenContent(
                 CastItem(
                     imageSize = 170.dp,
                     castImageUrl = "${Constants.IMAGE_BASE_UR}/${cast.profilePath}",
-                    castName = cast.name
+                    castName = cast.name,
+                    onClick = {
+                        onEvent(CastsUiEvents.NavigateToCastDetails(cast))
+                    }
                 )
             }
         }
@@ -116,10 +127,13 @@ fun CastItem(
     modifier: Modifier = Modifier,
     imageSize: Dp,
     castName: String,
-    castImageUrl: String
+    castImageUrl: String,
+    onClick: () -> Unit,
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.clickable {
+            onClick()
+        },
         verticalArrangement = Arrangement.spacedBy(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

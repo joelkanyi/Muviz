@@ -51,4 +51,15 @@ class CastRepositoryImpl @Inject constructor(
         Timber.d("Movie Casts $response")
         return Resource.Success(response.toDomain())
     }
+
+    override suspend fun getCastDetails(id: Int): Resource<Unit> {
+        val response = try {
+            api.getCreditDetails(creditId = id)
+        } catch (e: Exception) {
+            Timber.d(e.message)
+            return Resource.Error("Unknown error occurred")
+        }
+        Timber.d("Cast Details $response")
+        return Resource.Success(Unit)
+    }
 }

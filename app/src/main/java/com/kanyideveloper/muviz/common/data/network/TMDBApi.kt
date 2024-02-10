@@ -127,6 +127,12 @@ interface TMDBApi {
         @Query("language") language: String = "en"
     ): CreditsResponse
 
+    @GET("credit/{credit_id}")
+    suspend fun getCreditDetails(
+        @Path("credit_id") creditId: Int,
+        @Query("api_key") apiKey: String = API_KEY,
+    )
+
     @GET("genre/movie/list")
     suspend fun getMovieGenres(
         @Query("api_key") apiKey: String = API_KEY,

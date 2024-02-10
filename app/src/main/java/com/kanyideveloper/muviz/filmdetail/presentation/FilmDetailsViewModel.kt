@@ -188,4 +188,10 @@ class FilmDetailsViewModel @Inject constructor(
             favoritesRepository.insertFavorite(favorite)
         }
     }
+
+    fun deleteFavorite(favorite: Favorite) {
+        viewModelScope.launch {
+            favoritesRepository.deleteOneFavorite(favorite)
+        }
+    }
 }
