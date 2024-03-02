@@ -15,6 +15,7 @@
  */
 package com.kanyideveloper.muviz.filmdetail.presentation
 
+import com.kanyideveloper.muviz.cast.domain.model.Cast
 import com.kanyideveloper.muviz.cast.domain.model.Credits
 import com.kanyideveloper.muviz.favorites.data.data.local.Favorite
 
@@ -25,4 +26,8 @@ sealed interface FilmDetailsUiEvents {
 
     data class AddToFavorites(val favorite: Favorite) :
         FilmDetailsUiEvents
+
+    data class RemoveFromFavorites(val favorite: Favorite) :
+        FilmDetailsUiEvents
+    data class NavigateToCastDetails(val cast: Cast) : FilmDetailsUiEvents
 }

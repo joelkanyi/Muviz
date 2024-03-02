@@ -20,6 +20,8 @@ import com.kanyideveloper.muviz.genre.domain.model.Genre
 sealed interface HomeUiEvents {
     data object OnSearchClick : HomeUiEvents
     data object NavigateBack : HomeUiEvents
+    data object OnPullToRefresh : HomeUiEvents
+
     data class NavigateToFilmDetails(
         val id: Int,
         val filmType: String

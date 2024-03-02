@@ -15,12 +15,16 @@
  */
 package com.kanyideveloper.muviz.filmdetail.presentation.common
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,7 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kanyideveloper.muviz.R
-import com.kanyideveloper.muviz.cast.presentation.CastItem
+import com.kanyideveloper.muviz.cast.presentation.casts.CastItem
 import com.kanyideveloper.muviz.common.presentation.theme.primaryPink
 import com.kanyideveloper.muviz.common.util.Constants
 import com.kanyideveloper.muviz.filmdetail.presentation.FilmDetailsUiEvents
@@ -58,7 +62,8 @@ fun CastDetails(
         if (state.isLoadingCasts.not() && state.errorCasts == null && state.credits != null) {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -67,10 +72,7 @@ fun CastDetails(
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
                     color = Color.White,
-                    modifier = Modifier
-                        .padding(
-                            start = 8.dp
-                        )
+                    modifier = Modifier,
                 )
 
                 Row(
@@ -84,28 +86,33 @@ fun CastDetails(
                         color = Color.White
                     )
 
-                    IconButton(onClick = {
-                        onEvent(FilmDetailsUiEvents.NavigateToCastsScreen(state.credits))
-                    }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_chevron_right),
-                            tint = primaryPink,
-                            contentDescription = null
-                        )
-                    }
+                    Icon(
+                        modifier = Modifier.clickable {
+                            onEvent(FilmDetailsUiEvents.NavigateToCastsScreen(state.credits))
+                        },
+                        painter = painterResource(id = R.drawable.ic_chevron_right),
+                        tint = primaryPink,
+                        contentDescription = null
+                    )
+
                 }
             }
 
 
-            LazyRow(content = {
-                items(state.credits.cast) { cast ->
-                    CastItem(
-                        imageSize = 90.dp,
-                        castImageUrl = "${Constants.IMAGE_BASE_UR}/${cast.profilePath}",
-                        castName = cast.name
-                    )
-                }
-            })
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                content = {
+                    items(state.credits.cast.take(4)) { cast ->
+                        CastItem(
+                            imageSize = 90.dp,
+                            castImageUrl = "${Constants.IMAGE_BASE_UR}/${cast.profilePath}",
+                            castName = cast.name,
+                            onClick = {
+                                onEvent(FilmDetailsUiEvents.NavigateToCastDetails(cast))
+                            }
+                        )
+                    }
+                })
         }
     }
 }
