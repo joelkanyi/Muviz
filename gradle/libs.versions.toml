@@ -1,6 +1,6 @@
 [versions]
-kotlin = "1.9.22"
-ksp = "1.9.22-1.0.18"
+kotlin = "1.9.23"
+ksp = "1.9.23-1.0.19"
 gradle = "8.2.2"
 compose = "1.6.2"
 compose-compiler = "1.5.10"
