@@ -61,7 +61,10 @@ class MainActivity : ComponentActivity() {
                             AccountScreenDestination.route
                         )
                     ) { innerPadding ->
-                        Box(modifier = Modifier.padding(innerPadding)) {
+                        Box(
+                            modifier = Modifier
+                                .padding(innerPadding)
+                        ) {
                             DestinationsNavHost(
                                 navGraph = NavGraphs.root,
                                 navController = navController,
