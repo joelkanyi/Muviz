@@ -16,20 +16,21 @@
 package com.kanyideveloper.muviz.common.presentation.components
 
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kanyideveloper.muviz.common.presentation.theme.MuvizTheme
-import com.kanyideveloper.muviz.common.presentation.theme.primaryGray
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StandardToolbar(
     modifier: Modifier = Modifier,
@@ -41,8 +42,8 @@ fun StandardToolbar(
     TopAppBar(
         modifier = modifier,
         title = title,
-        navigationIcon = if (showBackArrow) {
-            {
+        navigationIcon = {
+            if (showBackArrow) {
                 IconButton(
                     onClick =
                     onBackArrowClicked
@@ -50,14 +51,14 @@ fun StandardToolbar(
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = null,
-                        tint = primaryGray
                     )
                 }
             }
-        } else null,
+        },
         actions = navActions,
-        backgroundColor = MaterialTheme.colors.primary,
-        elevation = 5.dp
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.background
+        )
     )
 }
 
@@ -69,7 +70,6 @@ fun StandardToolbarPreview() {
             title = {
                 Text(
                     text = "About",
-                    color = primaryGray
                 )
             }
         )

@@ -16,12 +16,13 @@
 package com.kanyideveloper.muviz.filmdetail.presentation
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -95,8 +96,9 @@ fun FilmDetailsScreenContent(
     onEvents: (FilmDetailsUiEvents) -> Unit,
     isLiked: Boolean,
 ) {
-
-    Box {
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
         if (state.isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier
@@ -140,7 +142,7 @@ fun FilmDetailsScreenContent(
         ) {
             Text(
                 text = state.error,
-                modifier = androidx.compose.ui.Modifier
+                modifier = Modifier
                     .align(androidx.compose.ui.Alignment.Center)
             )
         }

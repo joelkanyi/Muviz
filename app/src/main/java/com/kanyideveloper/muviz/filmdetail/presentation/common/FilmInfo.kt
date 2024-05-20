@@ -16,6 +16,7 @@
 package com.kanyideveloper.muviz.filmdetail.presentation.common
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -24,19 +25,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.filmdetail.presentation.FilmDetailsUiEvents
 import com.kanyideveloper.muviz.filmdetail.presentation.FilmDetailsUiState
@@ -50,22 +49,14 @@ fun FilmInfo(
 ) {
     Column(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = if (filmType == "movie") state.movieDetails?.overview.toString() else state.tvSeriesDetails?.overview.toString(),
-            fontSize = 14.sp,
-            color = Color.White,
+            style = MaterialTheme.typography.bodyMedium,
         )
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Genres(
-            filmType = filmType,
-            state = state
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             text = buildAnnotatedString {
@@ -79,10 +70,17 @@ fun FilmInfo(
                     if (filmType == "movie") state.movieDetails?.releaseDate.toString() else state.tvSeriesDetails?.firstAirDate.toString()
                 )
             },
-            fontSize = 12.sp,
-            color = Color.White
+            style = MaterialTheme.typography.bodySmall,
         )
-        Spacer(modifier = Modifier.height(16.dp))
+
+
+        Genres(
+            filmType = filmType,
+            state = state
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         CastDetails(
             state = state,
             onEvent = onEvents,
@@ -104,14 +102,17 @@ fun Genres(
                 Box(
                     modifier = Modifier
                         .padding(end = 8.dp)
-                        .background(Color.Gray, MaterialTheme.shapes.small),
+                        .background(
+                            MaterialTheme.colorScheme.primary.copy(.2f),
+                            MaterialTheme.shapes.small
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         modifier = Modifier
-                            .padding(horizontal = 8.dp, vertical = 4.dp),
+                            .padding(horizontal = 8.dp, vertical = 2.dp),
                         text = genre.name,
-                        style = MaterialTheme.typography.body2,
+                        style = MaterialTheme.typography.bodySmall,
                     )
                 }
             }

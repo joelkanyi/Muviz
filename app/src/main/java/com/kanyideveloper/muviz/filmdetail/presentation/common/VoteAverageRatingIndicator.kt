@@ -20,7 +20,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,16 +33,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kanyideveloper.muviz.common.presentation.theme.primaryPink
 
 @Composable
 fun VoteAverageRatingIndicator(
-    modifier: Modifier = Modifier,
     percentage: Float,
     number: Int = 10,
     fontSize: TextUnit = 16.sp,
     radius: Dp = 20.dp,
-    color: Color = primaryPink,
+    color: Color = MaterialTheme.colorScheme.primary,
     strokeWidth: Dp = 3.dp,
     animationDuration: Int = 1000,
     animDelay: Int = 0
@@ -55,7 +54,7 @@ fun VoteAverageRatingIndicator(
         animationSpec = tween(
             durationMillis = animationDuration,
             delayMillis = animDelay
-        )
+        ), label = ""
     )
 
     LaunchedEffect(key1 = true) {
@@ -80,7 +79,7 @@ fun VoteAverageRatingIndicator(
         }
         Text(
             text = "${(currentPercentage.value * number).toInt()}%",
-            color = primaryPink,
+            color = MaterialTheme.colorScheme.primary,
             fontSize = fontSize,
             fontWeight = FontWeight.Bold
         )

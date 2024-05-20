@@ -16,19 +16,21 @@
 package com.kanyideveloper.muviz.common.presentation.components
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.kanyideveloper.muviz.common.domain.model.BottomNavItem
-import com.kanyideveloper.muviz.common.presentation.theme.primaryDark
-import com.kanyideveloper.muviz.common.presentation.theme.primaryGray
-import com.kanyideveloper.muviz.common.presentation.theme.primaryPink
 
 
 @Composable
@@ -45,29 +47,27 @@ fun StandardScaffold(
     Scaffold(
         bottomBar = {
             if (showBottomBar) {
-                BottomNavigation(
-                    backgroundColor = primaryDark,
-                    contentColor = Color.White,
-                    elevation = 5.dp
+                NavigationBar(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    contentColor = MaterialTheme.colorScheme.onBackground,
                 ) {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
                     val currentDestination = navBackStackEntry?.destination
                     items.forEach { item ->
-                        BottomNavigationItem(
+                        NavigationBarItem(
                             icon = {
                                 Icon(
-                                    painterResource(id = item.icon),
-                                    contentDescription = item.title
+                                    modifier = Modifier.size(24.dp),
+                                    painter = painterResource(id = item.icon),
+                                    contentDescription = item.title,
                                 )
                             },
                             label = {
                                 Text(
                                     text = item.title,
-                                    fontSize = 9.sp
+                                    style = MaterialTheme.typography.bodySmall,
                                 )
                             },
-                            selectedContentColor = primaryPink,
-                            unselectedContentColor = primaryGray,
                             alwaysShowLabel = true,
                             selected = currentDestination?.route?.contains(item.destination.route) == true,
                             onClick = {

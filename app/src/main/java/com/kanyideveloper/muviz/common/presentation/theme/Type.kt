@@ -15,12 +15,10 @@
  */
 package com.kanyideveloper.muviz.common.presentation.theme
 
-import androidx.compose.material.Typography
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.material3.Typography
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import com.kanyideveloper.muviz.R
 
 
@@ -33,26 +31,55 @@ val quicksand = FontFamily(
 )
 
 
-// Set of Material typography styles to start with
-val Typography = Typography(
-    body1 = TextStyle(
-        fontFamily = quicksand,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp
-    ),
-    body2 = TextStyle(
-        fontFamily = quicksand,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
-    ),
-    h1 = TextStyle(
-        fontFamily = quicksand,
-        fontWeight = FontWeight.Bold,
-        fontSize = 30.sp
-    ),
-    h2 = TextStyle(
-        fontFamily = quicksand,
-        fontWeight = FontWeight.Medium,
-        fontSize = 24.sp
+val Typography = Typography().run {
+    copy(
+        displayLarge = displayLarge.copy(
+            fontFamily = quicksand
+        ),
+        displayMedium = displayMedium.copy(
+            fontFamily = quicksand
+        ),
+        displaySmall = displaySmall.copy(
+            fontFamily = quicksand
+        ),
+        headlineLarge = headlineLarge.copy(
+            fontFamily = quicksand
+        ),
+        headlineMedium = headlineMedium.copy(
+            fontFamily = quicksand
+        ),
+        headlineSmall = headlineSmall.copy(
+            fontFamily = quicksand
+        ),
+        titleLarge = titleLarge.copy(
+            fontFamily = quicksand,
+            fontWeight = FontWeight.Bold
+        ),
+        titleMedium = titleMedium.copy(
+            fontFamily = quicksand,
+            fontWeight = FontWeight.Bold
+        ),
+        titleSmall = titleSmall.copy(
+            fontFamily = quicksand,
+            fontWeight = FontWeight.Bold
+        ),
+        bodyLarge = bodyLarge.copy(
+            fontFamily = quicksand
+        ),
+        bodyMedium = bodyMedium.copy(
+            fontFamily = quicksand
+        ),
+        bodySmall = bodySmall.copy(
+            fontFamily = quicksand
+        ),
+        labelLarge = labelLarge.copy(
+            fontFamily = quicksand
+        ),
+        labelMedium = labelMedium.copy(
+            fontFamily = quicksand
+        ),
+        labelSmall = labelSmall.copy(
+            fontFamily = quicksand
+        ),
     )
-)
+}

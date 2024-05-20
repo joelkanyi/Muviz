@@ -19,6 +19,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -26,7 +27,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -37,18 +37,14 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.MaterialTheme.typography
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -58,15 +54,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -74,9 +67,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.common.presentation.components.StandardToolbar
-import com.kanyideveloper.muviz.common.presentation.theme.primaryDark
-import com.kanyideveloper.muviz.common.presentation.theme.primaryGray
-import com.kanyideveloper.muviz.common.presentation.theme.primaryPink
 import com.kanyideveloper.muviz.common.util.Constants.IMAGE_BASE_UR
 import com.kanyideveloper.muviz.destinations.FilmDetailsScreenDestination
 import com.kanyideveloper.muviz.destinations.SearchScreenDestination
@@ -145,7 +135,7 @@ fun HomeScreen(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenContent(
     state: HomeUiState,
@@ -190,29 +180,25 @@ fun HomeScreenContent(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_search),
                             contentDescription = null,
-                            tint = primaryGray
+                            tint = MaterialTheme.colorScheme.onBackground.copy(.5f),
                         )
                     }
                 }
             )
         }
     ) { innerPadding ->
-        val pullRefreshState = rememberPullRefreshState(
-            refreshing = false,
+        PullToRefreshBox(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            isRefreshing = false,
             onRefresh = {
                 onEvent(HomeUiEvents.OnPullToRefresh)
             }
-        )
-        Box(
-            modifier = Modifier
-                .pullRefresh(state = pullRefreshState)
-                .fillMaxSize()
         ) {
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                contentPadding = PaddingValues(horizontal = 16.dp)
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
                     FilmCategory(
@@ -221,278 +207,157 @@ fun HomeScreenContent(
                         state = state,
                         onEvent = onEvent,
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
                 }
+
                 item {
-                    Text(
-                        text = "Genres",
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-
-                    Spacer(modifier = Modifier.height(5.dp))
-
-                }
-                item {
-                    Genres(
-                        state = state,
-                        onEvent = onEvent,
-                    )
-                }
-
-                item(content = {
-                    Text(text = "Trending today", color = Color.White, fontSize = 18.sp)
-
-                    Spacer(modifier = Modifier.height(8.dp))
-                })
-                item(content = {
-                    Spacer(modifier = Modifier.height(5.dp))
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(220.dp),
-                        contentAlignment = Alignment.Center
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            content = {
-
-                                if (state.selectedFilmOption == "Tv Shows") {
-                                    items(
-                                        count = trendingTvSeries.itemCount
-                                    ) { index ->
-                                        val film = trendingTvSeries[index]
-                                        FilmItem(
-                                            modifier = Modifier
-                                                .height(220.dp)
-                                                .width(250.dp)
-                                                .clickable {
-                                                    onEvent(
-                                                        HomeUiEvents.NavigateToFilmDetails(
-                                                            id = film?.id!!,
-                                                            filmType = "tv"
-                                                        )
-                                                    )
-                                                },
-                                            imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
-                                        )
-                                    }
-                                } else {
-                                    items(
-                                        count = trendingMovies.itemCount
-                                    ) { index ->
-                                        val film = trendingMovies[index]
-                                        FilmItem(
-                                            modifier = Modifier
-                                                .height(200.dp)
-                                                .width(230.dp)
-                                                .clickable {
-                                                    onEvent(
-                                                        HomeUiEvents.NavigateToFilmDetails(
-                                                            id = film?.id!!,
-                                                            filmType = "movie"
-                                                        )
-                                                    )
-                                                },
-                                            imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
-                                        )
-                                    }
-                                }
-
-                                if (trendingMovies.loadState.append == LoadState.Loading) {
-                                    item {
-                                        CircularProgressIndicator(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .wrapContentWidth(Alignment.CenterHorizontally)
-                                        )
-                                    }
-                                }
-                            }
+                        Text(
+                            text = "Genres",
+                            style = MaterialTheme.typography.titleMedium,
                         )
-
-                        trendingMovies.apply {
-                            loadState
-                            when (loadState.refresh) {
-                                is LoadState.Loading -> {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier,
-                                        color = primaryPink,
-                                        strokeWidth = 2.dp
-                                    )
-                                }
-
-                                is LoadState.Error -> {
-                                    val e = trendingMovies.loadState.refresh as LoadState.Error
-                                    Text(
-                                        text = when (e.error) {
-                                            is HttpException -> {
-                                                "Oops, something went wrong!"
-                                            }
-
-                                            is IOException -> {
-                                                "Couldn't reach server, check your internet connection!"
-                                            }
-
-                                            else -> {
-                                                "Unknown error occurred"
-                                            }
-                                        },
-                                        textAlign = TextAlign.Center,
-                                        color = primaryPink
-                                    )
-                                }
-
-                                else -> {
-                                }
-                            }
-                        }
+                        Genres(
+                            state = state,
+                            onEvent = onEvent,
+                        )
                     }
-                })
-
-                item {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = "Popular", color = Color.White, fontSize = 18.sp)
                 }
 
                 item {
-                    Spacer(modifier = Modifier.height(5.dp))
-
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(210.dp),
-                        contentAlignment = Alignment.Center
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
-                        LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        Text(
+                            text = "Trending today",
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(220.dp),
+                            contentAlignment = Alignment.Center
                         ) {
-                            if (state.selectedFilmOption == "Tv Shows") {
-                                items(
-                                    count = popularTvSeries.itemCount
-                                ) { index ->
-                                    val film = popularTvSeries[index]
-                                    FilmItem(
-                                        modifier = Modifier
-                                            .height(200.dp)
-                                            .width(130.dp)
-                                            .clickable {
-                                                onEvent(
-                                                    HomeUiEvents.NavigateToFilmDetails(
-                                                        id = film?.id!!,
-                                                        filmType = "tv"
-                                                    )
-                                                )
+                            LazyRow(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                content = {
+
+                                    if (state.selectedFilmOption == "Tv Shows") {
+                                        items(
+                                            count = trendingTvSeries.itemCount
+                                        ) { index ->
+                                            val film = trendingTvSeries[index]
+                                            FilmItem(
+                                                modifier = Modifier
+                                                    .height(220.dp)
+                                                    .width(250.dp)
+                                                    .clickable {
+                                                        onEvent(
+                                                            HomeUiEvents.NavigateToFilmDetails(
+                                                                id = film?.id!!,
+                                                                filmType = "tv"
+                                                            )
+                                                        )
+                                                    },
+                                                imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
+                                            )
+                                        }
+                                    } else {
+                                        items(
+                                            count = trendingMovies.itemCount
+                                        ) { index ->
+                                            val film = trendingMovies[index]
+                                            FilmItem(
+                                                modifier = Modifier
+                                                    .height(200.dp)
+                                                    .width(230.dp)
+                                                    .clickable {
+                                                        onEvent(
+                                                            HomeUiEvents.NavigateToFilmDetails(
+                                                                id = film?.id!!,
+                                                                filmType = "movie"
+                                                            )
+                                                        )
+                                                    },
+                                                imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
+                                            )
+                                        }
+                                    }
+
+                                    if (trendingMovies.loadState.append == LoadState.Loading) {
+                                        item {
+                                            CircularProgressIndicator(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .wrapContentWidth(Alignment.CenterHorizontally)
+                                            )
+                                        }
+                                    }
+                                }
+                            )
+
+                            trendingMovies.apply {
+                                loadState
+                                when (loadState.refresh) {
+                                    is LoadState.Loading -> {
+                                        CircularProgressIndicator(
+                                            modifier = Modifier,
+                                            strokeWidth = 2.dp
+                                        )
+                                    }
+
+                                    is LoadState.Error -> {
+                                        val e = trendingMovies.loadState.refresh as LoadState.Error
+                                        Text(
+                                            text = when (e.error) {
+                                                is HttpException -> {
+                                                    "Oops, something went wrong!"
+                                                }
+
+                                                is IOException -> {
+                                                    "Couldn't reach server, check your internet connection!"
+                                                }
+
+                                                else -> {
+                                                    "Unknown error occurred"
+                                                }
                                             },
-                                        imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
-                                    )
-                                }
-                            } else {
-                                items(
-                                    count = popularMovies.itemCount
-                                ) { index ->
-                                    val film = popularMovies[index]
-                                    FilmItem(
-                                        modifier = Modifier
-                                            .height(200.dp)
-                                            .width(130.dp)
-                                            .clickable {
-                                                onEvent(
-                                                    HomeUiEvents.NavigateToFilmDetails(
-                                                        id = film?.id!!,
-                                                        filmType = "movie"
-                                                    )
-                                                )
-                                            },
-                                        imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
-                                    )
-                                }
-                            }
+                                            textAlign = TextAlign.Center,
+                                            color = MaterialTheme.colorScheme.primary
+                                        )
+                                    }
 
-                            if (popularMovies.loadState.append == LoadState.Loading) {
-                                item {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .wrapContentWidth(Alignment.CenterHorizontally)
-                                    )
-                                }
-                            }
-                        }
-
-                        popularMovies.apply {
-                            loadState
-                            when (loadState.refresh) {
-                                is LoadState.Loading -> {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier,
-                                        color = primaryPink,
-                                        strokeWidth = 2.dp
-                                    )
-                                }
-
-                                is LoadState.Error -> {
-                                    val e = popularMovies.loadState.refresh as LoadState.Error
-                                    Text(
-                                        text = when (e.error) {
-                                            is HttpException -> {
-                                                "Oops, something went wrong!"
-                                            }
-
-                                            is IOException -> {
-                                                "Couldn't reach server, check your internet connection!"
-                                            }
-
-                                            else -> {
-                                                "Unknown error occurred"
-                                            }
-                                        },
-                                        textAlign = TextAlign.Center,
-                                        color = primaryPink
-                                    )
-                                }
-
-                                else -> {
+                                    else -> {
+                                    }
                                 }
                             }
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(10.dp))
                 }
 
                 item {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = if (state.selectedFilmOption == "Tv Shows") {
-                            "On Air"
-                        } else {
-                            "Upcoming"
-                        },
-                        color = Color.White,
-                        fontSize = 18.sp
-                    )
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(5.dp))
-
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(210.dp),
-                        contentAlignment = Alignment.Center
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
-                        LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            content = {
+                        Text(
+                            text = "Popular",
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(210.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            LazyRow(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
                                 if (state.selectedFilmOption == "Tv Shows") {
                                     items(
-                                        count = onAirTvSeries.itemCount
+                                        count = popularTvSeries.itemCount
                                     ) { index ->
-                                        val film = onAirTvSeries[index]
+                                        val film = popularTvSeries[index]
                                         FilmItem(
                                             modifier = Modifier
                                                 .height(200.dp)
@@ -510,9 +375,9 @@ fun HomeScreenContent(
                                     }
                                 } else {
                                     items(
-                                        count = upcomingMovies.itemCount
+                                        count = popularMovies.itemCount
                                     ) { index ->
-                                        val film = upcomingMovies[index]
+                                        val film = popularMovies[index]
                                         FilmItem(
                                             modifier = Modifier
                                                 .height(200.dp)
@@ -529,7 +394,8 @@ fun HomeScreenContent(
                                         )
                                     }
                                 }
-                                if (upcomingMovies.loadState.append == LoadState.Loading) {
+
+                                if (popularMovies.loadState.append == LoadState.Loading) {
                                     item {
                                         CircularProgressIndicator(
                                             modifier = Modifier
@@ -539,64 +405,172 @@ fun HomeScreenContent(
                                     }
                                 }
                             }
-                        )
 
-                        upcomingMovies.apply {
-                            loadState
-                            when (loadState.refresh) {
-                                is LoadState.Loading -> {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier,
-                                        color = primaryPink,
-                                        strokeWidth = 2.dp
-                                    )
+                            popularMovies.apply {
+                                loadState
+                                when (loadState.refresh) {
+                                    is LoadState.Loading -> {
+                                        CircularProgressIndicator(
+                                            modifier = Modifier,
+                                            strokeWidth = 2.dp
+                                        )
+                                    }
+
+                                    is LoadState.Error -> {
+                                        val e = popularMovies.loadState.refresh as LoadState.Error
+                                        Text(
+                                            text = when (e.error) {
+                                                is HttpException -> {
+                                                    "Oops, something went wrong!"
+                                                }
+
+                                                is IOException -> {
+                                                    "Couldn't reach server, check your internet connection!"
+                                                }
+
+                                                else -> {
+                                                    "Unknown error occurred"
+                                                }
+                                            },
+                                            textAlign = TextAlign.Center,
+                                            color = MaterialTheme.colorScheme.primary,
+                                        )
+                                    }
+
+                                    else -> {
+                                    }
                                 }
-
-                                is LoadState.Error -> {
-                                    val e = upcomingMovies.loadState.refresh as LoadState.Error
-                                    Text(
-                                        text = when (e.error) {
-                                            is HttpException -> {
-                                                "Oops, something went wrong!"
-                                            }
-
-                                            is IOException -> {
-                                                "Couldn't reach server, check your internet connection!"
-                                            }
-
-                                            else -> {
-                                                "Unknown error occurred"
-                                            }
-                                        },
-                                        textAlign = TextAlign.Center,
-                                        color = primaryPink
-                                    )
-                                }
-
-                                else -> {}
                             }
                         }
                     }
+                }
 
-                    Spacer(modifier = Modifier.height(10.dp))
+
+                item {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(
+                            text = if (state.selectedFilmOption == "Tv Shows") {
+                                "On Air"
+                            } else {
+                                "Upcoming"
+                            },
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(210.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            LazyRow(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                content = {
+                                    if (state.selectedFilmOption == "Tv Shows") {
+                                        items(
+                                            count = onAirTvSeries.itemCount
+                                        ) { index ->
+                                            val film = onAirTvSeries[index]
+                                            FilmItem(
+                                                modifier = Modifier
+                                                    .height(200.dp)
+                                                    .width(130.dp)
+                                                    .clickable {
+                                                        onEvent(
+                                                            HomeUiEvents.NavigateToFilmDetails(
+                                                                id = film?.id!!,
+                                                                filmType = "tv"
+                                                            )
+                                                        )
+                                                    },
+                                                imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
+                                            )
+                                        }
+                                    } else {
+                                        items(
+                                            count = upcomingMovies.itemCount
+                                        ) { index ->
+                                            val film = upcomingMovies[index]
+                                            FilmItem(
+                                                modifier = Modifier
+                                                    .height(200.dp)
+                                                    .width(130.dp)
+                                                    .clickable {
+                                                        onEvent(
+                                                            HomeUiEvents.NavigateToFilmDetails(
+                                                                id = film?.id!!,
+                                                                filmType = "movie"
+                                                            )
+                                                        )
+                                                    },
+                                                imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
+                                            )
+                                        }
+                                    }
+                                    if (upcomingMovies.loadState.append == LoadState.Loading) {
+                                        item {
+                                            CircularProgressIndicator(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .wrapContentWidth(Alignment.CenterHorizontally)
+                                            )
+                                        }
+                                    }
+                                }
+                            )
+
+                            upcomingMovies.apply {
+                                loadState
+                                when (loadState.refresh) {
+                                    is LoadState.Loading -> {
+                                        CircularProgressIndicator(
+                                            modifier = Modifier,
+                                            strokeWidth = 2.dp
+                                        )
+                                    }
+
+                                    is LoadState.Error -> {
+                                        val e = upcomingMovies.loadState.refresh as LoadState.Error
+                                        Text(
+                                            text = when (e.error) {
+                                                is HttpException -> {
+                                                    "Oops, something went wrong!"
+                                                }
+
+                                                is IOException -> {
+                                                    "Couldn't reach server, check your internet connection!"
+                                                }
+
+                                                else -> {
+                                                    "Unknown error occurred"
+                                                }
+                                            },
+                                            textAlign = TextAlign.Center,
+                                            color = MaterialTheme.colorScheme.primary,
+                                        )
+                                    }
+
+                                    else -> {}
+                                }
+                            }
+                        }
+                    }
                 }
 
                 item {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = if (state.selectedFilmOption == "Tv Shows") {
-                            "Airing today"
-                        } else {
-                            "Now playing"
-                        },
-                        color = Color.White,
-                        fontSize = 18.sp
-                    )
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(5.dp))
-
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(
+                            text = if (state.selectedFilmOption == "Tv Shows") {
+                                "Airing today"
+                            } else {
+                                "Now playing"
+                            },
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                    }
                     Box(
                         Modifier
                             .fillMaxWidth()
@@ -664,13 +638,13 @@ fun HomeScreenContent(
                                 is LoadState.Loading -> {
                                     CircularProgressIndicator(
                                         modifier = Modifier,
-                                        color = primaryPink,
                                         strokeWidth = 2.dp
                                     )
                                 }
 
                                 is LoadState.Error -> {
-                                    val e = nowPlayingMovies.loadState.refresh as LoadState.Error
+                                    val e =
+                                        nowPlayingMovies.loadState.refresh as LoadState.Error
                                     Text(
                                         text = when (e.error) {
                                             is HttpException -> {
@@ -686,7 +660,7 @@ fun HomeScreenContent(
                                             }
                                         },
                                         textAlign = TextAlign.Center,
-                                        color = primaryPink
+                                        color = MaterialTheme.colorScheme.primary,
                                     )
                                 }
 
@@ -694,128 +668,115 @@ fun HomeScreenContent(
                             }
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(10.dp))
                 }
 
                 item {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Top rated",
-                        color = Color.White,
-                        fontSize = 18.sp
-                    )
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(5.dp))
-
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(210.dp),
-                        contentAlignment = Alignment.Center
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
-                        LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            content = {
-                                if (state.selectedFilmOption == "Tv Shows") {
-                                    items(
-                                        count = topRatedTvSeries.itemCount
-                                    ) { index ->
-                                        val film = topRatedTvSeries[index]
-                                        FilmItem(
-                                            modifier = Modifier
-                                                .height(200.dp)
-                                                .width(130.dp)
-                                                .clickable {
-                                                    onEvent(
-                                                        HomeUiEvents.NavigateToFilmDetails(
-                                                            id = film?.id!!,
-                                                            filmType = "tv"
+                        Text(
+                            text = "Top rated",
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(210.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            LazyRow(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                content = {
+                                    if (state.selectedFilmOption == "Tv Shows") {
+                                        items(
+                                            count = topRatedTvSeries.itemCount
+                                        ) { index ->
+                                            val film = topRatedTvSeries[index]
+                                            FilmItem(
+                                                modifier = Modifier
+                                                    .height(200.dp)
+                                                    .width(130.dp)
+                                                    .clickable {
+                                                        onEvent(
+                                                            HomeUiEvents.NavigateToFilmDetails(
+                                                                id = film?.id!!,
+                                                                filmType = "tv"
+                                                            )
                                                         )
-                                                    )
-                                                },
-                                            imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
-                                        )
-                                    }
-                                } else {
-                                    items(
-                                        count = topRatedMovies.itemCount
-                                    ) { index ->
-                                        val film = topRatedMovies[index]
-                                        FilmItem(
-                                            modifier = Modifier
-                                                .height(200.dp)
-                                                .width(130.dp)
-                                                .clickable {
-                                                    onEvent(
-                                                        HomeUiEvents.NavigateToFilmDetails(
-                                                            id = film?.id!!,
-                                                            filmType = "movie"
+                                                    },
+                                                imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
+                                            )
+                                        }
+                                    } else {
+                                        items(
+                                            count = topRatedMovies.itemCount
+                                        ) { index ->
+                                            val film = topRatedMovies[index]
+                                            FilmItem(
+                                                modifier = Modifier
+                                                    .height(200.dp)
+                                                    .width(130.dp)
+                                                    .clickable {
+                                                        onEvent(
+                                                            HomeUiEvents.NavigateToFilmDetails(
+                                                                id = film?.id!!,
+                                                                filmType = "movie"
+                                                            )
                                                         )
-                                                    )
-                                                },
-                                            imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
-                                        )
+                                                    },
+                                                imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
+                                            )
+                                        }
                                     }
-                                }
-                                if (topRatedMovies.loadState.append == LoadState.Loading) {
-                                    item {
+                                    if (topRatedMovies.loadState.append == LoadState.Loading) {
+                                        item {
+                                            CircularProgressIndicator(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .wrapContentWidth(Alignment.CenterHorizontally)
+                                            )
+                                        }
+                                    }
+                                })
+
+                            topRatedMovies.apply {
+                                loadState
+                                when (loadState.refresh) {
+                                    is LoadState.Loading -> {
                                         CircularProgressIndicator(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .wrapContentWidth(Alignment.CenterHorizontally)
+                                            modifier = Modifier,
+                                            strokeWidth = 2.dp
                                         )
                                     }
+
+                                    is LoadState.Error -> {
+                                        val e = topRatedMovies.loadState.refresh as LoadState.Error
+                                        Text(
+                                            text = when (e.error) {
+                                                is HttpException -> {
+                                                    "Oops, something went wrong!"
+                                                }
+
+                                                is IOException -> {
+                                                    "Couldn't reach server, check your internet connection!"
+                                                }
+
+                                                else -> {
+                                                    "Unknown error occurred"
+                                                }
+                                            },
+                                            textAlign = TextAlign.Center,
+                                            color = MaterialTheme.colorScheme.primary,
+                                        )
+                                    }
+
+                                    else -> {}
                                 }
-                            })
-
-                        topRatedMovies.apply {
-                            loadState
-                            when (loadState.refresh) {
-                                is LoadState.Loading -> {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier,
-                                        color = primaryPink,
-                                        strokeWidth = 2.dp
-                                    )
-                                }
-
-                                is LoadState.Error -> {
-                                    val e = topRatedMovies.loadState.refresh as LoadState.Error
-                                    Text(
-                                        text = when (e.error) {
-                                            is HttpException -> {
-                                                "Oops, something went wrong!"
-                                            }
-
-                                            is IOException -> {
-                                                "Couldn't reach server, check your internet connection!"
-                                            }
-
-                                            else -> {
-                                                "Unknown error occurred"
-                                            }
-                                        },
-                                        textAlign = TextAlign.Center,
-                                        color = primaryPink
-                                    )
-                                }
-
-                                else -> {}
                             }
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
-            PullRefreshIndicator(
-                refreshing = false,
-                pullRefreshState,
-                Modifier.align(Alignment.TopCenter),
-            )
         }
     }
 }
@@ -851,9 +812,7 @@ fun FilmCategory(
         modifier = modifier,
         horizontalArrangement = Arrangement.Center
     ) {
-
         items.forEach { item ->
-
             val lineLength = animateFloatAsState(
                 targetValue = if (item == state.selectedFilmOption) 2f else 0f,
                 animationSpec = tween(
@@ -862,17 +821,16 @@ fun FilmCategory(
                 label = "lineLength"
             )
 
+            val primaryColor = MaterialTheme.colorScheme.primary
             Text(
                 text = item,
-                color = if (item == state.selectedFilmOption) Color.White else primaryGray,
-                fontSize = 24.sp,
                 modifier = Modifier
                     .padding(8.dp)
                     .drawBehind {
                         if (item == state.selectedFilmOption) {
                             if (lineLength.value > 0f) {
                                 drawLine(
-                                    color = primaryPink,
+                                    color = primaryColor,
                                     start = Offset(
                                         size.width / 2f - lineLength.value * 10.dp.toPx(),
                                         size.height
@@ -896,7 +854,12 @@ fun FilmCategory(
                                 item
                             )
                         )
-                    }
+                    },
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    color = if (item == state.selectedFilmOption) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.onBackground.copy(
+                        .5f
+                    ),
+                )
             )
         }
     }
@@ -916,17 +879,29 @@ fun Genres(
     LazyRow(
         modifier = Modifier
             .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(items = genres) { genre ->
-            Text(
-                text = genre.name,
-                style = typography.body1.merge(),
-                color = Color.White,
+            val isSelected = genre.name == state.selectedGenre?.name
+
+            Box(
                 modifier = Modifier
-                    .clip(
-                        shape = RoundedCornerShape(
-                            size = 8.dp,
-                        ),
+                    .background(
+                        color = if (isSelected) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.background
+                        },
+                        shape = MaterialTheme.shapes.medium
+                    )
+                    .border(
+                        width = .3.dp,
+                        shape = MaterialTheme.shapes.medium,
+                        color = if (isSelected) {
+                            MaterialTheme.colorScheme.background
+                        } else {
+                            MaterialTheme.colorScheme.onBackground.copy(.5f)
+                        }
                     )
                     .clickable {
                         onEvent(
@@ -937,20 +912,23 @@ fun Genres(
                             )
                         )
                     }
-                    .background(
-                        if (genre.name == state.selectedGenre?.name) {
-                            primaryPink
+            ) {
+                Text(
+                    text = genre.name,
+                    modifier = Modifier
+                        .padding(
+                            horizontal = 8.dp,
+                            vertical = 4.dp
+                        ),
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = if (isSelected) {
+                            MaterialTheme.colorScheme.onPrimary
                         } else {
-                            primaryDark
+                            MaterialTheme.colorScheme.onBackground
                         }
                     )
-                    .padding(
-                        start = 8.dp,
-                        end = 8.dp,
-                        top = 10.dp,
-                        bottom = 10.dp
-                    )
-            )
+                )
+            }
         }
     }
 }

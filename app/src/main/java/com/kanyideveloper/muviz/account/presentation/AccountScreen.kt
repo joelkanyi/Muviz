@@ -15,16 +15,37 @@
  */
 package com.kanyideveloper.muviz.account.presentation
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,7 +53,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,13 +61,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.about.domain.model.AccountItem
+import com.kanyideveloper.muviz.common.presentation.components.StandardToolbar
 import com.kanyideveloper.muviz.common.presentation.theme.MuvizTheme
-import com.kanyideveloper.muviz.common.presentation.theme.primaryDark
-import com.kanyideveloper.muviz.common.presentation.theme.primaryDarkVariant
-import com.kanyideveloper.muviz.common.presentation.theme.primaryGray
-import com.kanyideveloper.muviz.common.presentation.theme.primaryPink
+import com.kanyideveloper.muviz.common.presentation.theme.Theme
 import com.kanyideveloper.muviz.destinations.AboutScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -55,9 +74,11 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun AccountScreen(
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    viewModel: AccountViewModel = hiltViewModel(),
 ) {
     var showSocialsDialog by rememberSaveable { mutableStateOf(false) }
+    var shouldShowThemesDialog by rememberSaveable { mutableStateOf(false) }
     val context = LocalContext.current
 
     AccountScreenContent(
@@ -106,6 +127,10 @@ fun AccountScreen(
                         ).show()
                     }
                 }
+
+                AccountScreenUiEvents.ShowThemesDialog -> {
+                    shouldShowThemesDialog = true
+                }
             }
         }
     )
@@ -117,6 +142,18 @@ fun AccountScreen(
             }
         )
     }
+
+    if (shouldShowThemesDialog) {
+        ThemesDialog(
+            onDismiss = {
+                shouldShowThemesDialog = false
+            },
+            onSelectTheme = {
+                shouldShowThemesDialog = false
+                viewModel.updateTheme(it)
+            }
+        )
+    }
 }
 
 @Composable
@@ -125,20 +162,20 @@ fun AccountScreenContent(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                backgroundColor = primaryDark,
-            ) {
-                Image(
-                    painterResource(
-                        id = R.drawable.muviz
-                    ),
-                    contentDescription = "App logo",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(90.dp)
-                        .padding(8.dp)
-                )
-            }
+            StandardToolbar(
+                title = {
+                    Image(
+                        painterResource(
+                            id = R.drawable.muviz
+                        ),
+                        contentDescription = "App logo",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(90.dp)
+                            .padding(8.dp)
+                    )
+                },
+            )
         }
     ) { innerPadding ->
         val context = LocalContext.current
@@ -147,9 +184,10 @@ fun AccountScreenContent(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
-            contentPadding = PaddingValues(16.dp)
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(accountItems) { item ->
+            itemsIndexed(context.accountItems()) { index, item ->
                 AccountItems(
                     accountItem = item,
                     onClick = {
@@ -177,9 +215,22 @@ fun AccountScreenContent(
                                     AccountScreenUiEvents.OpenSocialsDialog
                                 )
                             }
+
+                            context.getString(R.string.change_theme) -> {
+                                onEvent(
+                                    AccountScreenUiEvents.ShowThemesDialog
+                                )
+                            }
                         }
                     }
                 )
+
+                if (index != context.accountItems().size - 1) {
+                    HorizontalDivider(
+                        color = MaterialTheme.colorScheme.onBackground.copy(.5f),
+                        thickness = .5.dp,
+                    )
+                }
             }
         }
     }
@@ -195,11 +246,12 @@ private fun GetInTouchDialog(
             .fillMaxWidth()
             .padding(10.dp),
         onDismissRequest = onDismiss,
+        tonalElevation = 0.dp,
+        containerColor = MaterialTheme.colorScheme.background,
         title = {
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = "Get in touch",
-                color = Color.White,
                 textAlign = TextAlign.Center,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
@@ -229,13 +281,12 @@ private fun GetInTouchDialog(
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic__linkedin),
-                            tint = Color(0xFF0072ba),
+                            tint = MaterialTheme.colorScheme.onBackground.copy(.5f),
                             contentDescription = null
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "Linkedin",
-                            color = Color.White,
                             textAlign = TextAlign.Left,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold
@@ -243,7 +294,7 @@ private fun GetInTouchDialog(
                     }
                     Icon(
                         painter = painterResource(id = R.drawable.ic_chevron_right),
-                        tint = primaryGray,
+                        tint = MaterialTheme.colorScheme.onBackground.copy(.5f),
                         contentDescription = null
                     )
                 }
@@ -272,13 +323,12 @@ private fun GetInTouchDialog(
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_twitter),
-                            tint = Color(0xFF0072ba),
+                            tint = MaterialTheme.colorScheme.onBackground.copy(.5f),
                             contentDescription = null
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "Twitter",
-                            color = Color.White,
                             textAlign = TextAlign.Left,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold
@@ -286,7 +336,7 @@ private fun GetInTouchDialog(
                     }
                     Icon(
                         painter = painterResource(id = R.drawable.ic_chevron_right),
-                        tint = primaryGray,
+                        tint = MaterialTheme.colorScheme.onBackground.copy(.5f),
                         contentDescription = null
                     )
                 }
@@ -315,13 +365,12 @@ private fun GetInTouchDialog(
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_github),
-                            tint = Color(0xFF0072ba),
+                            tint = MaterialTheme.colorScheme.onBackground.copy(.5f),
                             contentDescription = null
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "Github",
-                            color = Color.White,
                             textAlign = TextAlign.Left,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold
@@ -329,7 +378,7 @@ private fun GetInTouchDialog(
                     }
                     Icon(
                         painter = painterResource(id = R.drawable.ic_chevron_right),
-                        tint = primaryGray,
+                        tint = MaterialTheme.colorScheme.onBackground.copy(.5f),
                         contentDescription = null
                     )
                 }
@@ -358,13 +407,12 @@ private fun GetInTouchDialog(
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic__facebook),
-                            tint = Color(0xFF0072ba),
+                            tint = MaterialTheme.colorScheme.onBackground.copy(.5f),
                             contentDescription = null
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "Facebook",
-                            color = Color.White,
                             textAlign = TextAlign.Left,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold
@@ -372,7 +420,7 @@ private fun GetInTouchDialog(
                     }
                     Icon(
                         painter = painterResource(id = R.drawable.ic_chevron_right),
-                        tint = primaryGray,
+                        tint = MaterialTheme.colorScheme.onBackground.copy(.5f),
                         contentDescription = null
                     )
                 }
@@ -381,13 +429,12 @@ private fun GetInTouchDialog(
         confirmButton = {
             Button(
                 onClick = onDismiss,
-                colors = ButtonDefaults.buttonColors(primaryPink)
             ) {
-                Text(text = "Okay", color = Color.White)
+                Text(
+                    text = "Okay",
+                )
             }
         },
-        backgroundColor = primaryDarkVariant,
-        contentColor = Color.Black,
         shape = RoundedCornerShape(10.dp)
     )
 }
@@ -402,57 +449,132 @@ fun AccountItems(
             onClick()
         }
     ) {
-
-        Spacer(modifier = Modifier.height(10.dp))
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 modifier = Modifier
-                    .height(24.dp)
-                    .width(24.dp),
+                    .size(24.dp),
                 painter = painterResource(id = accountItem.icon),
-                contentDescription = null,
-                tint = primaryGray
+                contentDescription = accountItem.title,
+                tint = MaterialTheme.colorScheme.onBackground,
             )
 
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text = accountItem.title, color = Color.White)
+            Text(
+                text = accountItem.title,
+                style = MaterialTheme.typography.bodyMedium,
+            )
         }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Divider(
-            color = primaryGray,
-            thickness = 1.dp,
-            modifier = Modifier
-                .padding(
-                    start = 8.dp,
-                    end = 8.dp
-                )
-        )
     }
 }
 
-private val accountItems = listOf(
+@Composable
+fun ThemesDialog(onDismiss: () -> Unit, onSelectTheme: (Int) -> Unit) {
+    AlertDialog(
+        containerColor = MaterialTheme.colorScheme.background,
+        onDismissRequest = { onDismiss() },
+        title = {
+            Text(
+                text = "Themes",
+                style = MaterialTheme.typography.titleLarge
+            )
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                ThemeItem(
+                    themeName = "Use System Settings",
+                    themeValue = Theme.FOLLOW_SYSTEM.themeValue,
+                    icon = R.drawable.settings_suggest,
+                    onSelectTheme = onSelectTheme
+                )
+                ThemeItem(
+                    themeName = "Light Mode",
+                    themeValue = Theme.LIGHT_THEME.themeValue,
+                    icon = R.drawable.light_mode,
+                    onSelectTheme = onSelectTheme
+                )
+                ThemeItem(
+                    themeName = "Dark Mode",
+                    themeValue = Theme.DARK_THEME.themeValue,
+                    icon = R.drawable.dark_mode,
+                    onSelectTheme = onSelectTheme
+                )
+                ThemeItem(
+                    themeName = "Material You",
+                    themeValue = Theme.MATERIAL_YOU.themeValue,
+                    icon = R.drawable.wallpaper,
+                    onSelectTheme = onSelectTheme
+                )
+            }
+        },
+        confirmButton = {
+            Text(
+                text = "OK",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .clickable { onDismiss() }
+            )
+        }
+    )
+}
+
+@Composable
+fun ThemeItem(themeName: String, themeValue: Int, icon: Int, onSelectTheme: (Int) -> Unit) {
+    Card(
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
+        onClick = {
+            onSelectTheme(themeValue)
+        }
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(id = icon),
+                contentDescription = null
+            )
+            Text(
+                modifier = Modifier
+                    .padding(12.dp),
+                text = themeName,
+                style = MaterialTheme.typography.labelMedium
+            )
+        }
+    }
+}
+
+private fun Context.accountItems() = listOf(
     AccountItem(
-        "About",
+        getString(R.string.change_theme),
+        R.drawable.ic_theme
+    ),
+    AccountItem(
+        getString(R.string.about_title),
         R.drawable.ic_danger_circle
     ),
     AccountItem(
-        "Rate us",
+        getString(R.string.rate_us),
         R.drawable.ic_star
     ),
     AccountItem(
-        "Share",
+        getString(R.string.share),
         R.drawable.ic_share
     ),
     AccountItem(
-        "Get in touch",
+        getString(R.string.get_in_touch),
         R.drawable.ic_socials
     )
 )

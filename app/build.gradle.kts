@@ -94,6 +94,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.material)
+    implementation(libs.material3)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -103,6 +104,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
+    implementation(libs.appcompat)
 
     // Room
     implementation(libs.androidx.room.runtime)

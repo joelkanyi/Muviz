@@ -21,13 +21,13 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -44,7 +44,6 @@ import com.kanyideveloper.muviz.cast.domain.model.Cast
 import com.kanyideveloper.muviz.cast.domain.model.Credits
 import com.kanyideveloper.muviz.common.presentation.components.StandardToolbar
 import com.kanyideveloper.muviz.common.presentation.theme.MuvizTheme
-import com.kanyideveloper.muviz.common.presentation.theme.lightGray
 import com.kanyideveloper.muviz.common.util.Constants
 import com.kanyideveloper.muviz.destinations.CastDetailsScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
@@ -88,8 +87,7 @@ fun CastsScreenContent(
                 title = {
                     Text(
                         text = stringResource(R.string.casts),
-                        color = Color.White,
-                        fontWeight = FontWeight.SemiBold
+                        style = MaterialTheme.typography.titleLarge,
                     )
                 },
                 showBackArrow = true
@@ -153,7 +151,7 @@ fun CastItem(
 
         Text(
             text = castName,
-            color = lightGray,
+            color = MaterialTheme.colorScheme.background.copy(.5f),
             fontWeight = FontWeight.ExtraLight,
             fontSize = 11.sp
         )
