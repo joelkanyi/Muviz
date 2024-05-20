@@ -17,17 +17,16 @@ package com.kanyideveloper.muviz.filmdetail.presentation.common
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kanyideveloper.muviz.R
-import com.kanyideveloper.muviz.common.presentation.theme.primaryPink
 
 @Composable
 fun CircularFavoriteButtons(
@@ -45,9 +44,9 @@ fun CircularFavoriteButtons(
                 .height(38.dp),
             imageVector = Icons.Filled.Favorite,
             tint = if (isLiked) {
-                primaryPink
+                MaterialTheme.colorScheme.primary
             } else {
-                Color.LightGray
+                MaterialTheme.colorScheme.onBackground.copy(.5f)
             },
             contentDescription = if (isLiked) {
                 stringResource(id = R.string.unlike)

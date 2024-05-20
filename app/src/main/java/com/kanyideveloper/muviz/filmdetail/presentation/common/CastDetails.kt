@@ -23,21 +23,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.cast.presentation.casts.CastItem
-import com.kanyideveloper.muviz.common.presentation.theme.primaryPink
 import com.kanyideveloper.muviz.common.util.Constants
 import com.kanyideveloper.muviz.filmdetail.presentation.FilmDetailsUiEvents
 import com.kanyideveloper.muviz.filmdetail.presentation.FilmDetailsUiState
@@ -69,32 +67,28 @@ fun CastDetails(
             ) {
                 Text(
                     text = stringResource(R.string.cast),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    color = Color.White,
                     modifier = Modifier,
+                    style = MaterialTheme.typography.titleMedium,
                 )
 
                 Row(
+                    modifier = Modifier.clickable {
+                        onEvent(FilmDetailsUiEvents.NavigateToCastsScreen(state.credits))
+                    },
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = stringResource(R.string.view_all),
                         fontWeight = FontWeight.ExtraLight,
-                        fontSize = 18.sp,
-                        color = Color.White
+                        style = MaterialTheme.typography.titleMedium,
                     )
 
                     Icon(
-                        modifier = Modifier.clickable {
-                            onEvent(FilmDetailsUiEvents.NavigateToCastsScreen(state.credits))
-                        },
                         painter = painterResource(id = R.drawable.ic_chevron_right),
-                        tint = primaryPink,
+                        tint = MaterialTheme.colorScheme.primary,
                         contentDescription = null
                     )
-
                 }
             }
 

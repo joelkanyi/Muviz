@@ -23,10 +23,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -36,8 +38,6 @@ import coil.request.ImageRequest
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.common.presentation.theme.AppBarCollapsedHeight
 import com.kanyideveloper.muviz.common.presentation.theme.AppBarExpendedHeight
-import com.kanyideveloper.muviz.common.presentation.theme.Transparent
-import com.kanyideveloper.muviz.common.presentation.theme.primaryDark
 import com.kanyideveloper.muviz.common.util.Constants
 import com.kanyideveloper.muviz.favorites.data.data.local.Favorite
 import com.kanyideveloper.muviz.filmdetail.presentation.FilmDetailsUiEvents
@@ -86,7 +86,7 @@ fun FilmImageBanner(
                     Brush.verticalGradient(
                         colorStops = arrayOf(
                             Pair(0.3f, Transparent),
-                            Pair(1.5f, primaryDark)
+                            Pair(1.5f, MaterialTheme.colorScheme.background)
                         )
                     )
                 )

@@ -19,19 +19,18 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.kanyideveloper.muviz.R
-import com.kanyideveloper.muviz.common.presentation.theme.primaryPink
 
 @Composable
 fun CircularBackButtons(
-    color: Color = Color.Gray,
-    elevation: ButtonElevation? = ButtonDefaults.elevation(),
+    color: Color = MaterialTheme.colorScheme.onBackground.copy(.5f),
+    elevation: ButtonElevation? = ButtonDefaults.elevatedButtonElevation(),
     onClick: () -> Unit = {}
 ) {
     Button(
@@ -43,7 +42,7 @@ fun CircularBackButtons(
             .width(38.dp)
             .height(38.dp),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color.White.copy(alpha = 0.3f),
+            containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.3f),
             contentColor = color
         )
     ) {
@@ -52,7 +51,7 @@ fun CircularBackButtons(
         }) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_chevron_left),
-                tint = primaryPink,
+                tint = MaterialTheme.colorScheme.primary,
                 contentDescription = null
             )
         }

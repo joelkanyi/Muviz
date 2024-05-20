@@ -18,13 +18,35 @@ package com.kanyideveloper.muviz.search.presentation
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -58,13 +80,10 @@ import coil.request.ImageRequest
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.common.presentation.components.StandardToolbar
 import com.kanyideveloper.muviz.common.presentation.theme.MuvizTheme
-import com.kanyideveloper.muviz.common.presentation.theme.primaryDarkVariant
-import com.kanyideveloper.muviz.common.presentation.theme.primaryGray
-import com.kanyideveloper.muviz.common.presentation.theme.primaryPink
-import com.kanyideveloper.muviz.search.domain.model.Search
 import com.kanyideveloper.muviz.common.util.Constants
 import com.kanyideveloper.muviz.destinations.FilmDetailsScreenDestination
 import com.kanyideveloper.muviz.genre.domain.model.Genre
+import com.kanyideveloper.muviz.search.domain.model.Search
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import retrofit2.HttpException
@@ -216,7 +235,7 @@ fun SearchScreenContent(
                                     .align(alignment = Alignment.Center)
                                     .padding(12.dp),
                                 textAlign = TextAlign.Center,
-                                color = primaryPink
+                                color = MaterialTheme.colorScheme.primary,
                             )
                         }
 
@@ -245,6 +264,7 @@ fun SearchScreenContent(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,
@@ -260,7 +280,7 @@ fun SearchBar(
         placeholder = {
             Text(
                 text = stringResource(R.string.search),
-                color = primaryGray
+                color = MaterialTheme.colorScheme.background.copy(.5f),
             )
         },
         shape = MaterialTheme.shapes.large,
@@ -269,13 +289,14 @@ fun SearchBar(
             autoCorrect = true,
             keyboardType = KeyboardType.Text,
         ),
-        colors = TextFieldDefaults.textFieldColors(
-            textColor = Color.White,
+        colors = TextFieldDefaults.colors(
+            /*focusedTextColor = Color.White,
+            unfocusedTextColor = Color.White,
             disabledTextColor = Color.Transparent,
-            backgroundColor = primaryDarkVariant,
+            containerColor = primaryDarkVariant,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent
+            disabledIndicatorColor = Color.Transparent*/
         ),
         textStyle = TextStyle(color = Color.White),
         maxLines = 1,
@@ -286,7 +307,7 @@ fun SearchBar(
             }) {
                 Icon(
                     imageVector = Icons.Default.Search,
-                    tint = primaryGray,
+                    tint = MaterialTheme.colorScheme.background.copy(.5f),
                     contentDescription = null
                 )
             }
@@ -311,7 +332,6 @@ fun SearchItem(
                 onClick()
             },
         shape = RoundedCornerShape(8.dp),
-        elevation = 5.dp,
     ) {
         Row {
             AsyncImage(
@@ -412,7 +432,7 @@ fun GenreComponent(
             .clip(RoundedCornerShape(50))
             .border(
                 width = .5.dp,
-                color = primaryPink.copy(alpha = 0.5f),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                 shape = RoundedCornerShape(50)
             ),
     ) {
@@ -420,7 +440,7 @@ fun GenreComponent(
             modifier = Modifier
                 .padding(horizontal = 8.dp, vertical = 2.dp),
             text = genre.name,
-            color = primaryPink,
+            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Normal,
             fontSize = 8.sp
         )

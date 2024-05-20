@@ -20,4 +20,5 @@ sealed interface AccountScreenUiEvents {
     data object OpenSocialsDialog : AccountScreenUiEvents
     data object OnRateUsClicked : AccountScreenUiEvents
     data object OnShareClicked : AccountScreenUiEvents
+    data object ShowThemesDialog: AccountScreenUiEvents
 }
