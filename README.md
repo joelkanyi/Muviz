@@ -45,25 +45,19 @@ Obtain your key from [TMDB API](https://www.themoviedb.org/documentation/api) an
 
 ## Demo
 ### Home screen
-<img src="screenshots/home_light.png" width="250"/>
-<img src="screenshots/home_dark.png" width="250"/>
+<img src="screenshots/home_light.png" width="250"/><img src="screenshots/home_dark.png" width="250"/>
 
 ### Details screen
-<img src="screenshots/details_light.png" width="250"/>
-<img src="screenshots/details_dark.png" width="250"/>
+<img src="screenshots/details_light.png" width="250"/><img src="screenshots/details_dark.png" width="250"/>
 
 ### Casts screen
-<img src="screenshots/cast_light.png" width="250"/>
-<img src="screenshots/cast_dark.png" width="250"/>
+<img src="screenshots/cast_light.png" width="250"/><img src="screenshots/cast_dark.png" width="250"/>
 
 ### Favorites screen
-<img src="screenshots/favorites_light.png" width="250"/>
-<img src="screenshots/favorites_dark.png" width="250"/>
+<img src="screenshots/favorites_light.png" width="250"/><img src="screenshots/favorites_dark.png" width="250"/>
 
 ### Search screen
-<img src="screenshots/search_light.png" width="250"/>
-<img src="screenshots/search_dark.png" width="250"/>
+<img src="screenshots/search_light.png" width="250"/><img src="screenshots/search_dark.png" width="250"/>
 
 ### Account screen
-<img src="screenshots/account_light.png" width="250"/>
-<img src="screenshots/account_dark.png" width="250"/>
+<img src="screenshots/account_light.png" width="250"/><img src="screenshots/account_dark.png" width="250"/>
