@@ -19,6 +19,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.kanyideveloper.muviz.common.data.network.TMDBApi
+import com.kanyideveloper.muviz.common.util.Constants.PAGING_SIZE
 import com.kanyideveloper.muviz.home.domain.model.Series
 import com.kanyideveloper.muviz.home.data.paging.AiringTodayTvSeriesSource
 import com.kanyideveloper.muviz.home.data.paging.OnTheAirSeriesSource
@@ -31,7 +32,7 @@ import javax.inject.Inject
 class TvSeriesRepository @Inject constructor(private val api: TMDBApi) {
     fun getTrendingThisWeekTvSeries(): Flow<PagingData<Series>> {
         return Pager(
-            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            config = PagingConfig(enablePlaceholders = false, pageSize = PAGING_SIZE),
             pagingSourceFactory = {
                 TrendingSeriesSource(api)
             }
@@ -40,7 +41,7 @@ class TvSeriesRepository @Inject constructor(private val api: TMDBApi) {
 
     fun getOnTheAirTvSeries(): Flow<PagingData<Series>> {
         return Pager(
-            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            config = PagingConfig(enablePlaceholders = false, pageSize = PAGING_SIZE),
             pagingSourceFactory = {
                 OnTheAirSeriesSource(api)
             }
@@ -49,7 +50,7 @@ class TvSeriesRepository @Inject constructor(private val api: TMDBApi) {
 
     fun getTopRatedTvSeries(): Flow<PagingData<Series>> {
         return Pager(
-            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            config = PagingConfig(enablePlaceholders = false, pageSize = PAGING_SIZE),
             pagingSourceFactory = {
                 TopRatedSeriesSource(api)
             }
@@ -58,7 +59,7 @@ class TvSeriesRepository @Inject constructor(private val api: TMDBApi) {
 
     fun getAiringTodayTvSeries(): Flow<PagingData<Series>> {
         return Pager(
-            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            config = PagingConfig(enablePlaceholders = false, pageSize = PAGING_SIZE),
             pagingSourceFactory = {
                 AiringTodayTvSeriesSource(api)
             }
@@ -67,7 +68,7 @@ class TvSeriesRepository @Inject constructor(private val api: TMDBApi) {
 
     fun getPopularTvSeries(): Flow<PagingData<Series>> {
         return Pager(
-            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            config = PagingConfig(enablePlaceholders = false, pageSize = PAGING_SIZE),
             pagingSourceFactory = {
                 PopularSeriesSource(api)
             }

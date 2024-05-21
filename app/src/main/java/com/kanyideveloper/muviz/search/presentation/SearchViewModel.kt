@@ -18,17 +18,14 @@ package com.kanyideveloper.muviz.search.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import androidx.paging.filter
 import com.kanyideveloper.muviz.common.util.Resource
 import com.kanyideveloper.muviz.genre.domain.usecase.GetMovieGenresUseCase
 import com.kanyideveloper.muviz.genre.domain.usecase.GetTvSeriesGenresUseCase
-import com.kanyideveloper.muviz.search.domain.repository.SearchRepository
 import com.kanyideveloper.muviz.search.domain.usecase.SearchFilmUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject

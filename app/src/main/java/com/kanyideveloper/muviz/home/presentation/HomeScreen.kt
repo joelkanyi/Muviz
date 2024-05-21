@@ -33,7 +33,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -62,6 +61,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -233,105 +233,49 @@ fun HomeScreenContent(
                             text = "Trending today",
                             style = MaterialTheme.typography.titleMedium,
                         )
-                        Box(
-                            Modifier
-                                .fillMaxWidth()
-                                .height(220.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            LazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                content = {
 
-                                    if (state.selectedFilmOption == "Tv Shows") {
-                                        items(
-                                            count = trendingTvSeries.itemCount
-                                        ) { index ->
-                                            val film = trendingTvSeries[index]
-                                            FilmItem(
-                                                modifier = Modifier
-                                                    .height(220.dp)
-                                                    .width(250.dp)
-                                                    .clickable {
-                                                        onEvent(
-                                                            HomeUiEvents.NavigateToFilmDetails(
-                                                                id = film?.id!!,
-                                                                filmType = "tv"
-                                                            )
-                                                        )
-                                                    },
-                                                imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
-                                            )
-                                        }
-                                    } else {
-                                        items(
-                                            count = trendingMovies.itemCount
-                                        ) { index ->
-                                            val film = trendingMovies[index]
-                                            FilmItem(
-                                                modifier = Modifier
-                                                    .height(200.dp)
-                                                    .width(230.dp)
-                                                    .clickable {
-                                                        onEvent(
-                                                            HomeUiEvents.NavigateToFilmDetails(
-                                                                id = film?.id!!,
-                                                                filmType = "movie"
-                                                            )
-                                                        )
-                                                    },
-                                                imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
-                                            )
-                                        }
-                                    }
-
-                                    if (trendingMovies.loadState.append == LoadState.Loading) {
-                                        item {
-                                            CircularProgressIndicator(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .wrapContentWidth(Alignment.CenterHorizontally)
-                                            )
-                                        }
-                                    }
+                        if (state.selectedFilmOption == "Tv Shows") {
+                            PagedRow(
+                                items = trendingTvSeries,
+                                modifier = Modifier.fillMaxWidth(),
+                                content = { film ->
+                                    FilmItem(
+                                        modifier = Modifier
+                                            .height(220.dp)
+                                            .width(250.dp)
+                                            .clickable {
+                                                onEvent(
+                                                    HomeUiEvents.NavigateToFilmDetails(
+                                                        id = film.id,
+                                                        filmType = "tv"
+                                                    )
+                                                )
+                                            },
+                                        imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                    )
                                 }
                             )
-
-                            trendingMovies.apply {
-                                loadState
-                                when (loadState.refresh) {
-                                    is LoadState.Loading -> {
-                                        CircularProgressIndicator(
-                                            modifier = Modifier,
-                                            strokeWidth = 2.dp
-                                        )
-                                    }
-
-                                    is LoadState.Error -> {
-                                        val e = trendingMovies.loadState.refresh as LoadState.Error
-                                        Text(
-                                            text = when (e.error) {
-                                                is HttpException -> {
-                                                    "Oops, something went wrong!"
-                                                }
-
-                                                is IOException -> {
-                                                    "Couldn't reach server, check your internet connection!"
-                                                }
-
-                                                else -> {
-                                                    "Unknown error occurred"
-                                                }
+                        } else {
+                            PagedRow(
+                                items = trendingMovies,
+                                modifier = Modifier.fillMaxWidth(),
+                                content = { film ->
+                                    FilmItem(
+                                        modifier = Modifier
+                                            .height(200.dp)
+                                            .width(230.dp)
+                                            .clickable {
+                                                onEvent(
+                                                    HomeUiEvents.NavigateToFilmDetails(
+                                                        id = film.id,
+                                                        filmType = "movie"
+                                                    )
+                                                )
                                             },
-                                            textAlign = TextAlign.Center,
-                                            color = MaterialTheme.colorScheme.primary
-                                        )
-                                    }
-
-                                    else -> {
-                                    }
+                                        imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                    )
                                 }
-                            }
+                            )
                         }
                     }
                 }
@@ -344,103 +288,48 @@ fun HomeScreenContent(
                             text = "Popular",
                             style = MaterialTheme.typography.titleMedium,
                         )
-                        Box(
-                            Modifier
-                                .fillMaxWidth()
-                                .height(210.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            LazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            ) {
-                                if (state.selectedFilmOption == "Tv Shows") {
-                                    items(
-                                        count = popularTvSeries.itemCount
-                                    ) { index ->
-                                        val film = popularTvSeries[index]
-                                        FilmItem(
-                                            modifier = Modifier
-                                                .height(200.dp)
-                                                .width(130.dp)
-                                                .clickable {
-                                                    onEvent(
-                                                        HomeUiEvents.NavigateToFilmDetails(
-                                                            id = film?.id!!,
-                                                            filmType = "tv"
-                                                        )
+                        if (state.selectedFilmOption == "Tv Shows") {
+                            PagedRow(
+                                items = popularTvSeries,
+                                modifier = Modifier.fillMaxWidth(),
+                                content = { film ->
+                                    FilmItem(
+                                        modifier = Modifier
+                                            .height(200.dp)
+                                            .width(130.dp)
+                                            .clickable {
+                                                onEvent(
+                                                    HomeUiEvents.NavigateToFilmDetails(
+                                                        id = film.id,
+                                                        filmType = "tv"
                                                     )
-                                                },
-                                            imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
-                                        )
-                                    }
-                                } else {
-                                    items(
-                                        count = popularMovies.itemCount
-                                    ) { index ->
-                                        val film = popularMovies[index]
-                                        FilmItem(
-                                            modifier = Modifier
-                                                .height(200.dp)
-                                                .width(130.dp)
-                                                .clickable {
-                                                    onEvent(
-                                                        HomeUiEvents.NavigateToFilmDetails(
-                                                            id = film?.id!!,
-                                                            filmType = "movie"
-                                                        )
-                                                    )
-                                                },
-                                            imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
-                                        )
-                                    }
-                                }
-
-                                if (popularMovies.loadState.append == LoadState.Loading) {
-                                    item {
-                                        CircularProgressIndicator(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .wrapContentWidth(Alignment.CenterHorizontally)
-                                        )
-                                    }
-                                }
-                            }
-
-                            popularMovies.apply {
-                                loadState
-                                when (loadState.refresh) {
-                                    is LoadState.Loading -> {
-                                        CircularProgressIndicator(
-                                            modifier = Modifier,
-                                            strokeWidth = 2.dp
-                                        )
-                                    }
-
-                                    is LoadState.Error -> {
-                                        val e = popularMovies.loadState.refresh as LoadState.Error
-                                        Text(
-                                            text = when (e.error) {
-                                                is HttpException -> {
-                                                    "Oops, something went wrong!"
-                                                }
-
-                                                is IOException -> {
-                                                    "Couldn't reach server, check your internet connection!"
-                                                }
-
-                                                else -> {
-                                                    "Unknown error occurred"
-                                                }
+                                                )
                                             },
-                                            textAlign = TextAlign.Center,
-                                            color = MaterialTheme.colorScheme.primary,
-                                        )
-                                    }
-
-                                    else -> {
-                                    }
+                                        imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                    )
                                 }
-                            }
+                            )
+                        } else {
+                            PagedRow(
+                                items = popularMovies,
+                                modifier = Modifier.fillMaxWidth(),
+                                content = { film ->
+                                    FilmItem(
+                                        modifier = Modifier
+                                            .height(200.dp)
+                                            .width(130.dp)
+                                            .clickable {
+                                                onEvent(
+                                                    HomeUiEvents.NavigateToFilmDetails(
+                                                        id = film.id,
+                                                        filmType = "movie"
+                                                    )
+                                                )
+                                            },
+                                        imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                    )
+                                }
+                            )
                         }
                     }
                 }
@@ -458,102 +347,48 @@ fun HomeScreenContent(
                             },
                             style = MaterialTheme.typography.titleMedium,
                         )
-                        Box(
-                            Modifier
-                                .fillMaxWidth()
-                                .height(210.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            LazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                content = {
-                                    if (state.selectedFilmOption == "Tv Shows") {
-                                        items(
-                                            count = onAirTvSeries.itemCount
-                                        ) { index ->
-                                            val film = onAirTvSeries[index]
-                                            FilmItem(
-                                                modifier = Modifier
-                                                    .height(200.dp)
-                                                    .width(130.dp)
-                                                    .clickable {
-                                                        onEvent(
-                                                            HomeUiEvents.NavigateToFilmDetails(
-                                                                id = film?.id!!,
-                                                                filmType = "tv"
-                                                            )
-                                                        )
-                                                    },
-                                                imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
-                                            )
-                                        }
-                                    } else {
-                                        items(
-                                            count = upcomingMovies.itemCount
-                                        ) { index ->
-                                            val film = upcomingMovies[index]
-                                            FilmItem(
-                                                modifier = Modifier
-                                                    .height(200.dp)
-                                                    .width(130.dp)
-                                                    .clickable {
-                                                        onEvent(
-                                                            HomeUiEvents.NavigateToFilmDetails(
-                                                                id = film?.id!!,
-                                                                filmType = "movie"
-                                                            )
-                                                        )
-                                                    },
-                                                imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
-                                            )
-                                        }
-                                    }
-                                    if (upcomingMovies.loadState.append == LoadState.Loading) {
-                                        item {
-                                            CircularProgressIndicator(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .wrapContentWidth(Alignment.CenterHorizontally)
-                                            )
-                                        }
-                                    }
+                        if (state.selectedFilmOption == "Tv Shows") {
+                            PagedRow(
+                                items = onAirTvSeries,
+                                modifier = Modifier.fillMaxWidth(),
+                                content = { film ->
+                                    FilmItem(
+                                        modifier = Modifier
+                                            .height(200.dp)
+                                            .width(130.dp)
+                                            .clickable {
+                                                onEvent(
+                                                    HomeUiEvents.NavigateToFilmDetails(
+                                                        id = film.id,
+                                                        filmType = "tv"
+                                                    )
+                                                )
+                                            },
+                                        imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                    )
                                 }
                             )
-
-                            upcomingMovies.apply {
-                                loadState
-                                when (loadState.refresh) {
-                                    is LoadState.Loading -> {
-                                        CircularProgressIndicator(
-                                            modifier = Modifier,
-                                            strokeWidth = 2.dp
-                                        )
-                                    }
-
-                                    is LoadState.Error -> {
-                                        val e = upcomingMovies.loadState.refresh as LoadState.Error
-                                        Text(
-                                            text = when (e.error) {
-                                                is HttpException -> {
-                                                    "Oops, something went wrong!"
-                                                }
-
-                                                is IOException -> {
-                                                    "Couldn't reach server, check your internet connection!"
-                                                }
-
-                                                else -> {
-                                                    "Unknown error occurred"
-                                                }
+                        } else {
+                            PagedRow(
+                                items = upcomingMovies,
+                                modifier = Modifier.fillMaxWidth(),
+                                content = { film ->
+                                    FilmItem(
+                                        modifier = Modifier
+                                            .height(200.dp)
+                                            .width(130.dp)
+                                            .clickable {
+                                                onEvent(
+                                                    HomeUiEvents.NavigateToFilmDetails(
+                                                        id = film.id,
+                                                        filmType = "movie"
+                                                    )
+                                                )
                                             },
-                                            textAlign = TextAlign.Center,
-                                            color = MaterialTheme.colorScheme.primary,
-                                        )
-                                    }
-
-                                    else -> {}
+                                        imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                    )
                                 }
-                            }
+                            )
                         }
                     }
                 }
@@ -571,102 +406,48 @@ fun HomeScreenContent(
                             style = MaterialTheme.typography.titleMedium,
                         )
                     }
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(210.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            content = {
-                                if (state.selectedFilmOption == "Tv Shows") {
-                                    items(
-                                        count = airingTodayTvSeries.itemCount
-                                    ) { index ->
-                                        val film = airingTodayTvSeries[index]
-                                        FilmItem(
-                                            modifier = Modifier
-                                                .height(200.dp)
-                                                .width(130.dp)
-                                                .clickable {
-                                                    onEvent(
-                                                        HomeUiEvents.NavigateToFilmDetails(
-                                                            id = film?.id!!,
-                                                            filmType = "tv"
-                                                        )
-                                                    )
-                                                },
-                                            imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
-                                        )
-                                    }
-                                } else {
-                                    items(
-                                        count = nowPlayingMovies.itemCount
-                                    ) { index ->
-                                        val film = nowPlayingMovies[index]
-                                        FilmItem(
-                                            modifier = Modifier
-                                                .height(200.dp)
-                                                .width(130.dp)
-                                                .clickable {
-                                                    onEvent(
-                                                        HomeUiEvents.NavigateToFilmDetails(
-                                                            id = film?.id!!,
-                                                            filmType = "movie"
-                                                        )
-                                                    )
-                                                },
-                                            imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
-                                        )
-                                    }
-                                }
-                                if (nowPlayingMovies.loadState.append == LoadState.Loading) {
-                                    item {
-                                        CircularProgressIndicator(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .wrapContentWidth(Alignment.CenterHorizontally)
-                                        )
-                                    }
-                                }
-                            })
-
-                        nowPlayingMovies.apply {
-                            loadState
-                            when (loadState.refresh) {
-                                is LoadState.Loading -> {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier,
-                                        strokeWidth = 2.dp
-                                    )
-                                }
-
-                                is LoadState.Error -> {
-                                    val e =
-                                        nowPlayingMovies.loadState.refresh as LoadState.Error
-                                    Text(
-                                        text = when (e.error) {
-                                            is HttpException -> {
-                                                "Oops, something went wrong!"
-                                            }
-
-                                            is IOException -> {
-                                                "Couldn't reach server, check your internet connection!"
-                                            }
-
-                                            else -> {
-                                                "Unknown error occurred"
-                                            }
+                    if (state.selectedFilmOption == "Tv Shows") {
+                        PagedRow(
+                            items = airingTodayTvSeries,
+                            modifier = Modifier.fillMaxWidth(),
+                            content = { film ->
+                                FilmItem(
+                                    modifier = Modifier
+                                        .height(200.dp)
+                                        .width(130.dp)
+                                        .clickable {
+                                            onEvent(
+                                                HomeUiEvents.NavigateToFilmDetails(
+                                                    id = film.id,
+                                                    filmType = "tv"
+                                                )
+                                            )
                                         },
-                                        textAlign = TextAlign.Center,
-                                        color = MaterialTheme.colorScheme.primary,
-                                    )
-                                }
-
-                                else -> {}
+                                    imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                )
                             }
-                        }
+                        )
+                    } else {
+                        PagedRow(
+                            items = nowPlayingMovies,
+                            modifier = Modifier.fillMaxWidth(),
+                            content = { film ->
+                                FilmItem(
+                                    modifier = Modifier
+                                        .height(200.dp)
+                                        .width(130.dp)
+                                        .clickable {
+                                            onEvent(
+                                                HomeUiEvents.NavigateToFilmDetails(
+                                                    id = film.id,
+                                                    filmType = "movie"
+                                                )
+                                            )
+                                        },
+                                    imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                )
+                            }
+                        )
                     }
                 }
 
@@ -678,101 +459,48 @@ fun HomeScreenContent(
                             text = "Top rated",
                             style = MaterialTheme.typography.titleMedium,
                         )
-                        Box(
-                            Modifier
-                                .fillMaxWidth()
-                                .height(210.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            LazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                content = {
-                                    if (state.selectedFilmOption == "Tv Shows") {
-                                        items(
-                                            count = topRatedTvSeries.itemCount
-                                        ) { index ->
-                                            val film = topRatedTvSeries[index]
-                                            FilmItem(
-                                                modifier = Modifier
-                                                    .height(200.dp)
-                                                    .width(130.dp)
-                                                    .clickable {
-                                                        onEvent(
-                                                            HomeUiEvents.NavigateToFilmDetails(
-                                                                id = film?.id!!,
-                                                                filmType = "tv"
-                                                            )
-                                                        )
-                                                    },
-                                                imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
-                                            )
-                                        }
-                                    } else {
-                                        items(
-                                            count = topRatedMovies.itemCount
-                                        ) { index ->
-                                            val film = topRatedMovies[index]
-                                            FilmItem(
-                                                modifier = Modifier
-                                                    .height(200.dp)
-                                                    .width(130.dp)
-                                                    .clickable {
-                                                        onEvent(
-                                                            HomeUiEvents.NavigateToFilmDetails(
-                                                                id = film?.id!!,
-                                                                filmType = "movie"
-                                                            )
-                                                        )
-                                                    },
-                                                imageUrl = "$IMAGE_BASE_UR/${film?.posterPath}"
-                                            )
-                                        }
-                                    }
-                                    if (topRatedMovies.loadState.append == LoadState.Loading) {
-                                        item {
-                                            CircularProgressIndicator(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .wrapContentWidth(Alignment.CenterHorizontally)
-                                            )
-                                        }
-                                    }
-                                })
-
-                            topRatedMovies.apply {
-                                loadState
-                                when (loadState.refresh) {
-                                    is LoadState.Loading -> {
-                                        CircularProgressIndicator(
-                                            modifier = Modifier,
-                                            strokeWidth = 2.dp
-                                        )
-                                    }
-
-                                    is LoadState.Error -> {
-                                        val e = topRatedMovies.loadState.refresh as LoadState.Error
-                                        Text(
-                                            text = when (e.error) {
-                                                is HttpException -> {
-                                                    "Oops, something went wrong!"
-                                                }
-
-                                                is IOException -> {
-                                                    "Couldn't reach server, check your internet connection!"
-                                                }
-
-                                                else -> {
-                                                    "Unknown error occurred"
-                                                }
+                        if (state.selectedFilmOption == "Tv Shows") {
+                            PagedRow(
+                                items = topRatedTvSeries,
+                                modifier = Modifier.fillMaxWidth(),
+                                content = { film ->
+                                    FilmItem(
+                                        modifier = Modifier
+                                            .height(200.dp)
+                                            .width(130.dp)
+                                            .clickable {
+                                                onEvent(
+                                                    HomeUiEvents.NavigateToFilmDetails(
+                                                        id = film.id,
+                                                        filmType = "tv"
+                                                    )
+                                                )
                                             },
-                                            textAlign = TextAlign.Center,
-                                            color = MaterialTheme.colorScheme.primary,
-                                        )
-                                    }
-
-                                    else -> {}
+                                        imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                    )
                                 }
-                            }
+                            )
+                        } else {
+                            PagedRow(
+                                items = topRatedMovies,
+                                modifier = Modifier.fillMaxWidth(),
+                                content = { film ->
+                                    FilmItem(
+                                        modifier = Modifier
+                                            .height(200.dp)
+                                            .width(130.dp)
+                                            .clickable {
+                                                onEvent(
+                                                    HomeUiEvents.NavigateToFilmDetails(
+                                                        id = film.id,
+                                                        filmType = "movie"
+                                                    )
+                                                )
+                                            },
+                                        imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                    )
+                                }
+                            )
                         }
                     }
                 }
@@ -928,6 +656,136 @@ fun Genres(
                         }
                     )
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun <T : Any> PagedRow(
+    modifier: Modifier = Modifier,
+    items: LazyPagingItems<T>,
+    content: @Composable (T) -> Unit,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(210.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(items.itemCount) {
+                val item = items[it]
+                if (item != null) {
+                    content(item)
+                }
+            }
+
+            items.loadState.let { loadState ->
+                when {
+                    loadState.refresh is LoadState.Loading -> {
+                        item {
+                            Row(
+                                modifier = Modifier
+                                    .fillParentMaxWidth()
+                                    .align(Alignment.Center),
+                                horizontalArrangement = Arrangement.Center,
+                            ) {
+                                CircularProgressIndicator(
+                                    strokeWidth = 2.dp,
+                                )
+                            }
+                        }
+                    }
+
+                    loadState.refresh is LoadState.NotLoading && items.itemCount < 1 -> {
+                        item {
+                            Row(
+                                modifier = Modifier
+                                    .fillParentMaxWidth()
+                                    .align(Alignment.Center),
+                                horizontalArrangement = Arrangement.Center,
+                            ) {
+                                Text(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    text = "No data available",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    textAlign = TextAlign.Center,
+                                )
+                            }
+                        }
+                    }
+
+
+                    loadState.refresh is LoadState.Error -> {
+                        item {
+                            Row(
+                                modifier = Modifier
+                                    .fillParentMaxWidth()
+                                    .align(Alignment.Center),
+                                horizontalArrangement = Arrangement.Center,
+                            ) {
+                                Text(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    text = when ((loadState.refresh as LoadState.Error).error) {
+                                        is HttpException -> {
+                                            "Oops, something went wrong!"
+                                        }
+
+                                        is IOException -> {
+                                            "Couldn't reach server, check your internet connection!"
+                                        }
+
+                                        else -> {
+                                            "Unknown error occurred"
+                                        }
+                                    },
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    textAlign = TextAlign.Center,
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+                            }
+                        }
+                    }
+
+                    loadState.append is LoadState.Loading -> {
+                        item {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                        .align(Alignment.Center),
+                                    strokeWidth = 2.dp,
+                                )
+                            }
+                        }
+                    }
+
+                    loadState.append is LoadState.Error -> {
+                        item {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = "An error occurred",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    textAlign = TextAlign.Center,
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }

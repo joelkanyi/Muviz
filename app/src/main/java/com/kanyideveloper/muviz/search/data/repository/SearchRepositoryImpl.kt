@@ -15,6 +15,7 @@
  */
 package com.kanyideveloper.muviz.search.data.repository
 
+import android.nfc.tech.MifareUltralight.PAGE_SIZE
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -28,7 +29,7 @@ import javax.inject.Inject
 class SearchRepositoryImpl @Inject constructor(private val api: TMDBApi): SearchRepository {
     override fun multiSearch(queryParam: String): Flow<PagingData<Search>> {
         return Pager(
-            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            config = PagingConfig(enablePlaceholders = false, pageSize = PAGE_SIZE),
             pagingSourceFactory = {
                 SearchPagingSource(api, queryParam)
             }
