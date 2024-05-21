@@ -165,4 +165,7 @@ dependencies {
 
     // Livedata
     implementation(libs.androidx.runtime.livedata)
+
+    // DataStore
+    implementation(libs.datastore.preferences)
 }

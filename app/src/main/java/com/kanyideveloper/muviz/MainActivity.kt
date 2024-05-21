@@ -20,18 +20,22 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.kanyideveloper.muviz.common.presentation.components.StandardScaffold
 import com.kanyideveloper.muviz.common.presentation.theme.MuvizTheme
+import com.kanyideveloper.muviz.common.presentation.theme.Theme
 import com.kanyideveloper.muviz.destinations.AccountScreenDestination
 import com.kanyideveloper.muviz.destinations.FavoritesScreenDestination
 import com.kanyideveloper.muviz.destinations.HomeScreenDestination
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.rememberNavHostEngine
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -39,7 +43,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MuvizTheme {
+            val viewModel = hiltViewModel<MainViewModel>()
+            val themeValue by viewModel.theme.collectAsState(
+                initial = Theme.FOLLOW_SYSTEM.themeValue,
+                context = Dispatchers.Main.immediate
+            )
+
+            MuvizTheme(themeValue) {
                 val navController = rememberNavController()
                 val navHostEngine = rememberNavHostEngine()
 

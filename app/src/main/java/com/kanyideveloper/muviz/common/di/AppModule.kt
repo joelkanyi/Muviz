@@ -16,8 +16,16 @@
 package com.kanyideveloper.muviz.common.di
 
 import android.app.Application
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
 import com.kanyideveloper.muviz.common.data.network.TMDBApi
+import com.kanyideveloper.muviz.common.data.repository.PreferenceRepositoryImpl
+import com.kanyideveloper.muviz.common.domain.repository.PreferenceRepository
+import com.kanyideveloper.muviz.common.util.Constants
 import com.kanyideveloper.muviz.common.util.Constants.BASE_URL
 import com.kanyideveloper.muviz.common.util.Constants.DATABASE_NAME
 import com.kanyideveloper.muviz.favorites.data.data.local.FavoritesDatabase
@@ -27,6 +35,7 @@ import com.kanyideveloper.muviz.home.data.repository.TvSeriesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -90,4 +99,19 @@ object AppModule {
     @Provides
     @Singleton
     fun provideTvSeriesRepository(api: TMDBApi) = TvSeriesRepository(api)
+
+
+    @Provides
+    @Singleton
+    fun provideDatastorePreferences(@ApplicationContext context: Context): DataStore<Preferences> =
+        PreferenceDataStoreFactory.create(
+            produceFile = {
+                context.preferencesDataStoreFile(Constants.MUVIZ_PREFERENCES)
+            }
+        )
+
+    @Provides
+    @Singleton
+    fun providePreferenceRepository(dataStore: DataStore<Preferences>): PreferenceRepository =
+        PreferenceRepositoryImpl(dataStore)
 }
