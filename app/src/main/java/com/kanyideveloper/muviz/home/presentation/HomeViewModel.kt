@@ -284,6 +284,8 @@ class HomeViewModel @Inject constructor(
     }
 
     fun refreshAllData() {
+        getSeriesGenres()
+        getMoviesGenres()
         getTrendingMovies(homeUiState.value.selectedGenre?.id)
         getNowPayingMovies(homeUiState.value.selectedGenre?.id)
         getUpcomingMovies(homeUiState.value.selectedGenre?.id)

@@ -19,12 +19,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,7 +30,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -164,7 +161,8 @@ fun SearchScreenContent(
             Modifier
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp)
-                .fillMaxSize()
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             val focusRequester = remember { FocusRequester() }
             LaunchedEffect(Unit) {
@@ -178,68 +176,44 @@ fun SearchScreenContent(
                 onEvent = onEvent,
                 state = state,
             )
-            Spacer(modifier = Modifier.height(8.dp))
 
-            Box(
+            LazyColumn(
                 modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    items(
-                        count = searchResult.itemCount,
-                    ) { index ->
-                        val search = searchResult[index]
-                        SearchItem(
-                            search = search,
-                            state = state,
-                            onClick = {
-                                onEvent(SearchUiEvents.OpenFilmDetails(search))
-                            }
-                        )
-                    }
-
-                    if (searchResult.loadState.append == LoadState.Loading) {
-                        item {
-                            CircularProgressIndicator(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .wrapContentWidth(Alignment.CenterHorizontally)
-                            )
+                items(searchResult.itemCount) { index ->
+                    val search = searchResult[index]
+                    SearchItem(
+                        search = search,
+                        state = state,
+                        onClick = {
+                            onEvent(SearchUiEvents.OpenFilmDetails(search))
                         }
-                    }
+                    )
                 }
 
-                searchResult.apply {
-                    when (loadState.refresh) {
-                        is LoadState.Error -> {
-                            val e = searchResult.loadState.refresh as LoadState.Error
-                            Text(
-                                text = when (e.error) {
-                                    is HttpException -> {
-                                        "Oops, something went wrong!"
-                                    }
-
-                                    is IOException -> {
-                                        "Couldn't reach server, check your internet connection!"
-                                    }
-
-                                    else -> {
-                                        "Unknown error occurred"
-                                    }
-                                },
-                                modifier = Modifier
-                                    .align(alignment = Alignment.Center)
-                                    .padding(12.dp),
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
+                searchResult.loadState.let { loadState ->
+                    when {
+                        loadState.refresh is LoadState.Loading -> {
+                            item {
+                                Column(
+                                    modifier = Modifier
+                                        .fillParentMaxSize(),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    CircularProgressIndicator(
+                                        strokeWidth = 2.dp,
+                                    )
+                                }
+                            }
                         }
 
-                        is LoadState.NotLoading -> {
-                            if (searchResult.itemCount <= 0) {
+                        loadState.refresh is LoadState.NotLoading && searchResult.itemCount < 1 -> {
+                            item {
                                 Column(
-                                    Modifier.fillMaxSize(),
+                                    modifier = Modifier
+                                        .fillParentMaxSize(),
                                     verticalArrangement = Arrangement.Center,
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
@@ -253,7 +227,69 @@ fun SearchScreenContent(
                             }
                         }
 
-                        else -> {}
+
+                        loadState.refresh is LoadState.Error -> {
+                            item {
+                                Column(
+                                    modifier = Modifier
+                                        .fillParentMaxSize(),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        modifier = Modifier
+                                            .fillMaxWidth(),
+                                        text = when ((loadState.refresh as LoadState.Error).error) {
+                                            is HttpException -> {
+                                                "Oops, something went wrong!"
+                                            }
+
+                                            is IOException -> {
+                                                "Couldn't reach server, check your internet connection!"
+                                            }
+
+                                            else -> {
+                                                "Unknown error occurred"
+                                            }
+                                        },
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        textAlign = TextAlign.Center,
+                                        color = MaterialTheme.colorScheme.primary,
+                                    )
+                                }
+                            }
+                        }
+
+                        loadState.append is LoadState.Loading -> {
+                            item {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center,
+                                ) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier
+                                            .size(16.dp),
+                                        strokeWidth = 2.dp,
+                                    )
+                                }
+                            }
+                        }
+
+                        loadState.append is LoadState.Error -> {
+                            item {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center,
+                                ) {
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        text = "An error occurred",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        textAlign = TextAlign.Center,
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
