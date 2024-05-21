@@ -33,20 +33,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -145,6 +147,7 @@ fun AccountScreen(
 
     if (shouldShowThemesDialog) {
         ThemesDialog(
+            selectedTheme = viewModel.theme.collectAsState().value,
             onDismiss = {
                 shouldShowThemesDialog = false
             },
@@ -473,7 +476,11 @@ fun AccountItems(
 }
 
 @Composable
-fun ThemesDialog(onDismiss: () -> Unit, onSelectTheme: (Int) -> Unit) {
+fun ThemesDialog(
+    onDismiss: () -> Unit,
+    onSelectTheme: (Int) -> Unit,
+    selectedTheme: Int,
+) {
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.background,
         onDismissRequest = { onDismiss() },
@@ -484,31 +491,18 @@ fun ThemesDialog(onDismiss: () -> Unit, onSelectTheme: (Int) -> Unit) {
             )
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                ThemeItem(
-                    themeName = "Use System Settings",
-                    themeValue = Theme.FOLLOW_SYSTEM.themeValue,
-                    icon = R.drawable.settings_suggest,
-                    onSelectTheme = onSelectTheme
-                )
-                ThemeItem(
-                    themeName = "Light Mode",
-                    themeValue = Theme.LIGHT_THEME.themeValue,
-                    icon = R.drawable.light_mode,
-                    onSelectTheme = onSelectTheme
-                )
-                ThemeItem(
-                    themeName = "Dark Mode",
-                    themeValue = Theme.DARK_THEME.themeValue,
-                    icon = R.drawable.dark_mode,
-                    onSelectTheme = onSelectTheme
-                )
-                ThemeItem(
-                    themeName = "Material You",
-                    themeValue = Theme.MATERIAL_YOU.themeValue,
-                    icon = R.drawable.wallpaper,
-                    onSelectTheme = onSelectTheme
-                )
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                items(themes) { theme ->
+                    ThemeItem(
+                        themeName = theme.themeName,
+                        themeValue = theme.themeValue,
+                        icon = theme.icon,
+                        onSelectTheme = onSelectTheme,
+                        isSelected = theme.themeValue == selectedTheme
+                    )
+                }
             }
         },
         confirmButton = {
@@ -525,11 +519,17 @@ fun ThemesDialog(onDismiss: () -> Unit, onSelectTheme: (Int) -> Unit) {
 }
 
 @Composable
-fun ThemeItem(themeName: String, themeValue: Int, icon: Int, onSelectTheme: (Int) -> Unit) {
+fun ThemeItem(
+    themeName: String,
+    themeValue: Int,
+    icon: Int,
+    onSelectTheme: (Int) -> Unit,
+    isSelected: Boolean,
+) {
     Card(
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
+            containerColor = MaterialTheme.colorScheme.background
         ),
         onClick = {
             onSelectTheme(themeValue)
@@ -538,20 +538,39 @@ fun ThemeItem(themeName: String, themeValue: Int, icon: Int, onSelectTheme: (Int
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(
+                    vertical = 8.dp,
+                    horizontal = 16.dp
+                ),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Icon(
-                painter = painterResource(id = icon),
-                contentDescription = null
-            )
-            Text(
+            Row(
                 modifier = Modifier
-                    .padding(12.dp),
-                text = themeName,
-                style = MaterialTheme.typography.labelMedium
-            )
+                    .fillMaxWidth(.75f),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(id = icon),
+                    contentDescription = null
+                )
+                Text(
+                    modifier = Modifier
+                        .padding(12.dp),
+                    text = themeName,
+                    style = MaterialTheme.typography.labelMedium
+                )
+            }
+
+            if (isSelected) {
+                Icon(
+                    modifier = Modifier
+                        .size(16.dp),
+                    imageVector = Icons.Default.Check,
+                    contentDescription = null,
+                )
+            }
         }
     }
 }
@@ -576,6 +595,35 @@ private fun Context.accountItems() = listOf(
     AccountItem(
         getString(R.string.get_in_touch),
         R.drawable.ic_socials
+    )
+)
+
+data class AppTheme(
+    val themeName: String,
+    val themeValue: Int,
+    val icon: Int
+)
+
+val themes = listOf(
+    AppTheme(
+        themeName = "Use System Settings",
+        themeValue = Theme.FOLLOW_SYSTEM.themeValue,
+        icon = R.drawable.settings_suggest
+    ),
+    AppTheme(
+        themeName = "Light Mode",
+        themeValue = Theme.LIGHT_THEME.themeValue,
+        icon = R.drawable.light_mode
+    ),
+    AppTheme(
+        themeName = "Dark Mode",
+        themeValue = Theme.DARK_THEME.themeValue,
+        icon = R.drawable.dark_mode
+    ),
+    AppTheme(
+        themeName = "Material You",
+        themeValue = Theme.MATERIAL_YOU.themeValue,
+        icon = R.drawable.wallpaper
     )
 )
 

@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,8 +39,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -54,16 +55,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -154,8 +152,7 @@ fun SearchScreenContent(
                 title = {
                     Text(
                         text = stringResource(R.string.search_title),
-                        color = Color.White,
-                        fontWeight = FontWeight.SemiBold
+                        style = MaterialTheme.typography.titleLarge,
                     )
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -264,7 +261,6 @@ fun SearchScreenContent(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,
@@ -280,25 +276,18 @@ fun SearchBar(
         placeholder = {
             Text(
                 text = stringResource(R.string.search),
-                color = MaterialTheme.colorScheme.background.copy(.5f),
+                color = MaterialTheme.colorScheme.onBackground.copy(.5f),
             )
         },
         shape = MaterialTheme.shapes.large,
-        keyboardOptions = KeyboardOptions(
+        keyboardOptions = KeyboardOptions.Default.copy(
             capitalization = KeyboardCapitalization.Words,
-            autoCorrect = true,
             keyboardType = KeyboardType.Text,
         ),
         colors = TextFieldDefaults.colors(
-            /*focusedTextColor = Color.White,
-            unfocusedTextColor = Color.White,
-            disabledTextColor = Color.Transparent,
-            containerColor = primaryDarkVariant,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent*/
+            unfocusedContainerColor = MaterialTheme.colorScheme.background,
+            focusedContainerColor = MaterialTheme.colorScheme.background,
         ),
-        textStyle = TextStyle(color = Color.White),
         maxLines = 1,
         singleLine = true,
         trailingIcon = {
@@ -307,7 +296,7 @@ fun SearchBar(
             }) {
                 Icon(
                     imageVector = Icons.Default.Search,
-                    tint = MaterialTheme.colorScheme.background.copy(.5f),
+                    tint = MaterialTheme.colorScheme.onBackground.copy(.5f),
                     contentDescription = null
                 )
             }
@@ -331,9 +320,17 @@ fun SearchItem(
             .clickable {
                 onClick()
             },
-        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
     ) {
-        Row {
+        Row(
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data("${Constants.IMAGE_BASE_UR}/${search?.posterPath}")
@@ -349,33 +346,36 @@ fun SearchItem(
 
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Row {
+                Text(
+                    modifier = Modifier.fillMaxWidth(.7f),
+                    text = (search?.name?.trim() ?: search?.originalName?.trim()
+                    ?: search?.originalTitle?.trim()
+                    ?: "---"),
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.bodySmall,
+                )
+
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = search?.overview ?: "No description",
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.bodySmall,
+                )
+
+                (search?.firstAirDate ?: search?.releaseDate)?.let {
                     Text(
-                        modifier = Modifier.fillMaxWidth(.7f),
-                        text = (search?.name ?: search?.originalName ?: search?.originalTitle
-                        ?: "No title provided"),
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 13.sp
+                        modifier = Modifier.fillMaxWidth(),
+                        text = it,
+                        fontWeight = FontWeight.SemiBold,
+                        style = MaterialTheme.typography.bodySmall,
                     )
-
-                    (search?.firstAirDate ?: search?.releaseDate)?.let {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Right,
-                            text = it,
-                            color = Color.White,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 10.sp
-                        )
-                    }
                 }
-
-
-                Spacer(modifier = Modifier.height(8.dp))
 
                 FlowRow(
                     modifier = Modifier
@@ -401,22 +401,12 @@ fun SearchItem(
 
                     for (genre in searchGenres) {
                         GenreComponent(
+                            modifier = Modifier
+                                .wrapContentSize(),
                             genre = genre,
                         )
                     }
                 }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = search?.overview ?: "No description",
-                    color = Color.White,
-                    fontWeight = FontWeight.Light,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis,
-                    fontSize = 11.sp
-                )
             }
         }
     }
@@ -427,18 +417,23 @@ fun GenreComponent(
     modifier: Modifier = Modifier,
     genre: Genre,
 ) {
-    Box(
+    Card(
         modifier = modifier
-            .clip(RoundedCornerShape(50))
             .border(
                 width = .5.dp,
                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                 shape = RoundedCornerShape(50)
             ),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
+        shape = RoundedCornerShape(50)
     ) {
         Text(
             modifier = Modifier
-                .padding(horizontal = 8.dp, vertical = 2.dp),
+                .padding(
+                    horizontal = 8.dp,
+                ),
             text = genre.name,
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Normal,

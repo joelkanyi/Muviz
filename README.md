@@ -3,12 +3,6 @@
 # Muviz
 An Android app built with Jetpack Compose consuming [TMDB API](https://www.themoviedb.org/documentation/api) to help movies, Tv shows and series fanatics to have current information of the trending, popular, upcoming, on air and many other films. It also helps user know the details of their favorite films and the casts, this helps users add their favorites films to favorite for easy remembrance. It also helps users search for that show that they have heard about it and they are not sure about it.
 
-[![PlayStore][playstore-image]][playstore-url]
-
-[playstore-image]: https://github.com/JoelKanyi/Muviz/blob/main/screenshots/get-it-on-playstore.png
-
-[playstore-url]: https://play.google.com/store/apps/details?id=com.kanyideveloper.muviz
-
 ### Structural design pattern
 The app is built with the Model-View-ViewModel (MVVM) is its structural design pattern that separates objects into three distinct groups:
 - Models hold application data. They’re usually structs or simple classes.
@@ -32,7 +26,8 @@ Obtain your key from [TMDB API](https://www.themoviedb.org/documentation/api) an
     - [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) -The ViewModel class is designed to store and manage UI-related data in a lifecycle conscious way.
     - [LiveData](https://developer.android.com/topic/libraries/architecture/livedata) - LiveData is an observable data holder class. Unlike a regular observable, LiveData is lifecycle-aware, meaning it respects the lifecycle of other app components, such as activities, fragments, or services. This awareness ensures LiveData only updates app component observers that are in an active lifecycle state.
     - [Paging 3 library](https://developer.android.com/topic/libraries/architecture/paging/v3-overview) - The Paging library helps you load and display pages of data from a larger dataset from local storage or over network. This approach allows your app to use both network bandwidth and system resources more efficiently.
-    - [Room database](https://developer.android.com/training/data-storage/room) - The Room persistence library provides an abstraction layer over SQLite to allow fluent database access while harnessing the full power of SQLite. -
+    - [Room database](https://developer.android.com/training/data-storage/room) - The Room persistence library provides an abstraction layer over SQLite to allow fluent database access while harnessing the full power of SQLite.
+    - [DataStore](https://developer.android.com/jetpack/androidx/releases/datastore) - DataStore is a data storage solution that allows you to store key-value pairs or typed objects with protocol buffers. DataStore uses Kotlin coroutines and Flow to store data asynchronously, consistently, and transactionally.
 
 - [Kotlin Coroutines](https://developer.android.com/kotlin/coroutines) - A concurrency design pattern that you can use on Android to simplify code that executes asynchronously.
 - [Retrofit](https://square.github.io/retrofit) -  Retrofit is a REST client for Java/ Kotlin and Android by Square inc under Apache 2.0 license. Its a simple network library that is used for network transactions. By using this library we can seamlessly capture JSON response from web service/web API.
@@ -49,25 +44,26 @@ Obtain your key from [TMDB API](https://www.themoviedb.org/documentation/api) an
 
 
 ## Demo
-### Splash screen
-<img src="screenshots/splash.png" width="250"/>
-
 ### Home screen
-#### Movies
-<img src="screenshots/movies.png" width="250"/><img src="screenshots/movie-details.png" width="250"/> <img src="screenshots/movie-cast.png" width="250"/>
+<img src="screenshots/home_light.png" width="250"/>
+<img src="screenshots/home_dark.png" width="250"/>
 
-#### Tv Shows
-<img src="screenshots/series.png" width="250"/> <img src="screenshots/series-details.png" width="250"/> <img src="screenshots/series-cast.png" width="250"/>
+### Details screen
+<img src="screenshots/details_light.png" width="250"/>
+<img src="screenshots/details_dark.png" width="250"/>
 
-#### Placeholder
-<img src="screenshots/placeholder.png" width="250"/>
-
-### Search screen
-<img src="screenshots/search.png" width="250"/>
+### Casts screen
+<img src="screenshots/cast_light.png" width="250"/>
+<img src="screenshots/cast_dark.png" width="250"/>
 
 ### Favorites screen
-<img src="screenshots/favorites.png" width="250"/>
+<img src="screenshots/favorites_light.png" width="250"/>
+<img src="screenshots/favorites_dark.png" width="250"/>
+
+### Search screen
+<img src="screenshots/search_light.png" width="250"/>
+<img src="screenshots/search_dark.png" width="250"/>
 
 ### Account screen
-#### Account
-<img src="screenshots/account.png" width="250"/> <img src="screenshots/about.png" width="250"/> <img src="screenshots/get-in-touch.png" width="250"/>
+<img src="screenshots/account_light.png" width="250"/>
+<img src="screenshots/account_dark.png" width="250"/>
