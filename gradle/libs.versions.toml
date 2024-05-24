@@ -1,10 +1,9 @@
 [versions]
-kotlin = "1.9.24"
-ksp = "1.9.24-1.0.20"
+kotlin = "2.0.0"
+ksp = "2.0.0-1.0.21"
 gradle = "8.2.2"
 compose = "1.6.7"
 material3 = "1.3.0-beta01"
-compose-compiler = "1.5.14"
 hiltAndroid = "2.51.1"
 hiltCompiler = "1.2.0"
 kotlinxCoroutinesAndroid = "1.8.1"
@@ -88,3 +87,4 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
