@@ -21,6 +21,7 @@ plugins {
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.parcelize)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -76,9 +77,7 @@ android {
         compose = true
         buildConfig = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
+
     sourceSets {
         getByName("androidTest").assets.srcDirs(files("$rootDir/app/schemas")) // Room
     }
@@ -88,6 +87,10 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+}
+
+composeCompiler {
+    enableStrongSkippingMode = true
 }
 
 dependencies {
