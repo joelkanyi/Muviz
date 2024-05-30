@@ -32,14 +32,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.kanyideveloper.muviz.destinations.CastDetailsScreenDestination
-import com.kanyideveloper.muviz.destinations.CastsScreenDestination
 import com.kanyideveloper.muviz.filmdetail.presentation.common.FilmImageBanner
 import com.kanyideveloper.muviz.filmdetail.presentation.common.FilmInfo
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.CastDetailsScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.CastsScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination
+@Destination<RootGraph>
 @Composable
 fun FilmDetailsScreen(
     filmId: Int,

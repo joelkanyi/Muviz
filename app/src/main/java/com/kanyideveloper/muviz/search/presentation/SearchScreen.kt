@@ -76,16 +76,17 @@ import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.common.presentation.components.StandardToolbar
 import com.kanyideveloper.muviz.common.presentation.theme.MuvizTheme
 import com.kanyideveloper.muviz.common.util.Constants
-import com.kanyideveloper.muviz.destinations.FilmDetailsScreenDestination
 import com.kanyideveloper.muviz.genre.domain.model.Genre
 import com.kanyideveloper.muviz.search.domain.model.Search
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.FilmDetailsScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import retrofit2.HttpException
 import java.io.IOException
 
 @OptIn(androidx.compose.ui.ExperimentalComposeUiApi::class)
-@Destination(start = false)
+@Destination<RootGraph>
 @Composable
 fun SearchScreen(
     navigator: DestinationsNavigator,

@@ -39,9 +39,10 @@ import com.kanyideveloper.muviz.common.presentation.theme.MuvizTheme
 import com.kanyideveloper.muviz.common.util.appVersionCode
 import com.kanyideveloper.muviz.common.util.appVersionName
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination
+@Destination<RootGraph>
 @Composable
 fun AboutScreen(
     navigator: DestinationsNavigator

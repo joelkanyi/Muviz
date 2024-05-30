@@ -45,11 +45,12 @@ import com.kanyideveloper.muviz.cast.domain.model.Credits
 import com.kanyideveloper.muviz.common.presentation.components.StandardToolbar
 import com.kanyideveloper.muviz.common.presentation.theme.MuvizTheme
 import com.kanyideveloper.muviz.common.util.Constants
-import com.kanyideveloper.muviz.destinations.CastDetailsScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.CastDetailsScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination
+@Destination<RootGraph>
 @Composable
 fun CastsScreen(
     credits: Credits,

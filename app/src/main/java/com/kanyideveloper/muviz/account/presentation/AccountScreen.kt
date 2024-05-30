@@ -69,11 +69,12 @@ import com.kanyideveloper.muviz.about.domain.model.AccountItem
 import com.kanyideveloper.muviz.common.presentation.components.StandardToolbar
 import com.kanyideveloper.muviz.common.presentation.theme.MuvizTheme
 import com.kanyideveloper.muviz.common.presentation.theme.Theme
-import com.kanyideveloper.muviz.destinations.AboutScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.AboutScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination
+@Destination<RootGraph>
 @Composable
 fun AccountScreen(
     navigator: DestinationsNavigator,

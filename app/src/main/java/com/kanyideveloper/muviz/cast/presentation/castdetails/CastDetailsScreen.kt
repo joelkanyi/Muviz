@@ -34,9 +34,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.kanyideveloper.muviz.cast.domain.model.Cast
 import com.kanyideveloper.muviz.common.presentation.components.StandardToolbar
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination
+@Destination<RootGraph>
 @Composable
 fun CastDetailsScreen(
     cast: Cast,
