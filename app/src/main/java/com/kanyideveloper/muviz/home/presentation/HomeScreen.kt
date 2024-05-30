@@ -57,6 +57,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -66,8 +67,13 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kanyideveloper.muviz.R
+import com.kanyideveloper.muviz.common.domain.model.Film
 import com.kanyideveloper.muviz.common.presentation.components.StandardToolbar
-import com.kanyideveloper.muviz.common.util.Constants.IMAGE_BASE_UR
+import com.kanyideveloper.muviz.common.util.Constants.TYPE_MOVIE
+import com.kanyideveloper.muviz.common.util.Constants.TYPE_TV_SERIES
+import com.kanyideveloper.muviz.common.util.createImageUrl
+import com.kanyideveloper.muviz.home.domain.model.Movie
+import com.kanyideveloper.muviz.home.domain.model.Series
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.FilmDetailsScreenDestination
@@ -83,6 +89,8 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val homeUiState by viewModel.homeUiState.collectAsState()
+    val context = LocalContext.current
+
     HomeScreenContent(
         state = homeUiState,
         onEvent = { event ->
@@ -98,21 +106,20 @@ fun HomeScreen(
                 is HomeUiEvents.NavigateToFilmDetails -> {
                     navigator.navigate(
                         FilmDetailsScreenDestination(
-                            filmType = event.filmType,
-                            filmId = event.id
+                            film = event.film,
                         )
                     )
                 }
 
                 is HomeUiEvents.OnFilmGenreSelected -> {
-                    if (homeUiState.selectedFilmOption == "Movies") {
+                    if (homeUiState.selectedFilmOption == context.getString(R.string.movies)) {
                         viewModel.setGenre(event.genre)
                         viewModel.getTrendingMovies(event.genre.id)
                         viewModel.getTopRatedMovies(event.genre.id)
                         viewModel.getUpcomingMovies(event.genre.id)
                         viewModel.getNowPayingMovies(event.genre.id)
                         viewModel.getPopularMovies(event.genre.id)
-                    } else if (homeUiState.selectedFilmOption == "Tv Shows") {
+                    } else if (homeUiState.selectedFilmOption == context.getString(R.string.tv_shows)) {
                         viewModel.setGenre(event.genre)
                         viewModel.getTrendingTvSeries(event.genre.id)
                         viewModel.getTopRatedTvSeries(event.genre.id)
@@ -140,6 +147,7 @@ fun HomeScreenContent(
     state: HomeUiState,
     onEvent: (HomeUiEvents) -> Unit,
 ) {
+    val context = LocalContext.current
     val trendingMovies = state.trendingMovies.collectAsLazyPagingItems()
     val upcomingMovies = state.upcomingMovies.collectAsLazyPagingItems()
     val topRatedMovies = state.topRatedMovies.collectAsLazyPagingItems()
@@ -163,7 +171,7 @@ fun HomeScreenContent(
                             painterResource(
                                 id = R.drawable.muviz
                             ),
-                            contentDescription = "App logo",
+                            contentDescription = null,
                             modifier = Modifier
                                 .size(width = 90.dp, height = 90.dp)
                                 .padding(8.dp)
@@ -201,7 +209,10 @@ fun HomeScreenContent(
             ) {
                 item {
                     FilmCategory(
-                        items = listOf("Movies", "Tv Shows"),
+                        items = listOf(
+                            stringResource(R.string.movies),
+                            stringResource(R.string.tv_shows)
+                        ),
                         modifier = Modifier.fillMaxWidth(),
                         state = state,
                         onEvent = onEvent,
@@ -214,7 +225,7 @@ fun HomeScreenContent(
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Text(
-                            text = "Genres",
+                            text = stringResource(R.string.genres),
                             style = MaterialTheme.typography.titleMedium,
                         )
                         Genres(
@@ -229,15 +240,15 @@ fun HomeScreenContent(
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text(
-                            text = "Trending today",
+                            text = stringResource(R.string.trending_today),
                             style = MaterialTheme.typography.titleMedium,
                         )
 
-                        if (state.selectedFilmOption == "Tv Shows") {
+                        if (state.selectedFilmOption == stringResource(R.string.tv_shows)) {
                             PagedRow(
                                 items = trendingTvSeries,
                                 modifier = Modifier.fillMaxWidth(),
-                                content = { film ->
+                                content = {
                                     FilmItem(
                                         modifier = Modifier
                                             .height(220.dp)
@@ -245,12 +256,13 @@ fun HomeScreenContent(
                                             .clickable {
                                                 onEvent(
                                                     HomeUiEvents.NavigateToFilmDetails(
-                                                        id = film.id,
-                                                        filmType = "tv"
+                                                        film = it.toFilm(
+                                                            category = context.getString(R.string.trending_today)
+                                                        )
                                                     )
                                                 )
                                             },
-                                        imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                        imageUrl = it.posterPath.createImageUrl(),
                                     )
                                 }
                             )
@@ -258,7 +270,7 @@ fun HomeScreenContent(
                             PagedRow(
                                 items = trendingMovies,
                                 modifier = Modifier.fillMaxWidth(),
-                                content = { film ->
+                                content = {
                                     FilmItem(
                                         modifier = Modifier
                                             .height(200.dp)
@@ -266,12 +278,13 @@ fun HomeScreenContent(
                                             .clickable {
                                                 onEvent(
                                                     HomeUiEvents.NavigateToFilmDetails(
-                                                        id = film.id,
-                                                        filmType = "movie"
+                                                        film = it.toFilm(
+                                                            category = context.getString(R.string.trending_today)
+                                                        )
                                                     )
                                                 )
                                             },
-                                        imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                        imageUrl = it.posterPath.createImageUrl(),
                                     )
                                 }
                             )
@@ -284,14 +297,14 @@ fun HomeScreenContent(
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text(
-                            text = "Popular",
+                            text = stringResource(R.string.popular),
                             style = MaterialTheme.typography.titleMedium,
                         )
-                        if (state.selectedFilmOption == "Tv Shows") {
+                        if (state.selectedFilmOption == stringResource(R.string.tv_shows)) {
                             PagedRow(
                                 items = popularTvSeries,
                                 modifier = Modifier.fillMaxWidth(),
-                                content = { film ->
+                                content = {
                                     FilmItem(
                                         modifier = Modifier
                                             .height(200.dp)
@@ -299,12 +312,13 @@ fun HomeScreenContent(
                                             .clickable {
                                                 onEvent(
                                                     HomeUiEvents.NavigateToFilmDetails(
-                                                        id = film.id,
-                                                        filmType = "tv"
+                                                        film = it.toFilm(
+                                                            category = context.getString(R.string.popular)
+                                                        )
                                                     )
                                                 )
                                             },
-                                        imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                        imageUrl = it.posterPath.createImageUrl(),
                                     )
                                 }
                             )
@@ -312,7 +326,7 @@ fun HomeScreenContent(
                             PagedRow(
                                 items = popularMovies,
                                 modifier = Modifier.fillMaxWidth(),
-                                content = { film ->
+                                content = {
                                     FilmItem(
                                         modifier = Modifier
                                             .height(200.dp)
@@ -320,12 +334,13 @@ fun HomeScreenContent(
                                             .clickable {
                                                 onEvent(
                                                     HomeUiEvents.NavigateToFilmDetails(
-                                                        id = film.id,
-                                                        filmType = "movie"
+                                                        film = it.toFilm(
+                                                            category = context.getString(R.string.popular)
+                                                        )
                                                     )
                                                 )
                                             },
-                                        imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                        imageUrl = it.posterPath.createImageUrl(),
                                     )
                                 }
                             )
@@ -339,18 +354,18 @@ fun HomeScreenContent(
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text(
-                            text = if (state.selectedFilmOption == "Tv Shows") {
-                                "On Air"
+                            text = if (state.selectedFilmOption == stringResource(R.string.tv_shows)) {
+                                stringResource(R.string.on_air)
                             } else {
-                                "Upcoming"
+                                stringResource(R.string.upcoming)
                             },
                             style = MaterialTheme.typography.titleMedium,
                         )
-                        if (state.selectedFilmOption == "Tv Shows") {
+                        if (state.selectedFilmOption == stringResource(R.string.tv_shows)) {
                             PagedRow(
                                 items = onAirTvSeries,
                                 modifier = Modifier.fillMaxWidth(),
-                                content = { film ->
+                                content = {
                                     FilmItem(
                                         modifier = Modifier
                                             .height(200.dp)
@@ -358,12 +373,13 @@ fun HomeScreenContent(
                                             .clickable {
                                                 onEvent(
                                                     HomeUiEvents.NavigateToFilmDetails(
-                                                        id = film.id,
-                                                        filmType = "tv"
+                                                        film = it.toFilm(
+                                                            category = context.getString(R.string.on_air)
+                                                        )
                                                     )
                                                 )
                                             },
-                                        imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                        imageUrl = it.posterPath.createImageUrl(),
                                     )
                                 }
                             )
@@ -371,7 +387,7 @@ fun HomeScreenContent(
                             PagedRow(
                                 items = upcomingMovies,
                                 modifier = Modifier.fillMaxWidth(),
-                                content = { film ->
+                                content = {
                                     FilmItem(
                                         modifier = Modifier
                                             .height(200.dp)
@@ -379,12 +395,13 @@ fun HomeScreenContent(
                                             .clickable {
                                                 onEvent(
                                                     HomeUiEvents.NavigateToFilmDetails(
-                                                        id = film.id,
-                                                        filmType = "movie"
+                                                        film = it.toFilm(
+                                                            category = context.getString(R.string.upcoming)
+                                                        )
                                                     )
                                                 )
                                             },
-                                        imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                        imageUrl = it.posterPath.createImageUrl(),
                                     )
                                 }
                             )
@@ -397,19 +414,19 @@ fun HomeScreenContent(
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text(
-                            text = if (state.selectedFilmOption == "Tv Shows") {
-                                "Airing today"
+                            text = if (state.selectedFilmOption == stringResource(R.string.tv_shows)) {
+                                stringResource(R.string.airing_today)
                             } else {
-                                "Now playing"
+                                stringResource(R.string.now_playing)
                             },
                             style = MaterialTheme.typography.titleMedium,
                         )
                     }
-                    if (state.selectedFilmOption == "Tv Shows") {
+                    if (state.selectedFilmOption == stringResource(R.string.tv_shows)) {
                         PagedRow(
                             items = airingTodayTvSeries,
                             modifier = Modifier.fillMaxWidth(),
-                            content = { film ->
+                            content = {
                                 FilmItem(
                                     modifier = Modifier
                                         .height(200.dp)
@@ -417,12 +434,13 @@ fun HomeScreenContent(
                                         .clickable {
                                             onEvent(
                                                 HomeUiEvents.NavigateToFilmDetails(
-                                                    id = film.id,
-                                                    filmType = "tv"
+                                                    film = it.toFilm(
+                                                        category = context.getString(R.string.airing_today)
+                                                    )
                                                 )
                                             )
                                         },
-                                    imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                    imageUrl = it.posterPath.createImageUrl(),
                                 )
                             }
                         )
@@ -430,7 +448,7 @@ fun HomeScreenContent(
                         PagedRow(
                             items = nowPlayingMovies,
                             modifier = Modifier.fillMaxWidth(),
-                            content = { film ->
+                            content = {
                                 FilmItem(
                                     modifier = Modifier
                                         .height(200.dp)
@@ -438,12 +456,13 @@ fun HomeScreenContent(
                                         .clickable {
                                             onEvent(
                                                 HomeUiEvents.NavigateToFilmDetails(
-                                                    id = film.id,
-                                                    filmType = "movie"
+                                                    film = it.toFilm(
+                                                        category = context.getString(R.string.now_playing)
+                                                    )
                                                 )
                                             )
                                         },
-                                    imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                    imageUrl = it.posterPath.createImageUrl(),
                                 )
                             }
                         )
@@ -455,14 +474,14 @@ fun HomeScreenContent(
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text(
-                            text = "Top rated",
+                            text = stringResource(R.string.top_rated),
                             style = MaterialTheme.typography.titleMedium,
                         )
-                        if (state.selectedFilmOption == "Tv Shows") {
+                        if (state.selectedFilmOption == stringResource(R.string.tv_shows)) {
                             PagedRow(
                                 items = topRatedTvSeries,
                                 modifier = Modifier.fillMaxWidth(),
-                                content = { film ->
+                                content = {
                                     FilmItem(
                                         modifier = Modifier
                                             .height(200.dp)
@@ -470,12 +489,13 @@ fun HomeScreenContent(
                                             .clickable {
                                                 onEvent(
                                                     HomeUiEvents.NavigateToFilmDetails(
-                                                        id = film.id,
-                                                        filmType = "tv"
+                                                        film = it.toFilm(
+                                                            category = context.getString(R.string.top_rated)
+                                                        )
                                                     )
                                                 )
                                             },
-                                        imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                        imageUrl = it.posterPath.createImageUrl(),
                                     )
                                 }
                             )
@@ -483,7 +503,7 @@ fun HomeScreenContent(
                             PagedRow(
                                 items = topRatedMovies,
                                 modifier = Modifier.fillMaxWidth(),
-                                content = { film ->
+                                content = {
                                     FilmItem(
                                         modifier = Modifier
                                             .height(200.dp)
@@ -491,12 +511,13 @@ fun HomeScreenContent(
                                             .clickable {
                                                 onEvent(
                                                     HomeUiEvents.NavigateToFilmDetails(
-                                                        id = film.id,
-                                                        filmType = "movie"
+                                                        film = it.toFilm(
+                                                            category = context.getString(R.string.top_rated)
+                                                        )
                                                     )
                                                 )
                                             },
-                                        imageUrl = "$IMAGE_BASE_UR/${film.posterPath}"
+                                        imageUrl = it.posterPath.createImageUrl(),
                                     )
                                 }
                             )
@@ -511,7 +532,7 @@ fun HomeScreenContent(
 @Composable
 fun FilmItem(
     modifier: Modifier = Modifier,
-    imageUrl: String
+    imageUrl: String,
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
@@ -789,3 +810,29 @@ fun <T : Any> PagedRow(
         }
     }
 }
+
+fun Movie.toFilm(
+    category: String,
+) = Film(
+    id = id,
+    type = TYPE_MOVIE,
+    image = posterPath.createImageUrl(),
+    category = category,
+    name = title,
+    rating = voteAverage.toFloat(),
+    releaseDate = releaseDate,
+    overview = overview
+)
+
+fun Series.toFilm(
+    category: String,
+) = Film(
+    id = id,
+    type = TYPE_TV_SERIES,
+    image = posterPath.createImageUrl(),
+    category = category,
+    name = name,
+    rating = voteAverage.toFloat(),
+    releaseDate = firstAirDate,
+    overview = overview
+)

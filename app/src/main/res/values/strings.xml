@@ -15,4 +15,14 @@
     <string name="search">Search...</string>
     <string name="search_title">Search</string>
     <string name="change_theme">Change Theme</string>
+    <string name="trending_today">Trending today</string>
+    <string name="tv_shows">Tv Shows</string>
+    <string name="popular">Popular</string>
+    <string name="on_air">On Air</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="airing_today">Airing today</string>
+    <string name="now_playing">Now playing</string>
+    <string name="top_rated">Top rated</string>
+    <string name="movies">Movies</string>
+    <string name="genres">Genres</string>
 </resources>

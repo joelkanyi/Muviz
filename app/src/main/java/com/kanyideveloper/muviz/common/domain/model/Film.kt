@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.kanyideveloper.muviz.favorites.data.data.local
+package com.kanyideveloper.muviz.common.domain.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.kanyideveloper.muviz.common.util.Constants.TABLE_NAME
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-@Entity(tableName = TABLE_NAME)
-data class Favorite(
-    val favorite: Boolean,
-    @PrimaryKey val mediaId: Int,
-    val mediaType: String,
+@Parcelize
+data class Film(
+    val id: Int,
+    val type: String,
     val image: String,
-    val title: String,
-    val releaseDate: String,
+    val category: String,
+    val name: String,
     val rating: Float,
-    val overview: String,
-)
+    val releaseDate: String,
+    val overview: String
+) : Parcelable

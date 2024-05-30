@@ -15,13 +15,15 @@
  */
 package com.kanyideveloper.muviz.filmdetail.presentation
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,11 +31,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.kanyideveloper.muviz.common.domain.model.Film
+import com.kanyideveloper.muviz.common.util.Constants.TYPE_MOVIE
+import com.kanyideveloper.muviz.common.util.Constants.TYPE_TV_SERIES
+import com.kanyideveloper.muviz.filmdetail.presentation.common.CastDetails
+import com.kanyideveloper.muviz.filmdetail.presentation.common.FilmActions
 import com.kanyideveloper.muviz.filmdetail.presentation.common.FilmImageBanner
 import com.kanyideveloper.muviz.filmdetail.presentation.common.FilmInfo
+import com.kanyideveloper.muviz.filmdetail.presentation.common.FilmNameAndRating
+import com.kanyideveloper.muviz.filmdetail.presentation.common.Genres
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.CastDetailsScreenDestination
@@ -43,19 +53,21 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination<RootGraph>
 @Composable
 fun FilmDetailsScreen(
-    filmId: Int,
-    filmType: String,
+    film: Film,
     navigator: DestinationsNavigator,
     viewModel: FilmDetailsViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(key1 = Unit) {
-        viewModel.getFilmDetails(filmId, filmType)
+        viewModel.getFilmDetails(
+            filmId = film.id,
+            filmType = film.type
+        )
     }
-    val isFilmFavorite = viewModel.isAFavorite(filmId).observeAsState().value != null
+    val isFilmFavorite = viewModel.isAFavorite(film.id).observeAsState().value != null
     val filmDetailsUiState by viewModel.filmDetailsUiState.collectAsState()
 
     FilmDetailsScreenContent(
-        filmType = filmType,
+        film = film,
         isLiked = isFilmFavorite,
         state = filmDetailsUiState,
         onEvents = { event ->
@@ -92,60 +104,106 @@ fun FilmDetailsScreen(
 
 @Composable
 fun FilmDetailsScreenContent(
-    filmType: String,
+    film: Film,
     state: FilmDetailsUiState,
     onEvents: (FilmDetailsUiEvents) -> Unit,
     isLiked: Boolean,
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        if (state.isLoading) {
-            CircularProgressIndicator(
+    Scaffold(
+        topBar = {
+            FilmActions(
                 modifier = Modifier
-                    .align(androidx.compose.ui.Alignment.Center)
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                onEvents = onEvents,
+                isLiked = isLiked,
+                film = film,
             )
         }
-
-        if (state.isLoading.not() &&
-            ((filmType == "tv" && state.tvSeriesDetails != null) || (filmType == "movie" && state.movieDetails != null)) &&
-            state.error == null
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            LazyColumn {
-                item {
-                    FilmImageBanner(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(500.dp),
-                        filmType = filmType,
-                        state = state,
-                        isLiked = isLiked,
-                        onEvents = onEvents,
-                    )
-                }
+            item {
+                FilmImageBanner(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(450.dp),
+                    filmImage = film.image,
+                )
+            }
 
+            item {
+                FilmNameAndRating(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    filmName = film.name,
+                    rating = film.rating,
+                )
+            }
+
+
+            item {
+                FilmInfo(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    filmOverview = film.overview,
+                    filmReleaseDate = film.releaseDate,
+                )
+            }
+
+
+            if (state.isLoading.not() &&
+                ((film.type == TYPE_TV_SERIES && state.tvSeriesDetails != null) || (film.type == TYPE_MOVIE && state.movieDetails != null)) &&
+                state.error == null
+            ) {
                 item {
-                    FilmInfo(
+                    Genres(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
-                        filmType = filmType,
-                        state = state,
-                        onEvents = onEvents,
+                        filmType = film.type,
+                        state = state
                     )
                 }
             }
-        }
 
-        if (
-            state.isLoading.not() &&
-            state.error != null
-        ) {
-            Text(
-                text = state.error,
-                modifier = Modifier
-                    .align(androidx.compose.ui.Alignment.Center)
-            )
+            item {
+                CastDetails(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    state = state,
+                    onEvent = onEvents,
+                )
+            }
+
+            if (state.isLoading) {
+                item {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+            }
+
+            if (
+                state.isLoading.not() &&
+                state.error != null
+            ) {
+                item {
+                    Text(
+                        text = state.error,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
         }
     }
 }
@@ -154,7 +212,16 @@ fun FilmDetailsScreenContent(
 @Composable
 fun FilmDetailsScreenPreview() {
     FilmDetailsScreenContent(
-        filmType = "tv",
+        film = Film(
+            id = 1,
+            type = TYPE_MOVIE,
+            image = "https://image.tmdb.org/t/p/w500/6MKr3KgOLmzOP6MSuZERO41Lpkt.jpg",
+            category = "Action",
+            name = "The Tomorrow War",
+            rating = 7.5f,
+            releaseDate = "2021-07-02",
+            overview = "The world is stunned when a group of time travelers arrive from the year 2051 to deliver an urgent message: Thirty years in the future, mankind is losing a global war against a deadly alien species. The only hope for survival is for soldiers and civilians from the present to be transported to the future and join the fight. Among those recruited is high school",
+        ),
         state = FilmDetailsUiState(),
         onEvents = {},
         isLiked = false,

@@ -73,9 +73,11 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kanyideveloper.muviz.R
+import com.kanyideveloper.muviz.common.domain.model.Film
 import com.kanyideveloper.muviz.common.presentation.components.StandardToolbar
 import com.kanyideveloper.muviz.common.presentation.theme.MuvizTheme
 import com.kanyideveloper.muviz.common.util.Constants
+import com.kanyideveloper.muviz.common.util.createImageUrl
 import com.kanyideveloper.muviz.genre.domain.model.Genre
 import com.kanyideveloper.muviz.search.domain.model.Search
 import com.ramcosta.composedestinations.annotation.Destination
@@ -119,12 +121,12 @@ fun SearchScreen(
                 }
 
                 is SearchUiEvents.OpenFilmDetails -> {
+                    keyboardController?.hide()
                     val search = event.search
                     if (search != null) {
                         navigator.navigate(
                             FilmDetailsScreenDestination(
-                                filmId = search.id,
-                                filmType = search.mediaType
+                                film = search.toFilm()
                             )
                         )
                     }
@@ -489,3 +491,14 @@ fun SearchScreenPreview() {
         )
     }
 }
+
+fun Search.toFilm() = Film(
+    id = id,
+    type = mediaType,
+    image = posterPath?.createImageUrl() ?: "",
+    category = "",
+    name = name ?: originalName ?: originalTitle ?: "",
+    rating = voteAverage?.toFloat() ?: 0f,
+    releaseDate = firstAirDate ?: releaseDate ?: "",
+    overview = overview ?: ""
+)

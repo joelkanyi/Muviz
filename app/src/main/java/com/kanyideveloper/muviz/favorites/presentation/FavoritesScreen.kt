@@ -52,7 +52,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
+import com.kanyideveloper.muviz.common.domain.model.Film
 import com.kanyideveloper.muviz.common.presentation.components.StandardToolbar
+import com.kanyideveloper.muviz.common.util.Constants
+import com.kanyideveloper.muviz.common.util.Constants.TYPE_MOVIE
+import com.kanyideveloper.muviz.common.util.Constants.TYPE_TV_SERIES
 import com.kanyideveloper.muviz.favorites.data.data.local.Favorite
 import com.kanyideveloper.muviz.filmdetail.presentation.common.VoteAverageRatingIndicator
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -162,18 +166,16 @@ fun FavoritesScreen(
                                 .height(230.dp)
                                 .align(alignment = Alignment.CenterVertically)
                                 .clickable {
-                                    if (favorite.mediaType == "tv") {
+                                    if (favorite.mediaType == TYPE_TV_SERIES) {
                                         navigator.navigate(
                                             FilmDetailsScreenDestination(
-                                                filmId = favorite.mediaId,
-                                                filmType = "tv"
+                                                film = favorite.toFilm()
                                             )
                                         )
-                                    } else if (favorite.mediaType == "movie") {
+                                    } else if (favorite.mediaType == TYPE_MOVIE) {
                                         navigator.navigate(
                                             FilmDetailsScreenDestination(
-                                                filmId = favorite.mediaId,
-                                                filmType = "movie"
+                                                film = favorite.toFilm()
                                             )
                                         )
                                     }
@@ -329,3 +331,14 @@ fun FilmDetails(
         }
     }
 }
+
+fun Favorite.toFilm() = Film(
+    id = mediaId,
+    type = mediaType,
+    image = image,
+    category = "",
+    name = title,
+    rating = rating,
+    releaseDate = releaseDate,
+    overview = overview
+)

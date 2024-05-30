@@ -62,3 +62,7 @@ fun Context.appVersionCode(): Int {
         0
     }
 }
+
+fun String.createImageUrl(): String {
+    return "${Constants.IMAGE_BASE_UR}/$this"
+}

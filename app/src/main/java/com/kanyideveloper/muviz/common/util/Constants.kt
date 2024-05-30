@@ -27,4 +27,8 @@ object Constants {
     const val MUVIZ_PREFERENCES = "MEALTIME_PREFERENCES"
     val THEME_OPTIONS = intPreferencesKey(name = "theme_option")
     const val PAGING_SIZE = 20
+
+    // Films
+    const val TYPE_MOVIE = "movie"
+    const val TYPE_TV_SERIES = "tv"
 }

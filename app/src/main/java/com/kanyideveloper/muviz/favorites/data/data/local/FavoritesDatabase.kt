@@ -18,7 +18,7 @@ package com.kanyideveloper.muviz.favorites.data.data.local
 import androidx.room.Database
 import androidx.room.RoomDatabase
 
-@Database(entities = [Favorite::class], version = 4, exportSchema = true)
+@Database(entities = [Favorite::class], version = 5, exportSchema = true)
 abstract class FavoritesDatabase : RoomDatabase() {
     abstract val dao: FavoritesDao
 }

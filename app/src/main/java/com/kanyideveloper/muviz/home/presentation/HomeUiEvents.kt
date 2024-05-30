@@ -15,6 +15,7 @@
  */
 package com.kanyideveloper.muviz.home.presentation
 
+import com.kanyideveloper.muviz.common.domain.model.Film
 import com.kanyideveloper.muviz.genre.domain.model.Genre
 
 sealed interface HomeUiEvents {
@@ -23,8 +24,7 @@ sealed interface HomeUiEvents {
     data object OnPullToRefresh : HomeUiEvents
 
     data class NavigateToFilmDetails(
-        val id: Int,
-        val filmType: String
+        val film: Film,
     ) : HomeUiEvents
 
     data class OnFilmGenreSelected(

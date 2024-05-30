@@ -18,7 +18,6 @@ package com.kanyideveloper.muviz
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -65,16 +64,13 @@ class MainActivity : ComponentActivity() {
                         AccountScreenDestination.route
                     )
                 ) { innerPadding ->
-                    Box(
+                    DestinationsNavHost(
                         modifier = Modifier
-                            .padding(innerPadding)
-                    ) {
-                        DestinationsNavHost(
-                            navGraph = NavGraphs.root,
-                            navController = navController,
-                            engine = navHostEngine
-                        )
-                    }
+                            .padding(innerPadding),
+                        navGraph = NavGraphs.root,
+                        navController = navController,
+                        engine = navHostEngine,
+                    )
                 }
             }
         }

@@ -15,7 +15,6 @@
  */
 package com.kanyideveloper.muviz.favorites.presentation
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kanyideveloper.muviz.favorites.data.data.local.Favorite
@@ -29,16 +28,6 @@ class FavoritesViewModel @Inject constructor(private val repository: FavoritesRe
     ViewModel() {
 
     val favorites = repository.getFavorites()
-
-    fun insertFavorite(favorite: Favorite) {
-        viewModelScope.launch {
-            repository.insertFavorite(favorite)
-        }
-    }
-
-    fun isAFavorite(mediaId: Int): LiveData<Boolean>{
-        return repository.isFavorite(mediaId)
-    }
 
     fun deleteOneFavorite(favorite: Favorite) {
         viewModelScope.launch {

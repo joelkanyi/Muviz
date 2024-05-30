@@ -21,9 +21,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,15 +35,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.kanyideveloper.muviz.R
-import com.kanyideveloper.muviz.filmdetail.presentation.FilmDetailsUiEvents
+import com.kanyideveloper.muviz.common.util.Constants
 import com.kanyideveloper.muviz.filmdetail.presentation.FilmDetailsUiState
 
 @Composable
 fun FilmInfo(
     modifier: Modifier = Modifier,
-    filmType: String,
-    state: FilmDetailsUiState,
-    onEvents: (FilmDetailsUiEvents) -> Unit,
+    filmOverview: String,
+    filmReleaseDate: String,
 ) {
     Column(
         modifier = modifier
@@ -54,7 +51,7 @@ fun FilmInfo(
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = if (filmType == "movie") state.movieDetails?.overview.toString() else state.tvSeriesDetails?.overview.toString(),
+            text = filmOverview,
             style = MaterialTheme.typography.bodyMedium,
         )
 
@@ -67,23 +64,10 @@ fun FilmInfo(
                 }
                 append(": ")
                 append(
-                    if (filmType == "movie") state.movieDetails?.releaseDate.toString() else state.tvSeriesDetails?.firstAirDate.toString()
+                    filmReleaseDate
                 )
             },
             style = MaterialTheme.typography.bodySmall,
-        )
-
-
-        Genres(
-            filmType = filmType,
-            state = state
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        CastDetails(
-            state = state,
-            onEvent = onEvents,
         )
     }
 }
@@ -92,11 +76,14 @@ fun FilmInfo(
 @OptIn(ExperimentalLayoutApi::class)
 fun Genres(
     filmType: String,
-    state: FilmDetailsUiState
+    state: FilmDetailsUiState,
+    modifier: Modifier = Modifier,
 ) {
     val genres =
-        if (filmType == "movie") state.movieDetails?.genres else state.tvSeriesDetails?.genres
-    FlowRow {
+        if (filmType == Constants.TYPE_MOVIE) state.movieDetails?.genres else state.tvSeriesDetails?.genres
+    FlowRow(
+        modifier = modifier,
+    ) {
         if (genres != null) {
             for (genre in genres) {
                 Box(
