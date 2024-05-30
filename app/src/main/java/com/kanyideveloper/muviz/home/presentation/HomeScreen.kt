@@ -68,16 +68,15 @@ import coil.request.ImageRequest
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.common.presentation.components.StandardToolbar
 import com.kanyideveloper.muviz.common.util.Constants.IMAGE_BASE_UR
-import com.kanyideveloper.muviz.destinations.FilmDetailsScreenDestination
-import com.kanyideveloper.muviz.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.FilmDetailsScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import retrofit2.HttpException
 import java.io.IOException
 
-@RootNavGraph(start = true)
-@Destination
+@Destination<RootGraph>(start = true)
 @Composable
 fun HomeScreen(
     navigator: DestinationsNavigator,

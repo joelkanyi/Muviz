@@ -69,9 +69,9 @@ fun StandardScaffold(
                                 )
                             },
                             alwaysShowLabel = true,
-                            selected = currentDestination?.route?.contains(item.destination.route) == true,
+                            selected = currentDestination?.route?.contains(item.route) == true,
                             onClick = {
-                                navController.navigate(item.destination.route) {
+                                navController.navigate(item.route) {
                                     navController.graph.startDestinationRoute?.let { screenRoute ->
                                         popUpTo(screenRoute) {
                                             saveState = true

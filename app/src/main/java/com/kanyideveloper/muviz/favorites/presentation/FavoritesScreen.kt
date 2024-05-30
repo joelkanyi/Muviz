@@ -55,10 +55,12 @@ import coil.compose.rememberImagePainter
 import com.kanyideveloper.muviz.common.presentation.components.StandardToolbar
 import com.kanyideveloper.muviz.favorites.data.data.local.Favorite
 import com.kanyideveloper.muviz.filmdetail.presentation.common.VoteAverageRatingIndicator
+import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.FilmDetailsScreenDestination
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterialApi::class)
-@Destination
+@Destination<RootGraph>
 @Composable
 fun FavoritesScreen(
     navigator: DestinationsNavigator,
@@ -162,14 +164,14 @@ fun FavoritesScreen(
                                 .clickable {
                                     if (favorite.mediaType == "tv") {
                                         navigator.navigate(
-                                            com.kanyideveloper.muviz.destinations.FilmDetailsScreenDestination(
+                                            FilmDetailsScreenDestination(
                                                 filmId = favorite.mediaId,
                                                 filmType = "tv"
                                             )
                                         )
                                     } else if (favorite.mediaType == "movie") {
                                         navigator.navigate(
-                                            com.kanyideveloper.muviz.destinations.FilmDetailsScreenDestination(
+                                            FilmDetailsScreenDestination(
                                                 filmId = favorite.mediaId,
                                                 filmType = "movie"
                                             )

@@ -29,10 +29,11 @@ import androidx.navigation.compose.rememberNavController
 import com.kanyideveloper.muviz.common.presentation.components.StandardScaffold
 import com.kanyideveloper.muviz.common.presentation.theme.MuvizTheme
 import com.kanyideveloper.muviz.common.presentation.theme.Theme
-import com.kanyideveloper.muviz.destinations.AccountScreenDestination
-import com.kanyideveloper.muviz.destinations.FavoritesScreenDestination
-import com.kanyideveloper.muviz.destinations.HomeScreenDestination
 import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.generated.NavGraphs
+import com.ramcosta.composedestinations.generated.destinations.AccountScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.FavoritesScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
 import com.ramcosta.composedestinations.rememberNavHostEngine
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
