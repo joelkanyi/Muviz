@@ -49,6 +49,7 @@ android {
         debug {
             val apiKey: String = gradleLocalProperties(rootDir).getProperty("API_KEY") ?: ""
             buildConfigField("String", "API_KEY", "\"$apiKey\"")
+            isDebuggable = false
         }
 
         getByName("release") {

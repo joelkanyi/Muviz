@@ -15,6 +15,9 @@
  */
 package com.kanyideveloper.muviz.filmdetail.presentation
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,11 +53,13 @@ import com.ramcosta.composedestinations.generated.destinations.CastDetailsScreen
 import com.ramcosta.composedestinations.generated.destinations.CastsScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Destination<RootGraph>
 @Composable
-fun FilmDetailsScreen(
+fun SharedTransitionScope.FilmDetailsScreen(
     film: Film,
     navigator: DestinationsNavigator,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     viewModel: FilmDetailsViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(key1 = Unit) {
@@ -70,6 +75,7 @@ fun FilmDetailsScreen(
         film = film,
         isLiked = isFilmFavorite,
         state = filmDetailsUiState,
+        animatedVisibilityScope = animatedVisibilityScope,
         onEvents = { event ->
             when (event) {
                 is FilmDetailsUiEvents.NavigateBack -> {
@@ -102,14 +108,20 @@ fun FilmDetailsScreen(
     )
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun FilmDetailsScreenContent(
+fun SharedTransitionScope.FilmDetailsScreenContent(
     film: Film,
     state: FilmDetailsUiState,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onEvents: (FilmDetailsUiEvents) -> Unit,
     isLiked: Boolean,
 ) {
     Scaffold(
+        modifier = Modifier.sharedBounds(
+            sharedContentState = rememberSharedContentState(key = "${film.id}_${film.category}"),
+            animatedVisibilityScope = animatedVisibilityScope,
+        ),
         topBar = {
             FilmActions(
                 modifier = Modifier
@@ -208,9 +220,10 @@ fun FilmDetailsScreenContent(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview
 @Composable
-fun FilmDetailsScreenPreview() {
+fun SharedTransitionScope.FilmDetailsScreenPreview() {
     FilmDetailsScreenContent(
         film = Film(
             id = 1,
@@ -225,5 +238,6 @@ fun FilmDetailsScreenPreview() {
         state = FilmDetailsUiState(),
         onEvents = {},
         isLiked = false,
+        animatedVisibilityScope = this as AnimatedVisibilityScope
     )
 }

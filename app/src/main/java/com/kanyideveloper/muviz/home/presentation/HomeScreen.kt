@@ -15,6 +15,9 @@
  */
 package com.kanyideveloper.muviz.home.presentation
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -82,9 +85,11 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import retrofit2.HttpException
 import java.io.IOException
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Destination<RootGraph>(start = true)
 @Composable
-fun HomeScreen(
+fun SharedTransitionScope.HomeScreen(
+    animatedVisibilityScope: AnimatedVisibilityScope,
     navigator: DestinationsNavigator,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -93,6 +98,7 @@ fun HomeScreen(
 
     HomeScreenContent(
         state = homeUiState,
+        animatedVisibilityScope = animatedVisibilityScope,
         onEvent = { event ->
             when (event) {
                 is HomeUiEvents.NavigateBack -> {
@@ -141,10 +147,11 @@ fun HomeScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun HomeScreenContent(
+fun SharedTransitionScope.HomeScreenContent(
     state: HomeUiState,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onEvent: (HomeUiEvents) -> Unit,
 ) {
     val context = LocalContext.current
@@ -263,6 +270,8 @@ fun HomeScreenContent(
                                                 )
                                             },
                                         imageUrl = it.posterPath.createImageUrl(),
+                                        animatedVisibilityScope = animatedVisibilityScope,
+                                        sharedTransitionKey = "${it.id}_${context.getString(R.string.trending_today)}",
                                     )
                                 }
                             )
@@ -285,6 +294,8 @@ fun HomeScreenContent(
                                                 )
                                             },
                                         imageUrl = it.posterPath.createImageUrl(),
+                                        animatedVisibilityScope = animatedVisibilityScope,
+                                        sharedTransitionKey = "${it.id}_${context.getString(R.string.trending_today)}",
                                     )
                                 }
                             )
@@ -319,6 +330,8 @@ fun HomeScreenContent(
                                                 )
                                             },
                                         imageUrl = it.posterPath.createImageUrl(),
+                                        animatedVisibilityScope = animatedVisibilityScope,
+                                        sharedTransitionKey = "${it.id}_${context.getString(R.string.popular)}",
                                     )
                                 }
                             )
@@ -341,6 +354,8 @@ fun HomeScreenContent(
                                                 )
                                             },
                                         imageUrl = it.posterPath.createImageUrl(),
+                                        animatedVisibilityScope = animatedVisibilityScope,
+                                        sharedTransitionKey = "${it.id}_${context.getString(R.string.popular)}",
                                     )
                                 }
                             )
@@ -380,6 +395,8 @@ fun HomeScreenContent(
                                                 )
                                             },
                                         imageUrl = it.posterPath.createImageUrl(),
+                                        animatedVisibilityScope = animatedVisibilityScope,
+                                        sharedTransitionKey = "${it.id}_${context.getString(R.string.on_air)}",
                                     )
                                 }
                             )
@@ -402,6 +419,8 @@ fun HomeScreenContent(
                                                 )
                                             },
                                         imageUrl = it.posterPath.createImageUrl(),
+                                        animatedVisibilityScope = animatedVisibilityScope,
+                                        sharedTransitionKey = "${it.id}_${context.getString(R.string.upcoming)}",
                                     )
                                 }
                             )
@@ -441,6 +460,8 @@ fun HomeScreenContent(
                                             )
                                         },
                                     imageUrl = it.posterPath.createImageUrl(),
+                                    animatedVisibilityScope = animatedVisibilityScope,
+                                    sharedTransitionKey = "${it.id}_${context.getString(R.string.airing_today)}",
                                 )
                             }
                         )
@@ -463,6 +484,8 @@ fun HomeScreenContent(
                                             )
                                         },
                                     imageUrl = it.posterPath.createImageUrl(),
+                                    animatedVisibilityScope = animatedVisibilityScope,
+                                    sharedTransitionKey = "${it.id}_${context.getString(R.string.now_playing)}",
                                 )
                             }
                         )
@@ -496,6 +519,8 @@ fun HomeScreenContent(
                                                 )
                                             },
                                         imageUrl = it.posterPath.createImageUrl(),
+                                        animatedVisibilityScope = animatedVisibilityScope,
+                                        sharedTransitionKey = "${it.id}_${context.getString(R.string.top_rated)}",
                                     )
                                 }
                             )
@@ -518,6 +543,8 @@ fun HomeScreenContent(
                                                 )
                                             },
                                         imageUrl = it.posterPath.createImageUrl(),
+                                        animatedVisibilityScope = animatedVisibilityScope,
+                                        sharedTransitionKey = "${it.id}_${context.getString(R.string.top_rated)}",
                                     )
                                 }
                             )
@@ -529,9 +556,12 @@ fun HomeScreenContent(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun FilmItem(
+fun SharedTransitionScope.FilmItem(
     modifier: Modifier = Modifier,
+    sharedTransitionKey: String,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     imageUrl: String,
 ) {
     AsyncImage(
@@ -544,6 +574,12 @@ fun FilmItem(
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = modifier
+            .sharedElement(
+                state = rememberSharedContentState(
+                    key = sharedTransitionKey
+                ),
+                animatedVisibilityScope = animatedVisibilityScope,
+            )
             .fillMaxSize()
             .clip(shape = MaterialTheme.shapes.medium)
     )
