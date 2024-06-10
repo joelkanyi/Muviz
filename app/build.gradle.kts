@@ -47,7 +47,7 @@ android {
 
     buildTypes {
         debug {
-            val apiKey: String = gradleLocalProperties(rootDir).getProperty("API_KEY") ?: ""
+            val apiKey: String = gradleLocalProperties(rootDir, providers).getProperty("API_KEY") ?: ""
             buildConfigField("String", "API_KEY", "\"$apiKey\"")
             isDebuggable = false
         }
@@ -56,7 +56,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
 
-            val apiKey: String = gradleLocalProperties(rootDir).getProperty("API_KEY") ?: ""
+            val apiKey: String = gradleLocalProperties(rootDir, providers).getProperty("API_KEY") ?: ""
             buildConfigField("String", "API_KEY", "\"$apiKey\"")
 
             proguardFiles(
