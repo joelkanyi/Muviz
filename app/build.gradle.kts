@@ -97,7 +97,6 @@ composeCompiler {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.ui)
-    implementation(libs.androidx.material)
     implementation(libs.material3)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.lifecycle.runtime.ktx)

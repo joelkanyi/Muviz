@@ -17,10 +17,11 @@ package com.kanyideveloper.muviz.favorites.domain.repository
 
 import androidx.lifecycle.LiveData
 import com.kanyideveloper.muviz.favorites.data.data.local.Favorite
+import kotlinx.coroutines.flow.Flow
 
 interface FavoritesRepository {
     suspend fun insertFavorite(favorite: Favorite)
-    fun getFavorites(): LiveData<List<Favorite>>
+    fun getFavorites(): Flow<List<Favorite>>
     fun isFavorite(mediaId: Int): LiveData<Boolean>
     fun getAFavorites(mediaId: Int): LiveData<Favorite?>
     suspend fun deleteOneFavorite(favorite: Favorite)

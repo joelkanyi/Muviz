@@ -19,6 +19,7 @@ import androidx.lifecycle.LiveData
 import com.kanyideveloper.muviz.favorites.data.data.local.Favorite
 import com.kanyideveloper.muviz.favorites.data.data.local.FavoritesDatabase
 import com.kanyideveloper.muviz.favorites.domain.repository.FavoritesRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class FavoritesRepositoryImpl @Inject constructor(private val database: FavoritesDatabase):
@@ -27,7 +28,7 @@ class FavoritesRepositoryImpl @Inject constructor(private val database: Favorite
         database.dao.insertFavorite(favorite)
     }
 
-    override fun getFavorites(): LiveData<List<Favorite>> {
+    override fun getFavorites(): Flow<List<Favorite>> {
         return database.dao.getAllFavorites()
     }
 

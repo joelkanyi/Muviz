@@ -25,4 +25,9 @@
     <string name="top_rated">Top rated</string>
     <string name="movies">Movies</string>
     <string name="genres">Genres</string>
+    <string name="delete_all_favorites">Delete all favorites</string>
+    <string name="are_you_want_to_delete_all">Are you want to delete all?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="favorites">Favorites</string>
 </resources>
