@@ -26,6 +26,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -120,6 +121,15 @@ class SearchViewModel @Inject constructor(
                     searchUiState
                 }
             }
+        }
+    }
+
+    fun clearSearch() {
+        _searchUiState.update {
+            it.copy(
+                searchResult = emptyFlow(),
+                searchTerm = ""
+            )
         }
     }
 }
