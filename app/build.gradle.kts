@@ -166,9 +166,6 @@ dependencies {
     // Swipe to refresh
     implementation(libs.accompanist.swiperefresh)
 
-    // Livedata
-    implementation(libs.androidx.runtime.livedata)
-
     // DataStore
     implementation(libs.datastore.preferences)
 }

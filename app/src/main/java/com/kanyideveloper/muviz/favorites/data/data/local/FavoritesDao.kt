@@ -15,7 +15,6 @@
  */
 package com.kanyideveloper.muviz.favorites.data.data.local
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -32,10 +31,10 @@ interface FavoritesDao {
     fun getAllFavorites(): Flow<List<Favorite>>
 
     @Query("SELECT * FROM favorites_table WHERE mediaId  == :mediaId")
-    fun getAFavorites(mediaId: Int): LiveData<Favorite?>
+    fun getAFavorites(mediaId: Int): Flow<Favorite?>
 
     @Query("SELECT favorite FROM favorites_table WHERE mediaId = :mediaId")
-    fun isFavorite(mediaId: Int): LiveData<Boolean>
+    fun isFavorite(mediaId: Int): Flow<Boolean>
 
     @Delete
     suspend fun deleteAFavorite(favorite: Favorite)

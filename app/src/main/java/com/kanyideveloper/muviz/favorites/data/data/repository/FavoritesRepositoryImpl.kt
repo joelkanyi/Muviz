@@ -15,7 +15,6 @@
  */
 package com.kanyideveloper.muviz.favorites.data.data.repository
 
-import androidx.lifecycle.LiveData
 import com.kanyideveloper.muviz.favorites.data.data.local.Favorite
 import com.kanyideveloper.muviz.favorites.data.data.local.FavoritesDatabase
 import com.kanyideveloper.muviz.favorites.domain.repository.FavoritesRepository
@@ -32,11 +31,11 @@ class FavoritesRepositoryImpl @Inject constructor(private val database: Favorite
         return database.dao.getAllFavorites()
     }
 
-    override fun isFavorite(mediaId: Int): LiveData<Boolean>{
+    override fun isFavorite(mediaId: Int): Flow<Boolean>{
         return database.dao.isFavorite(mediaId)
     }
 
-    override fun getAFavorites(mediaId: Int): LiveData<Favorite?> {
+    override fun getAFavorites(mediaId: Int): Flow<Favorite?> {
         return database.dao.getAFavorites(mediaId)
     }
 

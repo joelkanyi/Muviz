@@ -25,6 +25,7 @@ import com.kanyideveloper.muviz.common.util.Resource
 import com.kanyideveloper.muviz.favorites.data.data.local.Favorite
 import com.kanyideveloper.muviz.favorites.domain.repository.FavoritesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -179,7 +180,7 @@ class FilmDetailsViewModel @Inject constructor(
         }
     }
 
-    fun isAFavorite(mediaId: Int): LiveData<Boolean> {
+    fun isAFavorite(mediaId: Int): Flow<Boolean> {
         return favoritesRepository.isFavorite(mediaId)
     }
 
