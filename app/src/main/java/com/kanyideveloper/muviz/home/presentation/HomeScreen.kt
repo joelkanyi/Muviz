@@ -105,10 +105,6 @@ fun SharedTransitionScope.HomeScreen(
                     navigator.navigateUp()
                 }
 
-                HomeUiEvents.OnSearchClick -> {
-                    navigator.navigate(SearchScreenDestination)
-                }
-
                 is HomeUiEvents.NavigateToFilmDetails -> {
                     navigator.navigate(
                         FilmDetailsScreenDestination(
@@ -187,17 +183,6 @@ fun SharedTransitionScope.HomeScreenContent(
                 },
                 modifier = Modifier.fillMaxWidth(),
                 showBackArrow = false,
-                navActions = {
-                    IconButton(onClick = {
-                        onEvent(HomeUiEvents.OnSearchClick)
-                    }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_search),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onBackground.copy(.5f),
-                        )
-                    }
-                }
             )
         }
     ) { innerPadding ->

@@ -34,7 +34,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -106,10 +106,6 @@ fun SearchScreen(
         state = searchUiState,
         onEvent = { event ->
             when (event) {
-                is SearchUiEvents.NavigateBack -> {
-                    navigator.popBackStack()
-                }
-
                 is SearchUiEvents.SearchFilm -> {
                     viewModel.searchAll(event.searchTerm)
                     keyboardController?.hide()
@@ -131,6 +127,10 @@ fun SearchScreen(
                         )
                     }
                 }
+
+                SearchUiEvents.ClearSearchTerm -> {
+                    viewModel.clearSearch()
+                }
             }
         }
     )
@@ -146,9 +146,6 @@ fun SearchScreenContent(
     Scaffold(
         topBar = {
             StandardToolbar(
-                onBackArrowClicked = {
-                    onEvent(SearchUiEvents.NavigateBack)
-                },
                 title = {
                     Text(
                         text = stringResource(R.string.search_title),
@@ -156,7 +153,6 @@ fun SearchScreenContent(
                     )
                 },
                 modifier = Modifier.fillMaxWidth(),
-                showBackArrow = true
             )
         }
     ) { innerPadding ->
@@ -197,7 +193,7 @@ fun SearchScreenContent(
 
                 searchResult.loadState.let { loadState ->
                     when {
-                        loadState.refresh is LoadState.Loading -> {
+                        loadState.refresh is LoadState.Loading && state.searchTerm.isNotEmpty() -> {
                             item {
                                 Column(
                                     modifier = Modifier
@@ -330,14 +326,16 @@ fun SearchBar(
         maxLines = 1,
         singleLine = true,
         trailingIcon = {
-            IconButton(onClick = {
-                onEvent(SearchUiEvents.SearchFilm(searchTerm = state.searchTerm))
-            }) {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    tint = MaterialTheme.colorScheme.onBackground.copy(.5f),
-                    contentDescription = null
-                )
+            if (state.searchTerm.isNotEmpty()) {
+                IconButton(onClick = {
+                    onEvent(SearchUiEvents.ClearSearchTerm)
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        tint = MaterialTheme.colorScheme.onBackground.copy(.5f),
+                        contentDescription = null
+                    )
+                }
             }
         },
     )

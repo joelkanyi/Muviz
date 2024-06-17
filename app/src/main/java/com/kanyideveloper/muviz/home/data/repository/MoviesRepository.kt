@@ -19,6 +19,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.kanyideveloper.muviz.common.data.network.TMDBApi
+import com.kanyideveloper.muviz.common.util.Constants.PAGING_SIZE
 import com.kanyideveloper.muviz.home.domain.model.Movie
 import com.kanyideveloper.muviz.home.data.paging.NowPlayingMoviesSource
 import com.kanyideveloper.muviz.home.data.paging.PopularMoviesSource
@@ -32,7 +33,7 @@ class MoviesRepository @Inject constructor(private val api: TMDBApi) {
 
     fun getTrendingMoviesThisWeek(): Flow<PagingData<Movie>> {
         return Pager(
-            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            config = PagingConfig(enablePlaceholders = false, pageSize = PAGING_SIZE),
             pagingSourceFactory = {
                 TrendingMoviesSource(api)
             }
@@ -41,7 +42,7 @@ class MoviesRepository @Inject constructor(private val api: TMDBApi) {
 
     fun getUpcomingMovies(): Flow<PagingData<Movie>> {
         return Pager(
-            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            config = PagingConfig(enablePlaceholders = false, pageSize = PAGING_SIZE),
             pagingSourceFactory = {
                 UpcomingMoviesSource(api)
             }
@@ -50,7 +51,7 @@ class MoviesRepository @Inject constructor(private val api: TMDBApi) {
 
     fun getTopRatedMovies(): Flow<PagingData<Movie>> {
         return Pager(
-            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            config = PagingConfig(enablePlaceholders = false, pageSize = PAGING_SIZE),
             pagingSourceFactory = {
                 TopRatedMoviesSource(api)
             }
@@ -59,7 +60,7 @@ class MoviesRepository @Inject constructor(private val api: TMDBApi) {
 
     fun getNowPlayingMovies(): Flow<PagingData<Movie>> {
         return Pager(
-            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            config = PagingConfig(enablePlaceholders = false, pageSize = PAGING_SIZE),
             pagingSourceFactory = {
                 NowPlayingMoviesSource(api)
             }
@@ -68,7 +69,7 @@ class MoviesRepository @Inject constructor(private val api: TMDBApi) {
 
     fun getPopularMovies(): Flow<PagingData<Movie>> {
         return Pager(
-            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
+            config = PagingConfig(enablePlaceholders = false, pageSize = PAGING_SIZE),
             pagingSourceFactory = {
                 PopularMoviesSource(api)
             }

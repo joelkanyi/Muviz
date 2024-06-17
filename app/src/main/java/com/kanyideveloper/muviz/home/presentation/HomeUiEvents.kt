@@ -19,7 +19,6 @@ import com.kanyideveloper.muviz.common.domain.model.Film
 import com.kanyideveloper.muviz.genre.domain.model.Genre
 
 sealed interface HomeUiEvents {
-    data object OnSearchClick : HomeUiEvents
     data object NavigateBack : HomeUiEvents
     data object OnPullToRefresh : HomeUiEvents
 
