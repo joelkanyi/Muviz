@@ -24,5 +24,5 @@ sealed interface SearchUiEvents {
 
     data class OpenFilmDetails(val search: Search?) :
         SearchUiEvents
-    data object NavigateBack : SearchUiEvents
+    data object ClearSearchTerm: SearchUiEvents
 }

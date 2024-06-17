@@ -35,6 +35,7 @@ import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.AccountScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.FavoritesScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.navigation.dependency
 import com.ramcosta.composedestinations.rememberNavHostEngine
 import dagger.hilt.android.AndroidEntryPoint
@@ -65,7 +66,8 @@ class MainActivity : ComponentActivity() {
                     showBottomBar = route in listOf(
                         HomeScreenDestination.route,
                         FavoritesScreenDestination.route,
-                        AccountScreenDestination.route
+                        AccountScreenDestination.route,
+                        SearchScreenDestination.route,
                     )
                 ) { innerPadding ->
                     SharedTransitionLayout {
