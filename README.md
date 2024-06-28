@@ -13,7 +13,7 @@ The app is built with the Model-View-ViewModel (MVVM) is its structural design p
 Obtain your key from [TMDB API](https://www.themoviedb.org/documentation/api) and replace it in the `local.properties` file:
 
 ```gradle
-    API_KEY = "API_KEY_VALUE"
+    API_KEY=API_KEY_VALUE
 ```
 
 ## Tech Stack.
