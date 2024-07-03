@@ -46,12 +46,6 @@ android {
     }
 
     signingConfigs {
-        getByName("debug") {
-            storeFile = file("../keystore/key")
-            keyAlias = "key0"
-            keyPassword = "muviz@2022"
-            storePassword = "muviz@2022"
-        }
         register("release") {
             storeFile = file("../keystore/key")
             keyAlias = "key0"
@@ -65,7 +59,6 @@ android {
             versionNameSuffix = " - debug-1"
             applicationIdSuffix = ".debug"
             buildConfigField("int", "PATCH_VERSION_CODE", "1")
-            signingConfig = signingConfigs.getByName("debug")
 
             val apiKey: String = gradleLocalProperties(rootDir, providers).getProperty("API_KEY") ?: ""
             buildConfigField("String", "API_KEY", "\"$apiKey\"")
