@@ -35,4 +35,4 @@ jobs:
         run: echo "${{secrets.LOCAL_PROPERTIES }}" > $GITHUB_WORKSPACE/local.properties
 
       - name: Build app
-        run: ./gradlew assemble --stacktrace
+        run: ./gradlew assembleDebug --stacktrace
