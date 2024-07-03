@@ -134,6 +134,7 @@ fun SharedTransitionScope.FilmDetailsScreenContent(
     ) {
         LazyColumn(
             modifier = Modifier
+                .padding(it)
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
