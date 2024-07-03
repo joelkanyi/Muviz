@@ -45,15 +45,6 @@ android {
         }
     }
 
-    signingConfigs {
-        register("release") {
-            storeFile = file("../keystore/key")
-            keyAlias = "key0"
-            keyPassword = "muviz@2022"
-            storePassword = "muviz@2022"
-        }
-    }
-
     buildTypes {
         debug {
             versionNameSuffix = " - debug-1"
@@ -75,7 +66,6 @@ android {
 
             // PATCH_VERSION_CODE is always -1 for release builds.
             buildConfigField("int", "PATCH_VERSION_CODE", "-1")
-            signingConfig = signingConfigs.getByName("release")
 
             val apiKey: String = gradleLocalProperties(rootDir, providers).getProperty("API_KEY") ?: ""
             buildConfigField("String", "API_KEY", "\"$apiKey\"")
