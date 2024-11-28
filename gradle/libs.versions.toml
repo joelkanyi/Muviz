@@ -1,6 +1,6 @@
 [versions]
-kotlin = "2.0.0"
-ksp = "2.0.0-1.0.22"
+kotlin = "2.1.0"
+ksp = "2.1.0-1.0.29"
 gradle = "8.5.2"
 compose = "1.6.8"
 material3 = "1.3.0-beta02"
