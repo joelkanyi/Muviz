@@ -20,6 +20,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -70,10 +71,12 @@ class MainActivity : ComponentActivity() {
                         SearchScreenDestination.route,
                     )
                 ) { innerPadding ->
-                    SharedTransitionLayout {
+                    SharedTransitionLayout(
+                        modifier = Modifier
+                            .consumeWindowInsets(innerPadding)
+                            .padding(innerPadding),
+                    ) {
                         DestinationsNavHost(
-                            modifier = Modifier
-                                .padding(innerPadding),
                             navGraph = NavGraphs.root,
                             navController = navController,
                             engine = navHostEngine,

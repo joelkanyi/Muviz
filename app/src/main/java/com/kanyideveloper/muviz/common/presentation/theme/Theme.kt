@@ -69,7 +69,10 @@ private val DarkColors = darkColorScheme(
 )
 
 @Composable
-fun MuvizTheme(theme: Int = Theme.DARK_THEME.themeValue, content: @Composable () -> Unit) {
+fun MuvizTheme(
+    theme: Int = Theme.DARK_THEME.themeValue,
+    content: @Composable () -> Unit
+) {
     val autoColors = if (isSystemInDarkTheme()) DarkColors else LightColors
 
     val dynamicColors = if (supportsDynamicTheming()) {

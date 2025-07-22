@@ -45,7 +45,7 @@ fun Context.appVersionName(): String {
     return try {
         val pInfo = this.packageManager.getPackageInfo(this.packageName, 0)
         val version = pInfo.versionName
-        version
+        version ?: "---"
     } catch (e: Exception) {
         e.printStackTrace()
         "---"
