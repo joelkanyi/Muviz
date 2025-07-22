@@ -65,12 +65,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import com.kanyideveloper.muviz.R
 import com.kanyideveloper.muviz.common.domain.model.Film
 import com.kanyideveloper.muviz.common.presentation.components.StandardToolbar
+import com.kanyideveloper.muviz.common.presentation.theme.MuvizTheme
 import com.kanyideveloper.muviz.common.util.Constants.TYPE_MOVIE
 import com.kanyideveloper.muviz.common.util.Constants.TYPE_TV_SERIES
 import com.kanyideveloper.muviz.favorites.data.data.local.Favorite
@@ -311,7 +313,11 @@ fun FilmDetails(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Column {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Top),
+                horizontalAlignment = Alignment.Start
+            ) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
@@ -414,3 +420,31 @@ fun Favorite.toFilm() = Film(
     releaseDate = releaseDate,
     overview = overview
 )
+
+@Preview
+@Composable
+private fun FavoritesScreenPreview() {
+    MuvizTheme {
+        FavoritesScreenContent(
+            favoriteFilms = listOf(
+                Favorite(
+                    favorite = true,
+                    mediaId = 1,
+                    mediaType = TYPE_MOVIE,
+                    image = "https://example.com/image.jpg",
+                    title = "Example Movie Very Long Title That Exceeds Normal Length",
+                    releaseDate = "2023-01-01",
+                    rating = 48.5f,
+                    overview = "This is an example movie overview."
+                )
+            ),
+            showDeleteConsentDialog = false,
+            onDismissDeleteConsentDialog = {},
+            onConfirmDeleteAllFavorites = {},
+            onNavigateBack = {},
+            onClickDeleteAllFavorites = {},
+            onDeleteOneFavorite = {},
+            onClickAFavorite = {}
+        )
+    }
+}

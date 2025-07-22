@@ -25,13 +25,13 @@ plugins {
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 36
     namespace = "com.kanyideveloper.muviz"
 
     defaultConfig {
         applicationId = "com.kanyideveloper.muviz"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = compileSdk
         versionCode = 6
         versionName = "1.0.5"
 
@@ -47,6 +47,7 @@ android {
 
     buildTypes {
         debug {
+            isDebuggable = true
             versionNameSuffix = " - debug-1"
             applicationIdSuffix = ".debug"
             buildConfigField("int", "PATCH_VERSION_CODE", "1")

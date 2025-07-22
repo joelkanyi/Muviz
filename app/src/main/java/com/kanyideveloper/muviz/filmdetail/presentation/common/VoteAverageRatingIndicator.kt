@@ -43,7 +43,8 @@ fun VoteAverageRatingIndicator(
     color: Color = MaterialTheme.colorScheme.primary,
     strokeWidth: Dp = 3.dp,
     animationDuration: Int = 1000,
-    animDelay: Int = 0
+    animDelay: Int = 0,
+    modifier: Modifier = Modifier,
 ) {
     var animationPlayed by remember {
         mutableStateOf(false)
@@ -62,8 +63,8 @@ fun VoteAverageRatingIndicator(
     }
 
     Box(
+        modifier = modifier.size(radius * 2f),
         contentAlignment = Alignment.Center,
-        modifier = Modifier.size(radius * 2f)
     ) {
         Canvas(
             modifier = Modifier
