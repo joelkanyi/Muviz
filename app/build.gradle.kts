@@ -47,7 +47,7 @@ android {
 
     buildTypes {
         debug {
-            isDebuggable = false
+            isDebuggable = true
             versionNameSuffix = " - debug-1"
             applicationIdSuffix = ".debug"
             buildConfigField("int", "PATCH_VERSION_CODE", "1")
