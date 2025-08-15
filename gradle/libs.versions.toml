@@ -1,6 +1,6 @@
 [versions]
-kotlin = "2.2.0"
-kotlinKsp = "2.2.0-2.0.2"
+kotlin = "2.2.10"
+kotlinKsp = "2.2.10-2.0.2"
 androidGradlePlugin = "8.12.0"
 composeUi = "1.8.3"
 composeMaterial3 = "1.3.2"
