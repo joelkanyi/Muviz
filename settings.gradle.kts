@@ -17,3 +17,4 @@ dependencyResolutionManagement {
 rootProject.name = "Muviz"
 include(":app-mobile")
 include(":core")
+include(":app-tv")
