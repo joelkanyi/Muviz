@@ -23,6 +23,8 @@ spotless = "7.2.1"
 googleServices = "4.4.3"
 appCompat = "1.7.1"
 datastorePreferences = "1.1.7"
+espressoCore = "3.7.0"
+material = "1.13.0"
 
 
 [libraries]
@@ -63,6 +65,8 @@ compose-destinations-ksp = { module = "io.github.raamcosta.compose-destinations:
 
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 junit = { module = "junit:junit", version.ref = "junit4" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 
 [plugins]

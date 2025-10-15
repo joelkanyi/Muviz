@@ -1,3 +1,5 @@
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -13,4 +15,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Muviz"
-include(":app")
+include(":app-mobile")
+include(":core")
