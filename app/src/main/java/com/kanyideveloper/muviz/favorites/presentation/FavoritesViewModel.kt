@@ -53,4 +53,10 @@ class FavoritesViewModel @Inject constructor(
             repository.deleteAllFavorites()
         }
     }
+
+    fun deleteFavorites(favorites: List<Favorite>) {
+        viewModelScope.launch {
+            repository.deleteFavorites(favorites)
+        }
+    }
 }

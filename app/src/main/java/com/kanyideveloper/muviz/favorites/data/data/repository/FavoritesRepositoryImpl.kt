@@ -46,4 +46,8 @@ class FavoritesRepositoryImpl @Inject constructor(private val database: Favorite
     override suspend fun deleteAllFavorites() {
         database.dao.deleteAllFavorites()
     }
+
+    override suspend fun deleteFavorites(favorites: List<Favorite>) {
+        database.dao.deleteFavorites(favorites)
+    }
 }

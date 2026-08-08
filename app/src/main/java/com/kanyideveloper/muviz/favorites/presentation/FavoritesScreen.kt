@@ -22,6 +22,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -101,6 +103,9 @@ fun FavoritesScreen(
         onConfirmDeleteAllFavorites = {
             viewModel.deleteAllFavorites()
             openDialog = false
+        },
+        onConfirmDeleteSelected = { selected ->
+            viewModel.deleteFavorites(selected)
         }
     )
 }
@@ -115,7 +120,11 @@ private fun FavoritesScreenContent(
     onClickDeleteAllFavorites: () -> Unit,
     onDeleteOneFavorite: (Favorite) -> Unit,
     onClickAFavorite: (Favorite) -> Unit,
+    onConfirmDeleteSelected: (List<Favorite>) -> Unit,
 ) {
+    var showDeleteSelectedDialog by rememberSaveable { mutableStateOf(false) }
+    val selectedIds = rememberSaveable { mutableStateListOf<Int>() }
+    val isSelectionMode = selectedIds.isNotEmpty()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -130,13 +139,26 @@ private fun FavoritesScreenContent(
                 modifier = Modifier.fillMaxWidth(),
                 showBackArrow = false,
                 navActions = {
-                    IconButton(
-                        onClick = onClickDeleteAllFavorites
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = null,
-                        )
+                    if (isSelectionMode) {
+                        IconButton(
+                            onClick = { showDeleteSelectedDialog = true }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = stringResource(R.string.delete_selected_items_question),
+                            )
+                        }
+                    } else {
+                        if (favoriteFilms.size > 1) {
+                            IconButton(
+                                onClick = onClickDeleteAllFavorites
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = stringResource(R.string.delete_all_favorites),
+                                )
+                            }
+                        }
                     }
                 }
             )
@@ -162,8 +184,24 @@ private fun FavoritesScreenContent(
                                 .fillMaxWidth()
                                 .height(230.dp),
                             filmItem = favorite,
+                            selected = selectedIds.contains(favorite.mediaId),
                             onClick = {
-                                onClickAFavorite(favorite)
+                                if (isSelectionMode) {
+                                    if (selectedIds.contains(favorite.mediaId)) {
+                                        selectedIds.remove(favorite.mediaId)
+                                    } else {
+                                        selectedIds.add(favorite.mediaId)
+                                    }
+                                } else {
+                                    onClickAFavorite(favorite)
+                                }
+                            },
+                            onLongPress = {
+                                if (selectedIds.contains(favorite.mediaId)) {
+                                    selectedIds.remove(favorite.mediaId)
+                                } else {
+                                    selectedIds.add(favorite.mediaId)
+                                }
                             }
                         )
                     }
@@ -220,6 +258,51 @@ private fun FavoritesScreenContent(
                 shape = RoundedCornerShape(10.dp)
             )
         }
+
+        if (showDeleteSelectedDialog) {
+            AlertDialog(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                tonalElevation = 0.dp,
+                onDismissRequest = {
+                    showDeleteSelectedDialog = false
+                },
+                title = {
+                    Text(text = stringResource(R.string.delete_favorites))
+                },
+                text = {
+                    val question = if (selectedIds.size > 1) {
+                        stringResource(R.string.delete_selected_items_question)
+                    } else {
+                        stringResource(R.string.delete_from_favorites_question)
+                    }
+                    Text(text = question)
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val selected = favoriteFilms.filter { selectedIds.contains(it.mediaId) }
+                            onConfirmDeleteSelected(selected)
+                            selectedIds.clear()
+                            showDeleteSelectedDialog = false
+                        },
+                    ) {
+                        Text(text = stringResource(R.string.yes))
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            showDeleteSelectedDialog = false
+                        },
+                    ) {
+                        Text(text = stringResource(R.string.no))
+                    }
+                },
+                shape = RoundedCornerShape(10.dp)
+            )
+        }
     }
 }
 
@@ -228,10 +311,11 @@ fun FilmItem(
     filmItem: Favorite,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    selected: Boolean = false,
+    onLongPress: () -> Unit = {},
 ) {
     Card(
         modifier = modifier,
-        onClick = onClick
     ) {
         Box {
             Image(
@@ -261,11 +345,28 @@ fun FilmItem(
                     )
             )
 
-            FilmDetails(
-                title = filmItem.title,
-                releaseDate = filmItem.releaseDate,
-                rating = filmItem.rating
-            )
+            val clickableModifier = Modifier
+                .matchParentSize()
+                .combinedClickable(
+                    onClick = onClick,
+                    onLongClick = onLongPress
+                )
+
+            if (selected) {
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(12.dp))
+                )
+            }
+
+            Box(modifier = clickableModifier) {
+                FilmDetails(
+                    title = filmItem.title,
+                    releaseDate = filmItem.releaseDate,
+                    rating = filmItem.rating
+                )
+            }
         }
     }
 }
@@ -420,7 +521,9 @@ private fun FavoritesScreenPreview() {
             onNavigateBack = {},
             onClickDeleteAllFavorites = {},
             onDeleteOneFavorite = {},
-            onClickAFavorite = {}
+            onClickAFavorite = {},
+            onConfirmDeleteSelected = {},
+
         )
     }
 }

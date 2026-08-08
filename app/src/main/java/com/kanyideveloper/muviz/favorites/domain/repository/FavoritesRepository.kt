@@ -25,4 +25,5 @@ interface FavoritesRepository {
     fun getAFavorites(mediaId: Int): Flow<Favorite?>
     suspend fun deleteOneFavorite(favorite: Favorite)
     suspend fun deleteAllFavorites()
+    suspend fun deleteFavorites(favorites: List<Favorite>)
 }
