@@ -1,0 +1,13 @@
+---
+title: Cast/cast Navigation Graph
+---
+%%{init: {'theme':'base', 'themeVariables': { 'primaryTextColor': '#fff' }}%%
+graph TD
+cast/cast(["CastNavGraph"]) -- "start" --- cast/casts_screen("CastsScreen")
+cast/cast(["CastNavGraph"]) --- cast/cast_details_screen("CastDetailsScreen")
+
+
+classDef destination fill:#5383EC,stroke:#ffffff;
+class cast/cast_details_screen,cast/casts_screen destination;
+classDef navgraph fill:#63BC76,stroke:#ffffff;
+class cast/cast navgraph;

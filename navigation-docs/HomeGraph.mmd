@@ -1,0 +1,12 @@
+---
+title: Home/home Navigation Graph
+---
+%%{init: {'theme':'base', 'themeVariables': { 'primaryTextColor': '#fff' }}%%
+graph TD
+home/home(["HomeNavGraph"]) -- "start" --- home/home_screen("HomeScreen")
+
+
+classDef destination fill:#5383EC,stroke:#ffffff;
+class home/home_screen destination;
+classDef navgraph fill:#63BC76,stroke:#ffffff;
+class home/home navgraph;

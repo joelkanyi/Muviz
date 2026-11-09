@@ -103,40 +103,62 @@ android {
 }
 
 dependencies {
+    // 🧱 Core Android + Kotlin
     implementation(libs.androidx.core.ktx)
+    implementation(libs.jetbrains.coroutines.android)
+    implementation(libs.androidx.appcompat)
+
+    // 🎨 Jetpack Compose (UI)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.paging.compose)
-    implementation(libs.androidx.appcompat)
+    debugImplementation(libs.androidx.ui.tooling)
+
+    // 🧭 Navigation
+    implementation(libs.compose.destinations.core)
+    ksp(libs.compose.destinations.ksp)
+
+    // ⚙️ Lifecycle & Architecture Components (MVVM)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    // 💾 Data Storage & Persistence
     implementation(libs.androidx.datastore.preferences)
-    implementation(libs.coil.compose)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
+    // 🌐 Networking (API)
     implementation(libs.squareup.retrofit)
     implementation(libs.squareup.retrofit.gson)
     implementation(libs.squareup.okhttp)
     implementation(libs.squareup.okhttp.interceptor)
+
+    // 🧩 Dependency Injection (DI)
     implementation(libs.google.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.compose.destinations.core)
-    implementation(libs.jetbrains.coroutines.android)
-    implementation(libs.timber)
-
     ksp(libs.google.hilt.compiler)
     ksp(libs.androidx.hilt.compiler)
-    ksp(libs.androidx.room.compiler)
-    ksp(libs.compose.destinations.ksp)
 
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
+    // 🖼️ Image Loading
+    implementation(libs.coil.compose)
 
+    // 🪵 Logging
+    implementation(libs.timber)
+
+    // 🧪 Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.junit)
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
 
     implementation(projects.core)
+    implementation(projects.feature.home)
+    implementation(projects.feature.account)
+    implementation(projects.feature.cast)
+    implementation(projects.feature.favorites)
+    implementation(projects.feature.film)
+    implementation(projects.feature.search)
 }

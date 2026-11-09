@@ -1,0 +1,50 @@
+/*
+ * Copyright 2024 Joel Kanyi.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.github.joelkanyi.core.common.data.dto
+
+
+import com.google.gson.annotations.SerializedName
+import io.github.joelkanyi.model.Cast
+import io.github.joelkanyi.model.Credits
+
+data class CreditsResponse(
+    @SerializedName("cast")
+    val cast: List<CastResponse>,
+    @SerializedName("id")
+    val id: Int
+) {
+    companion object {
+        fun CastResponse.toDomainModel() = Cast(
+            adult = adult,
+            castId = castId,
+            character = character,
+            creditId = creditId,
+            gender = gender,
+            id = id,
+            knownForDepartment = knownForDepartment,
+            name = name,
+            order = order,
+            originalName = originalName,
+            popularity = popularity,
+            profilePath = profilePath,
+        )
+
+        fun CreditsResponse.toDomainModel() = Credits(
+            id = id,
+            cast = cast.map { it.toDomainModel() }
+        )
+    }
+}

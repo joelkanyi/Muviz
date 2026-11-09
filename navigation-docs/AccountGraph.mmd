@@ -1,0 +1,13 @@
+---
+title: Account/account Navigation Graph
+---
+%%{init: {'theme':'base', 'themeVariables': { 'primaryTextColor': '#fff' }}%%
+graph TD
+account/account(["AccountNavGraph"]) -- "start" --- account/account_screen("AccountScreen")
+account/account(["AccountNavGraph"]) --- account/about_screen("AboutScreen")
+
+
+classDef destination fill:#5383EC,stroke:#ffffff;
+class account/about_screen,account/account_screen destination;
+classDef navgraph fill:#63BC76,stroke:#ffffff;
+class account/account navgraph;

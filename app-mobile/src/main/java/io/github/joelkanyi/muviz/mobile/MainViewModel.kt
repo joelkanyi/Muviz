@@ -17,7 +17,7 @@ package io.github.joelkanyi.muviz.mobile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.joelkanyi.muviz.mobile.common.domain.repository.PreferenceRepository
+import io.github.joelkanyi.core.common.domain.repository.PreferenceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn

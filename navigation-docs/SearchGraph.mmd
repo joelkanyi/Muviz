@@ -1,0 +1,12 @@
+---
+title: Search/search Navigation Graph
+---
+%%{init: {'theme':'base', 'themeVariables': { 'primaryTextColor': '#fff' }}%%
+graph TD
+search/search(["SearchNavGraph"]) -- "start" --- search/search_screen("SearchScreen")
+
+
+classDef destination fill:#5383EC,stroke:#ffffff;
+class search/search_screen destination;
+classDef navgraph fill:#63BC76,stroke:#ffffff;
+class search/search navgraph;

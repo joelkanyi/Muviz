@@ -25,6 +25,7 @@ appCompat = "1.7.1"
 datastorePreferences = "1.1.7"
 espressoCore = "3.7.0"
 material = "1.13.0"
+playServicesCast = "22.1.0"
 
 
 [libraries]
@@ -67,6 +68,7 @@ timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 junit = { module = "junit:junit", version.ref = "junit4" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+play-services-cast = { group = "com.google.android.gms", name = "play-services-cast", version.ref = "playServicesCast" }
 
 
 [plugins]

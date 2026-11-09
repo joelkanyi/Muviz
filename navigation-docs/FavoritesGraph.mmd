@@ -1,0 +1,12 @@
+---
+title: Favorites/favorites Navigation Graph
+---
+%%{init: {'theme':'base', 'themeVariables': { 'primaryTextColor': '#fff' }}%%
+graph TD
+favorites/favorites(["FavoritesNavGraph"]) -- "start" --- favorites/favorites_screen("FavoritesScreen")
+
+
+classDef destination fill:#5383EC,stroke:#ffffff;
+class favorites/favorites_screen destination;
+classDef navgraph fill:#63BC76,stroke:#ffffff;
+class favorites/favorites navgraph;

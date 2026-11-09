@@ -1,0 +1,12 @@
+---
+title: Film/film Navigation Graph
+---
+%%{init: {'theme':'base', 'themeVariables': { 'primaryTextColor': '#fff' }}%%
+graph TD
+film/film(["FilmNavGraph"]) -- "start" --- film/film_details_screen("FilmDetailsScreen")
+
+
+classDef destination fill:#5383EC,stroke:#ffffff;
+class film/film_details_screen destination;
+classDef navgraph fill:#63BC76,stroke:#ffffff;
+class film/film navgraph;
